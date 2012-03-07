@@ -7,24 +7,25 @@
 #define ARRAY_COUNT 2
 using namespace std;
 
-void print_matrix (int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE], int n, int iRows[ARRAY_COUNT], int iColumns[ARRAY_COUNT]);
+int matrix_operate (int iResult[ARRAY_SIZE][ARRAY_SIZE], char cMO, int y, int x);
 
-void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE], int iRows[ARRAY_COUNT], int iColumns[ARRAY_COUNT]);
+void print_matrix (int n);
 
-int matrix_operate (int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE], int iResult[ARRAY_SIZE][ARRAY_SIZE], int iRows[ARRAY_SIZE], int iColumns[ARRAY_SIZE], char cMO, int y, int x);
+void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]);
+
+int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE] = {0};
+int iRows[ARRAY_SIZE] = {0};   //iRows[3] is the number of rows in the resultant matrix
+int iColumns[ARRAY_SIZE] = {0};//iColumns[3] ''
 
 int main() {
 
-	int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE] = {0};
-	int iResult[ARRAY_SIZE][ARRAY_SIZE] = {0};
+    int iResult[ARRAY_SIZE][ARRAY_SIZE] = {0};
 
 	int n = 0;  //I only realized that these variable names spelt out "Nyx" once I'd finished the program, I swear
 	int y = 0;
 	int x = 0;
 	char cMO;   //MO being Method of Operation's abbreviation
 	char strFile[21] = "";
-	int iRows[ARRAY_COUNT + 1] = {0};   //iRows[3] is the number of rows in the resultant matrix
-	int iColumns[ARRAY_COUNT + 1] = {0};//iColumns[3] ''
 
 	ifstream file;
 
@@ -42,7 +43,7 @@ int main() {
 			for (x = 0; x < iColumns[n]; x++)
 				file >> iMatrix[n][y][x];
 
-		print_matrix (iMatrix, n, iRows, iColumns);
+		print_matrix (n);
 
 	}
 
@@ -78,12 +79,12 @@ int main() {
 
 	for (y = 0; y < iRows[2]; y++) {
 		for (x = 0; x < iRows[2]; x++) {
-			iResult[y][x] = matrix_operate (iMatrix, iResult, iRows, iColumns, cMO, y, x);
+			iResult[y][x] = matrix_operate (iResult, cMO, y, x);
 		}
 	}
 
 	for (n = 0; n < ARRAY_COUNT; n++) {
-		print_matrix (iMatrix, n, iRows, iColumns);
+		print_matrix (n);
 
 		if (n == (ARRAY_COUNT - 1) )
 			cout << "\n=";
@@ -92,7 +93,7 @@ int main() {
 
 	}
 
-	print_result (iResult, iRows, iColumns);
+	print_result (iResult);
 
 	cout << endl;
 	system ("pause");
@@ -103,7 +104,7 @@ int main() {
 
 }
 
-int matrix_operate (int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE], int iResult[ARRAY_SIZE][ARRAY_SIZE], int iRows[ARRAY_SIZE], int iColumns[ARRAY_SIZE], char cMO, int y, int x) {
+int matrix_operate (int iResult[ARRAY_SIZE][ARRAY_SIZE], char cMO, int y, int x) {
 
 	int i = 0;
 
@@ -127,7 +128,7 @@ int matrix_operate (int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE], int iResul
 
 }
 
-void print_matrix (int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE], int n, int iRows[ARRAY_COUNT], int iColumns[ARRAY_COUNT]) {
+void print_matrix (int n) {
 
 	int y = 0;
 	int x = 0;
@@ -145,7 +146,7 @@ void print_matrix (int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE], int n, int 
 
 }
 
-void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE], int iRows[ARRAY_COUNT], int iColumns[ARRAY_COUNT]) {    //because you can't print a 3D matrix, like iMatrix, like a 2D array, like iResult
+void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]) {    //because you can't print a 3D matrix, e.g. iMatrix, like a 2D array, e.g. iResult
 
 	int y = 0;
 	int x = 0;
