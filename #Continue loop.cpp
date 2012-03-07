@@ -1,33 +1,33 @@
-	char cCont = 'Y';
-	int iValid = 0;
+char cCont = 'Y';
 
+int cont (char sMessage[31]);   //To ask the user if they want to continue, includes error checking
 
-	while (cCont == 'Y') {
+int cont (char sMessage[31]) {
 
-	    //code
-	    //moar code
-	    //YOU KNOW IT
+    int iValid = 0;
 
-		while (iValid == 0) {       //asks the user if they want to run again
-			cout << endl << "\nRun again (Y/N)? ";
-			cin >> cCont;
-			cCont = toupper (cCont);
+    while (iValid == 0) {       //asks the user if they want to run again
+        cout << endl << "Run again (Y/N)? ";
+        cin >> cCont;
+        cCont = toupper (cCont);
 
-			switch (cCont) {
-				case 'Y':
-				case 'N': {
-						iValid = 1;
-						system ("cls");
-					}
-					break;
-				default: {
-						system ("cls");
-						cout << "Run again (Y/N)? " << cCont << endl
-						<< "\nInvalid input";
-					}     //detects bad input
-			}
-		}
+        switch (cCont) {    //detects invalid input
+            case 'Y':
+            case 'N': {
+                    iValid = 1;
+                    system ("cls");
+                }
+                break;
 
-		iValid = 0;
+            default: {
+                    system ("cls");
+                    cout << "Run again (Y/N)? " << cCont << endl
+                    << "\nInvalid input\n\n";
+                }
+        }
+    }
+
+    fflush (stdin);
+    iValid = 0;
 
 	}

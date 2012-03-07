@@ -2,59 +2,66 @@
 #include <stdlib.h>
 #include <iomanip>
 #include <fstream>
+#include <string>
 #define ARRAY_SIZE 5
 #define CELL_SIZE 4
 #define ARRAY_COUNT 2
 using namespace std;
 
-int matrix_operate (int iResult[ARRAY_SIZE][ARRAY_SIZE], char cMO, int y, int x);
+int matrix_operate (int iResult[ARRAY_SIZE][ARRAY_SIZE], char cMO, int y, int x);   //operates on only one cell at a time
 
-void print_matrix (int n);
+void print_matrix (int n);  //prints one matrix at a time, so it is easier to format
 
-void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]);
+void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]);    //because you can't print a 3D matrix (iMatrix) like you can a 2D array (iResult)
 
+int cont (char strMessage[31]);   //To ask the user if they want to continue, includes error checking
+
+//globals
 int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE] = {0};
 int iRows[ARRAY_SIZE] = {0};   //iRows[3] is the number of rows in the resultant matrix
 int iColumns[ARRAY_SIZE] = {0};//iColumns[3] ''
 
 int main() {
 
-    int iResult[ARRAY_SIZE][ARRAY_SIZE] = {0};
+	int iResult[ARRAY_SIZE][ARRAY_SIZE] = {0};
 
 	int n = 0;  //I only realized that these variable names spelt out "Nyx" once I'd finished the program, I swear
 	int y = 0;
 	int x = 0;
 	char cMO;   //MO being Method of Operation's abbreviation
 	char strFile[21] = "";
+	char strMessage[46] = "Is this the matrix you wanted";
+	char cCont = 'N';
 
 	ifstream file;
 
 
-	cout << "Filename (example.txt): ";
-	cin.getline (strFile, 21);
-	file.open (strFile);
+	while (cCont == 'N') {
 
-	for (n = 0; n < ARRAY_COUNT; n++) {
-		file >> iRows[n];
-		file >> iColumns[n];
+		cout << "Filename (example, no extension): ";
+		cin.getline (strFile, 21);
+		strcat(strFile, ".txt");
+		file.open (strFile);
 
-		for (y = 0; y < iRows[n]; y++)
+		for (n = 0; n < ARRAY_COUNT; n++) {
+			file >> iRows[n];
+			file >> iColumns[n];
 
-			for (x = 0; x < iColumns[n]; x++)
-				file >> iMatrix[n][y][x];
+			for (y = 0; y < iRows[n]; y++)
 
-		print_matrix (n);
+				for (x = 0; x < iColumns[n]; x++)
+					file >> iMatrix[n][y][x];
+
+			print_matrix (n);
+
+		}
+
+		if ( (iRows[0] != iRows[1]) || (iColumns[0] != iColumns[1]) )
+            strcpy (strMessage, "Matrices incompatible, enter another filename");
+
+		cCont = cont (strMessage);
 
 	}
-
-	if ( (iRows[0] != iRows[1]) || (iColumns[0] != iColumns[1]) ) {
-		cout << "\n\nThe matrices are not compatible. ";
-		system ("pause");
-		return (1);
-	}
-
-	cout << "\n\n";
-	system ("pause");
 
 	file.close();
 	system ("cls");
@@ -95,12 +102,8 @@ int main() {
 
 	print_result (iResult);
 
-	cout << endl;
+	cout << "\n\n";
 	system ("pause");
-
-
-
-
 
 }
 
@@ -146,7 +149,7 @@ void print_matrix (int n) {
 
 }
 
-void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]) {    //because you can't print a 3D matrix, e.g. iMatrix, like a 2D array, e.g. iResult
+void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]) {
 
 	int y = 0;
 	int x = 0;
@@ -162,5 +165,38 @@ void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]) {    //because you can't
 		cout << endl;
 	}
 
+
+}
+
+int cont (char strMessage[31]) {
+
+	int iValid = 0;
+	char cCont = 'Y';
+
+	while (iValid == 0) {       //asks the user if they want to run again
+		cout << "\n\n" << strMessage << " (Y/N)? ";
+		cin >> cCont;
+		cCont = toupper (cCont);
+
+		switch (cCont) {    //detects invalid input
+			case 'Y':
+			case 'N': {
+					iValid = 1;
+					system ("cls");
+				}
+				break;
+
+			default: {
+					system ("cls");
+					cout << strMessage << " (Y/N)? " << cCont << endl
+					     << "\nInvalid input\n\n";
+				}
+		}
+	}
+
+	fflush (stdin);
+	iValid = 0;
+
+	return cCont;
 
 }
