@@ -28,47 +28,55 @@ int main() {
 	int n = 0;  //I only realized that these variable names spelt out "Nyx" once I'd finished the program, I swear
 	int y = 0;
 	int x = 0;
-	char cMO;   //MO being Method of Operation's abbreviation
 	char strFile[21] = "";
+	char cMO;   //MO being Method of Operation's abbreviation
 	char strMessage[46] = "Is this the matrix you wanted";
 	char cCont = 'N';
 
 	ifstream file;
 
 
-	while (cCont == 'N') {
+	//asks user for filename and gets data, prints out results, checks for errors
+	cout << "Filename (e.g. textfile date, no extension): ";
+	cin.getline (strFile, 21);
+	strcat (strFile, ".txt");
+	file.open (strFile);
 
-		cout << "Filename (example, no extension): ";
-		cin.getline (strFile, 21);
-		strcat(strFile, ".txt");
-		file.open (strFile);
+	if (!file.is_open() || !file.good() )
+		cout << "File couldn't be opened or read, continue";
 
-		for (n = 0; n < ARRAY_COUNT; n++) {
-			file >> iRows[n];
-			file >> iColumns[n];
+	for (n = 0; n < ARRAY_COUNT; n++) { //reads and prints matrices
+		file >> iRows[n];
+		file >> iColumns[n];
 
-			for (y = 0; y < iRows[n]; y++)
+		for (y = 0; y < iRows[n]; y++)
 
-				for (x = 0; x < iColumns[n]; x++)
-					file >> iMatrix[n][y][x];
+			for (x = 0; x < iColumns[n]; x++)
+				file >> iMatrix[n][y][x];
 
-			print_matrix (n);
-
-		}
-
-		if ( (iRows[0] != iRows[1]) || (iColumns[0] != iColumns[1]) )
-            strcpy (strMessage, "Matrices incompatible, enter another filename");
-
-		cCont = cont (strMessage);
+		print_matrix (n);
 
 	}
 
+    cout << endl;
+	system ("pause");
 	file.close();
 	system ("cls");
 
-	cout << "Input modus operandi (+ - *): ";
-	cin >> cMO;
 
+	//performs operations on matrices, prints out result
+
+	cout << "Input modus operandi (";
+
+	if ( (iRows[0] != iRows[1]) || (iColumns[0] != iColumns[1]) ) {
+
+		cout << "only '*' because matrices are incompatible): ";
+		cin >> cMO;
+		cMO = '*';
+	} else {
+		cout << "+ - *): ";
+		cin >> cMO;
+	}
 
 	if (iRows[0] <= iRows[1])    //The resultant matrix will be the size of the smallest matrix
 		iRows[2] = iRows[0];
