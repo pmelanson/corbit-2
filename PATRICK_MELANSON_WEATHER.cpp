@@ -9,7 +9,7 @@ then uses functions to find the average, high and low for the week, and which da
 using namespace std;
 
 float ave (float fDay[]);
-void HiLo (float fDay[], float &fLo, float &fHi, int &iHiDay, int &iLoDay);
+void getRange (float fDay[], float &fLo, float &fHi, int &iHiDay, int &iLoDay);
 
 int main() {
 
@@ -27,7 +27,7 @@ int main() {
 		cin >> fDay[i];
 	}
 
-	HiLo (fDay, fLo, fHi, iHiDay, iLoDay);
+	getRange (fDay, fLo, fHi, iHiDay, iLoDay);
 	cout << "\nLow for this week was " << fLo << ", which first occured on " << strDay[iLoDay];
 	cout << "\nHigh for this week was " << fHi << ", which first occured on " << strDay[iHiDay];
 	cout << "\nAverage for this week was " << ave (fDay);
@@ -51,7 +51,7 @@ float ave (float fDay[]) {
 
 }
 
-void HiLo (float fDay[], float &fLo, float &fHi, int &iHiDay, int &iLoDay) {
+void getRange (float fDay[], float &fLo, float &fHi, int &iHiDay, int &iLoDay) {
 
     fLo = fDay[0];
 	fHi = fDay[0];
