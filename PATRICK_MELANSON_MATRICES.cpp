@@ -1,3 +1,16 @@
+/*******************
+Matrix Program
+
+Designed by Patrick Melanson
+
+Last updated on 19/03/2012
+
+
+This program reads a matrix from a desired file, then prints out these matrices.
+Additionally, it checks for compatibility, and performs addition, subtraction, and multiplication
+
+*******************/
+
 #include <iostream>
 #include <stdlib.h>
 #include <iomanip>
@@ -14,195 +27,172 @@ void print_matrix (int n);  //prints one matrix at a time, so it is easier to fo
 
 void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]);    //because you can't print a 3D matrix (iMatrix) like you can a 2D array (iResult)
 
-int cont (char strMessage[31]);   //To ask the user if they want to continue, includes error checking
-
 //globals
 int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE] = {0};
 int iRows[ARRAY_COUNT] = {0};   //iRows[2] is the number of rows in the resultant matrix
 int iColumns[ARRAY_COUNT] = {0}; //iColumns[2] ''
 
+
+
 int main() {
 
-	int iResult[ARRAY_SIZE][ARRAY_SIZE] = {0};
+    int iResult[ARRAY_SIZE][ARRAY_SIZE] = {0};
 
-	int n = 0;  //I only realized that these variable names spelt out "Nyx" once I'd finished the program, I swear
-	int y = 0;
-	int x = 0;
-	char strFile[21] = "";
-	char cMO;   //MO being Method of Operation's abbreviation
-	char strMessage[46] = "Is this the matrix you wanted";
-	char cCont = 'N';
-
-	ifstream file;
+    //I only realized that these variable names spelt out "Nyx" once I'd finished the program, I swear
+    int n = 0;  //Used for indicating matrix (i.e. matrix 1 or 2)
+    int y = 0;  //Used for indicating row
+    int x = 0;  //Used for indicating column
+    char strFile[21] = "";  //Filename
+    char cMO;   //MO being Method of Operation (or Modus Operandi, whichever you prefer) abbreviated
+    ifstream file;
 
 
-	//asks user for filename and gets data, prints out results, checks for errors
-	cout << "Filename (e.g. textfile date, no extension): ";
-	cin.getline (strFile, 21);
-	strcat (strFile, ".txt");
-	file.open (strFile);
+    /**
+    asks user for filename and gets data
+    checks if file is open for reading
+    prints out results
+    **/
 
-	if (!file.is_open() || !file.good() )
-		cout << "File couldn't be opened or read, continue";
+    cout << "Filename of text file with matrix (no extension): ";
+    cin.getline (strFile, 21);
+    strcat (strFile, ".txt");
+    file.open (strFile);
 
-	for (n = 0; n < ARRAY_COUNT; n++) { //reads and prints matrices
-		file >> iRows[n];
-		file >> iColumns[n];
+    if (!file.is_open() || !file.good() )
+        cout << "File couldn't be opened or read, continue";
 
-		for (y = 0; y < iRows[n]; y++)
+    //reads and prints matrices
+    for (n = 0; n < ARRAY_COUNT; n++) {     //loops through each matrix
+        file >> iRows[n];                   //finds number of rows
+        file >> iColumns[n];                //finds number of columns
 
-			for (x = 0; x < iColumns[n]; x++)
-				file >> iMatrix[n][y][x];
+        for (y = 0; y < iRows[n]; y++)      //reads value into appropriate cell, loops through columns and rows
+            for (x = 0; x < iColumns[n]; x++)
+                file >> iMatrix[n][y][x];
 
-		print_matrix (n);
+        print_matrix (n);                   //prints appropriate matrix
 
-	}
+    }
 
-	cout << "\n\n";
-	system ("pause");
-	file.close();
-	system ("cls");
+    file.close();   //closes file, waits for user to go to next screen
+    cout << "\n\n";
+    system ("pause");
+    system ("cls");
 
 
-	//performs operations on matrices, prints out result
-	if ( (iRows[0] != iRows[1]) || (iColumns[0] != iColumns[1]) ) {
-		cout << "Matrices are incompatible, cannot perform addition or subtraction. Performing multiplication. ";
-		system ("pause");
-		cMO = '*';
-	} else {
-		cout << "Input modus operandi (+ - *): ";
-		cin >> cMO;
-	}
 
-	iRows[2] = iRows[0];        //The resultant matrix has the same number of rows as the first matrix
-	iColumns[2] = iColumns[1];  //The resultant matrix has the same number of columns as the second matrix
+    /**
+    asks user what operation to perform
+    operates on matrices in this way
+    **/
 
-	n = 0;
-	y = 0;
-	x = 0;
+    //asks user which operation to perform, if matrices are compatible
+    if ( (iRows[0] != iRows[1]) || (iColumns[0] != iColumns[1]) ) {
+        cout << "Matrices are incompatible, cannot perform addition or subtraction. Performing multiplication. ";
+        system ("pause");
+        cMO = '*';
+    } else {
+        cout << "Input modus operandi (+ - *): ";
+        cin >> cMO;
+    }
 
-	for (y = 0; y < iRows[2]; y++) {
-		for (x = 0; x < iRows[2]; x++) {
-			iResult[y][x] = matrix_operate (iResult, cMO, y, x);
-		}
-	}
+    //the only time this will yield an improperly sized matrix is when addition/subtraction is performed on incompatible matrices, which will not happen
+    iRows[2] = iRows[0];        //The resultant matrix has the same number of rows as the first matrix
+    iColumns[2] = iColumns[1];  //The resultant matrix has the same number of columns as the second matrix
 
-	//prints matrices
-	print_matrix (0);
-	cout << endl << setw (iColumns[2] * 3 - 1) << cMO;
-	print_matrix (1);
-	cout << endl << setw (iColumns[2] * 3 - 1) << "=";
-	print_result (iResult);
+    for (y = 0; y < iRows[2]; y++) {    //performs operation, one cell at a time
+        for (x = 0; x < iRows[2]; x++) {
+            iResult[y][x] = matrix_operate (iResult, cMO, y, x);
+        }
+    }
 
-	//end of program
-	cout << "\n\n";
-	system ("pause");
+    //prints matrices, and resultant matrix
+    print_matrix (0);
+    cout << endl << setw (iColumns[2] * 3 - 1) << cMO;
+    print_matrix (1);
+    cout << endl << setw (iColumns[2] * 3 - 1) << "=";
+    print_result (iResult);
+
+    //end of program
+    cout << "\n\n";
+    system ("pause");
 }
+
+
 
 int matrix_operate (int iResult[ARRAY_SIZE][ARRAY_SIZE], char cMO, int y, int x) {
 
-	int i = 0;
-	int a = 0;
-	int b = 0;
+    int i = 0;
+    int a = 0;
+    int b = 0;
 
-	switch (cMO) {
-		case '+':
-			iResult[y][x] = iMatrix[0][y][x] + iMatrix[1][y][x];
-			break;
-		case '-':
-			iResult[y][x] = iMatrix[0][y][x] - iMatrix[1][y][x];
-			break;
-		case '*':
-			for (b = 0; b < iColumns[2]; b++)
-				iResult[y][x] += iMatrix[0][y][b] * iMatrix[1][b][x];
-			break;
-	}
+    switch (cMO) {
+        case '+':
+            iResult[y][x] = iMatrix[0][y][x] + iMatrix[1][y][x];        //adds corresponding cells from both matrices into resultant cell
+            break;
+        case '-':
+            iResult[y][x] = iMatrix[0][y][x] - iMatrix[1][y][x];        //subtracts corresponding cells from both matrices into resultant cell
+            break;
+        case '*':
+            for (b = 0; b < iColumns[2]; b++)
+                iResult[y][x] += iMatrix[0][y][b] * iMatrix[1][b][x];   // 1a + 2b + 3c + 4d = resultant cell (multiplies row and column into resultant cell, i.e. multiplication of matrices)
+            break;
+    }
 
-	return iResult[y][x];
+    return iResult[y][x];
 
 }
 
 void print_matrix (int n) {
 
-	int i = 0;
-	int y = 0;
-	int x = 0;
+    int i = 0;
+    int y = 0;
+    int x = 0;
 
-	cout << "\n\n";
+    cout << "\n\n";
 
-	for (y = 0; y < iRows[n]; y++) {
+    for (y = 0; y < iRows[n]; y++) {        //begins printing out a row
 
-		for (x = 0; x < iColumns[n]; x++)
-			cout << setw (CELL_SIZE) << iMatrix[n][y][x] << "|";
+        for (x = 0; x < iColumns[n]; x++)   //prints out each cell
+            cout << setw (CELL_SIZE) << iMatrix[n][y][x] << "|";
 
-		cout << endl;
+        //prints out bottom line of cell
+        cout << endl;
+        for (x = 0; x < iColumns[n]; x++) {
+            for (i = 0; i < CELL_SIZE; i++)
+                cout << "-";
+            cout << "|";
+        }
+        cout << endl;
 
-		for (x = 0; x < iColumns[n]; x++) {
-			for (i = 0; i < CELL_SIZE; i++)
-				cout << "-";
-			cout << "|";
-		}
-		cout << endl;
-	}
+    }
+
 
 }
 
 void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]) {
 
-	int i = 0;
-	int y = 0;
-	int x = 0;
+    int i = 0;
+    int y = 0;
+    int x = 0;
 
+    cout << "\n\n";
 
-	cout << endl << endl;
+    for (y = 0; y < iRows[2]; y++) {        //begins printing out a row
 
-	for (y = 0; y < iRows[2]; y++) {
+        for (x = 0; x < iColumns[2]; x++)   //prints out each cell
+            cout << setw (CELL_SIZE) << iResult[y][x] << "|";
 
-		for (x = 0; x < iColumns[2]; x++)
-			cout << setw (CELL_SIZE) << iResult[y][x] << "|";
+        //prints out bottom of cell
+        cout << endl;
+        for (x = 0; x < iColumns[2]; x++) {
+            for (i = 0; i < CELL_SIZE; i++)
+                cout << "-";
+            cout << "|";
+        }
+        cout << endl;
 
-		cout << endl;
+    }
 
-		for (x = 0; x < iColumns[2]; x++) {
-			for (i = 0; i < CELL_SIZE; i++)
-				cout << "-";
-			cout << "|";
-		}
-		cout << endl;
-	}
-
-
-}
-
-int cont (char strMessage[31]) {
-
-	int iValid = 0;
-	char cCont = 'Y';
-
-	while (iValid == 0) {       //asks the user if they want to run again
-		cout << "\n\n" << strMessage << " (Y/N)? ";
-		cin >> cCont;
-		cCont = toupper (cCont);
-
-		switch (cCont) {    //detects invalid input
-			case 'Y':
-			case 'N': {
-					iValid = 1;
-					system ("cls");
-				}
-				break;
-
-			default: {
-					system ("cls");
-					cout << strMessage << " (Y/N)? " << cCont << endl
-					     << "\nInvalid input\n\n";
-				}
-		}
-	}
-
-	fflush (stdin);
-	iValid = 0;
-
-	return cCont;
 
 }
