@@ -18,8 +18,8 @@ int cont (char strMessage[31]);   //To ask the user if they want to continue, in
 
 //globals
 int iMatrix[ARRAY_COUNT][ARRAY_SIZE][ARRAY_SIZE] = {0};
-int iRows[ARRAY_SIZE] = {0};   //iRows[3] is the number of rows in the resultant matrix
-int iColumns[ARRAY_SIZE] = {0};//iColumns[3] ''
+int iRows[ARRAY_COUNT] = {0};   //iRows[2] is the number of rows in the resultant matrix
+int iColumns[ARRAY_COUNT] = {0}; //iColumns[2] ''
 
 int main() {
 
@@ -58,35 +58,24 @@ int main() {
 
 	}
 
-    cout << endl;
+	cout << "\n\n";
 	system ("pause");
 	file.close();
 	system ("cls");
 
 
 	//performs operations on matrices, prints out result
-
-	cout << "Input modus operandi (";
-
 	if ( (iRows[0] != iRows[1]) || (iColumns[0] != iColumns[1]) ) {
-
-		cout << "only '*' because matrices are incompatible): ";
-		cin >> cMO;
+		cout << "Matrices are incompatible, cannot perform addition or subtraction. Performing multiplication. ";
+		system ("pause");
 		cMO = '*';
 	} else {
-		cout << "+ - *): ";
+		cout << "Input modus operandi (+ - *): ";
 		cin >> cMO;
 	}
 
-	if (iRows[0] <= iRows[1])    //The resultant matrix will be the size of the smallest matrix
-		iRows[2] = iRows[0];
-	else if (iRows[1] < iRows[0])
-		iRows[2] = iRows[1];
-
-	if (iColumns[0] <= iColumns[1])    //The resultant matrix will be the size of the smallest matrix
-		iColumns[2] = iColumns[0];
-	else if (iColumns[1] < iColumns[0])
-		iColumns[2] = iColumns[1];
+	iRows[2] = iRows[0];        //The resultant matrix has the same number of rows as the first matrix
+	iColumns[2] = iColumns[1];  //The resultant matrix has the same number of columns as the second matrix
 
 	n = 0;
 	y = 0;
@@ -98,26 +87,23 @@ int main() {
 		}
 	}
 
-	for (n = 0; n < ARRAY_COUNT; n++) {
-		print_matrix (n);
-
-		if (n == (ARRAY_COUNT - 1) )
-			cout << "\n=";
-		else
-			cout << endl << cMO;
-
-	}
-
+	//prints matrices
+	print_matrix (0);
+	cout << endl << setw (iColumns[2] * 3 - 1) << cMO;
+	print_matrix (1);
+	cout << endl << setw (iColumns[2] * 3 - 1) << "=";
 	print_result (iResult);
 
+	//end of program
 	cout << "\n\n";
 	system ("pause");
-
 }
 
 int matrix_operate (int iResult[ARRAY_SIZE][ARRAY_SIZE], char cMO, int y, int x) {
 
 	int i = 0;
+	int a = 0;
+	int b = 0;
 
 	switch (cMO) {
 		case '+':
@@ -127,12 +113,9 @@ int matrix_operate (int iResult[ARRAY_SIZE][ARRAY_SIZE], char cMO, int y, int x)
 			iResult[y][x] = iMatrix[0][y][x] - iMatrix[1][y][x];
 			break;
 		case '*':
-
-			for (i = 0; i < iRows[2]; i++)
-				iResult[y][x] += iMatrix[0][y][i] * iMatrix[1][i][x];
-
+			for (b = 0; b < iColumns[2]; b++)
+				iResult[y][x] += iMatrix[0][y][b] * iMatrix[1][b][x];
 			break;
-
 	}
 
 	return iResult[y][x];
@@ -141,11 +124,11 @@ int matrix_operate (int iResult[ARRAY_SIZE][ARRAY_SIZE], char cMO, int y, int x)
 
 void print_matrix (int n) {
 
+	int i = 0;
 	int y = 0;
 	int x = 0;
 
-
-	cout << endl << endl;
+	cout << "\n\n";
 
 	for (y = 0; y < iRows[n]; y++) {
 
@@ -153,12 +136,20 @@ void print_matrix (int n) {
 			cout << setw (CELL_SIZE) << iMatrix[n][y][x] << "|";
 
 		cout << endl;
+
+		for (x = 0; x < iColumns[n]; x++) {
+			for (i = 0; i < CELL_SIZE; i++)
+				cout << "-";
+			cout << "|";
+		}
+		cout << endl;
 	}
 
 }
 
 void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]) {
 
+	int i = 0;
 	int y = 0;
 	int x = 0;
 
@@ -170,6 +161,13 @@ void print_result (int iResult[ARRAY_SIZE][ARRAY_SIZE]) {
 		for (x = 0; x < iColumns[2]; x++)
 			cout << setw (CELL_SIZE) << iResult[y][x] << "|";
 
+		cout << endl;
+
+		for (x = 0; x < iColumns[2]; x++) {
+			for (i = 0; i < CELL_SIZE; i++)
+				cout << "-";
+			cout << "|";
+		}
 		cout << endl;
 	}
 
