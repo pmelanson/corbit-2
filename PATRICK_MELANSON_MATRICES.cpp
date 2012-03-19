@@ -37,24 +37,27 @@ int main() {
 
 
 	//asks user for filename and gets data, prints out results, checks for errors
-	cout << "Filename (e.g. textfile date, no extension): ";
+	cout << "Filename (TextFileExample, no extension): ";
 	cin.getline (strFile, 21);
 	strcat (strFile, ".txt");
 	file.open (strFile);
 
-	if (!file.is_open() || !file.good() )
-		cout << "File couldn't be opened or read, continue";
+	if (!file.is_open() || !file.good() ) {
+		cout << "\nFile couldn't be opened or read\n\n";
+		system ("pause");
+		return (1);
+    }
 
-	for (n = 0; n < ARRAY_COUNT; n++) { //reads and prints matrices
-		file >> iRows[n];
-		file >> iColumns[n];
+    //reads and prints matrices
+	for (n = 0; n < ARRAY_COUNT; n++) { //does operation on each matrix
+		file >> iRows[n];               //reads number of rows
+		file >> iColumns[n];            //reads number of columns
 
-		for (y = 0; y < iRows[n]; y++)
+		for (y = 0; y < iRows[n]; y++)  //loops for each row
+			for (x = 0; x < iColumns[n]; x++)//loops for each column
+				file >> iMatrix[n][y][x];    //reads cell
 
-			for (x = 0; x < iColumns[n]; x++)
-				file >> iMatrix[n][y][x];
-
-		print_matrix (n);
+		print_matrix (n);               //prints the current matrix
 
 	}
 
@@ -65,54 +68,45 @@ int main() {
 
 
 	//performs operations on matrices, prints out result
-
-	cout << "Input modus operandi (";
-
 	if ( (iRows[0] != iRows[1]) || (iColumns[0] != iColumns[1]) ) {
 
-		cout << "only '*' because matrices are incompatible): ";
+		cout << "Matrices will be multiplied, cannot add or subtract incompatible matrices";
 		cin >> cMO;
 		cMO = '*';
 	} else {
-		cout << "+ - *): ";
+		cout << "Input modus operandi (+ - *): ";
 		cin >> cMO;
 	}
 
-	if (iRows[0] <= iRows[1])    //The resultant matrix will be the size of the smallest matrix
+    //The resultant matrix will have the same numbers of rows as the smallest matrix
+	if (iRows[0] <= iRows[1])
 		iRows[2] = iRows[0];
 	else if (iRows[1] < iRows[0])
 		iRows[2] = iRows[1];
 
-	if (iColumns[0] <= iColumns[1])    //The resultant matrix will be the size of the smallest matrix
+    //The resultant matrix will have the same numbers of columns as the smallest matrix
+	if (iColumns[0] <= iColumns[1])
 		iColumns[2] = iColumns[0];
 	else if (iColumns[1] < iColumns[0])
 		iColumns[2] = iColumns[1];
 
-	n = 0;
-	y = 0;
-	x = 0;
-
+    //operates on matrices
 	for (y = 0; y < iRows[2]; y++) {
 		for (x = 0; x < iRows[2]; x++) {
 			iResult[y][x] = matrix_operate (iResult, cMO, y, x);
 		}
 	}
 
-	for (n = 0; n < ARRAY_COUNT; n++) {
-		print_matrix (n);
-
-		if (n == (ARRAY_COUNT - 1) )
-			cout << "\n=";
-		else
-			cout << endl << cMO;
-
-	}
-
+    //prints matrices
+	print_matrix (0);
+	cout << endl << cMO;
+    print_matrix (1);
+	cout << "\n=";
 	print_result (iResult);
 
+    //end of program
 	cout << "\n\n";
 	system ("pause");
-
 }
 
 int matrix_operate (int iResult[ARRAY_SIZE][ARRAY_SIZE], char cMO, int y, int x) {
