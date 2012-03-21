@@ -82,6 +82,8 @@ int main() {
 	//Calculate the percentage of the value sold
 //	Printf (" % f.1 % % of the value of the auditorium is sold", PutaVariableOrCalculationHere);
 
+    cout << seat[1][1].sold;
+
 	cout << endl;
 	system ("pause");
 	return (0);
