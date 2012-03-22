@@ -26,6 +26,27 @@ int enumerate() {
 	return (0);
 }
 
+int destruct() {
+
+	enum album {VOLUMEONE, VOLUMETWO, MEDIUM, STRIFE};
+
+	struct song {
+		char title[21];
+		char artist[21];
+		float length;
+		int rating;
+	};
+
+    song Awesum = {"Cascade", "Homestuck", 14.3, 5};
+
+
+    cout << Awesum.title << endl;
+    cout << Awesum.artist << endl;
+	cout << Awesum.length << endl;
+	cout << Awesum.rating << endl;
+
+}
+
 int main() {
 
 	cout << "pointers\n\n";
@@ -38,6 +59,13 @@ int main() {
 	cout << endl;
 	system ("pause");
 
+	cout << "\ndestruct\n\n";
+	destruct();
+	cout << endl;
+	system ("pause");
+
+    bool hax = 1;
+    cout << hax;
 
 	return (0);
 }
