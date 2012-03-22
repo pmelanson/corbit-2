@@ -54,8 +54,8 @@ int main() {
     }
 
 
-    //SCREEN 1
-    /**This screen
+
+    /**SCREEN 1
 
     -shows an unedited auditorium
     -shows the price of certain blocks of seats
@@ -81,13 +81,13 @@ int main() {
 
 
 
-    //SCREEN 2
-    /**This screen
+    /**SCREEN 2
 
     -shows an edited auditorium, with sold seats
     -redisplays information from previous screen
     -calculates and displays percentage of seats sold
     -calculates and displays percentage of the value sold
+
     **/
     DisplayAuditorium();
 
