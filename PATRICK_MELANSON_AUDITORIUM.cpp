@@ -48,27 +48,36 @@ int main() {
 	}
 
 	DisplayAuditorium();
-	printf ("The cost of 50 seats in row 2, starting at seat 1 is:  $%4d\n", BlockPrice (2, 50, 1) );
-	SellBlock (2, 50, 1);
-
-	printf ("The cost of 50 seats in row 12, starting at seat 1 is: $%4d\n", BlockPrice (12, 50, 1) );
-	SellBlock (12, 50, 1);
-
-	printf ("The cost of 50 seats in row 22, starting at seat 1 is: $%4d\n", BlockPrice (22, 50, 1) );
-	SellBlock (22, 50, 1);
-
-	printf ("The cost of 6 seats in row 10, starting at seat 25 is: $%4d\n", BlockPrice (10, 6, 25) );
-	SellBlock (10, 6, 25);
-
-	printf ("The cost of 6 seats in row 11, starting at seat 25 is: $%4d\n", BlockPrice (11, 6, 25) );
-	SellBlock (11, 6, 25);
+//	seat[5][5].sold = true;
+//	seat[4][35].sold = false;
+    seat[0][0].sold = true;
+    seat[0][1].sold = true;
+    seat[1][0].sold = true;
+    seat[2][0].sold = true;
+//	printf ("The cost of 50 seats in row 2, starting at seat 1 is:  $%4d\n", BlockPrice (2, 50, 1) );
+//	SellBlock (2, 50, 1);
+//
+//	printf ("The cost of 50 seats in row 12, starting at seat 1 is: $%4d\n", BlockPrice (12, 50, 1) );
+//	SellBlock (12, 50, 1);
+//
+//	printf ("The cost of 50 seats in row 22, starting at seat 1 is: $%4d\n", BlockPrice (22, 50, 1) );
+//	SellBlock (22, 50, 1);
+//
+//	printf ("The cost of 6 seats in row 10, starting at seat 25 is: $%4d\n", BlockPrice (10, 6, 25) );
+//	SellBlock (10, 6, 25);
+//
+//	printf ("The cost of 6 seats in row 11, starting at seat 25 is: $%4d\n", BlockPrice (11, 6, 25) );
+//	SellBlock (11, 6, 25);
 
 
 	iSold = NumSold();
 	printf ("The total number of seats sold is: %4d\n", iSold );
 	printf ("the number of seats unsold is: %4d\n\n", (50 * 30) - iSold);
+	cout << "0,0  = " << seat[0][0].sold << endl;
+	cout << "0,1  = " << seat[0][1].sold << endl << endl;
+	cout << "1,0  = " << seat[1][0].sold << "    0,30 = " << seat[0][30].sold << endl;
+	cout << "2,0  = " << seat[2][0].sold << "    1,30 = " << seat[1][30].sold << endl << endl;
 	system ("pause");
-	system ("cls");
 	DisplayAuditorium();
 
 
@@ -81,8 +90,6 @@ int main() {
 //	Printf (" % f.1 % % of the seats in the auditorium are sold", PutaVariableOrCalculationHere);
 	//Calculate the percentage of the value sold
 //	Printf (" % f.1 % % of the value of the auditorium is sold", PutaVariableOrCalculationHere);
-
-    cout << seat[1][1].sold;
 
 	cout << endl;
 	system ("pause");
@@ -102,7 +109,7 @@ void DisplayAuditorium() {
 			if (seat[y][x].sold == true)
 				printf (" X");
 			else if (seat[y][x].sold == false)
-				printf (" _");
+				printf (" %d", x);
 		printf (" Value: %d Row: %d\n", seat[y][x].price, y);
 	}
 
