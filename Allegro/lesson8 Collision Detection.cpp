@@ -32,20 +32,19 @@ email: jay@loomsoft.net
 
 /* Timer stuff */
 volatile long speed_counter = 0; //A long integer which will store the value of the
-								 //speed counter.
-void increment_speed_counter() // A function to increment the speed counter
-{
+//speed counter.
+void increment_speed_counter() { // A function to increment the speed counter
 	speed_counter++; // This will just increment the speed counter by one.
 }
-END_OF_FUNCTION(increment_speed_counter); //Make sure you tell it that it's the end of the
-										  //function (allegro specific)
+END_OF_FUNCTION (increment_speed_counter); //Make sure you tell it that it's the end of the
+//function (allegro specific)
 
-int main(int argc, char *argv[])
-{
+int main (int argc, char *argv[]) {
 	allegro_init(); // Initialize Allegro
 	install_keyboard(); // Initialize keyboard routines
 	install_timer(); // Initialize the timer routines
 
+<<<<<<< HEAD
 	LOCK_VARIABLE(speed_counter); //Used to set the timer - which regulates the game's
 	LOCK_FUNCTION(increment_speed_counter);//speed.
 	install_int_ex(increment_speed_counter, BPS_TO_TIMER(60));//Set our BPS
@@ -53,35 +52,64 @@ int main(int argc, char *argv[])
 	set_color_depth(desktop_color_depth()); // Set the color depth
 
 	set_gfx_mode(GFX_AUTODETECT_WINDOWED, 640,480,0,0); // Change our graphics mode to 640x480
+=======
+	LOCK_VARIABLE (speed_counter); //Used to set the timer - which regulates the game's
+	LOCK_FUNCTION (increment_speed_counter); //speed.
+	install_int_ex (increment_speed_counter, BPS_TO_TIMER (60) ); //Set our BPS
+
+	set_color_depth (desktop_color_depth() ); // Set the color depth
+
+	set_gfx_mode (GFX_AUTODETECT_WINDOWED, 640,480,0,0); // Change our graphics mode to 640x480
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 
 	/* This bitmap is for double buffering. This is covered in a previous tutorial.
 	 * However, this time, we do error checking - just to make sure the buffer was
 	 * actually created properly. This is something you'll always want to do, since
 	 * you can output an error and let the user know what didn't work!
 	 */
+<<<<<<< HEAD
 	BITMAP *buffer = create_bitmap(640,480); // Create a buffer for smooth animation.
+=======
+	BITMAP *buffer = create_bitmap (640,480); // Create a buffer for smooth animation.
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 
 	/* We do a little test here to see if the bitmap was created. If the pointer is
 	 * NULL after calling create_bitmap, then that means it's not pointing to anything,
 	 * thus the create_bitmap did not work.
 	 */
+<<<<<<< HEAD
 	if(buffer == NULL)
 	{
 		/* Here's some new stuff. This sets up allegro to go into a text only mode.
 		 * This ensures that the message you want to display will be shown on any platform.
 		 */
 		set_gfx_mode(GFX_TEXT,0,0,0,0);
+=======
+	if (buffer == NULL) {
+		/* Here's some new stuff. This sets up allegro to go into a text only mode.
+		 * This ensures that the message you want to display will be shown on any platform.
+		 */
+		set_gfx_mode (GFX_TEXT,0,0,0,0);
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 
 		/* This is a new function. It's called allegro_message. Obviously enough,
 		 * it outputs a message.
 		 */
+<<<<<<< HEAD
 		allegro_message("Error: Could not create buffer!");
+=======
+		allegro_message ("Error: Could not create buffer!");
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 
 		/* This function simply will stop the program since the buffer could not
 		 * be created we do not want to continue.
 		 */
 
+<<<<<<< HEAD
 		exit(EXIT_FAILURE);
+=======
+		exit (EXIT_FAILURE);
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 	}
 
 	/* Here we load the two bitmap images which we want to test collision for.
@@ -89,6 +117,7 @@ int main(int argc, char *argv[])
 	 * and exit. This is important. If your images can't load, when you try to
 	 * blit them, your program will crash. Safely exiting is the better choice, by far!
 	 */
+<<<<<<< HEAD
 	BITMAP *image1 = load_bitmap("picture 2.bmp", NULL);//Load image 1
 	if(image1 == NULL)
 	{
@@ -103,6 +132,20 @@ int main(int argc, char *argv[])
 		set_gfx_mode(GFX_TEXT,0,0,0,0); //Set the screen mode for allegro messages
 		allegro_message("Error: Could not load image2.bmp");
 		exit(EXIT_FAILURE);
+=======
+	BITMAP *image1 = load_bitmap ("picture.bmp", NULL); //Load image 1
+	if (image1 == NULL) {
+		set_gfx_mode (GFX_TEXT,0,0,0,0); //Set the screen mode for allegro messages
+		allegro_message ("Error: Could not load image1.bmp");
+		exit (EXIT_FAILURE);
+	}
+
+	BITMAP *image2 = load_bitmap ("picture2.bmp", NULL); //Load image 2
+	if (image2 == NULL) {
+		set_gfx_mode (GFX_TEXT,0,0,0,0); //Set the screen mode for allegro messages
+		allegro_message ("Error: Could not load image2.bmp");
+		exit (EXIT_FAILURE);
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 	}
 
 	/* Next we're going to do a bit of variable declaring. First off, we're going
@@ -174,10 +217,15 @@ int main(int argc, char *argv[])
 	/* Okay, now that we've set up all our variables, we need to make our loop. You've
 	 * seen this before; it should be familiar.
 	 */
+<<<<<<< HEAD
 	while(!key[KEY_ESC]) // Keep going until we hit escape.
 	{
 		while(speed_counter > 0) // Do the logic loop while the speed counter is > 0.
 		{
+=======
+	while (!key[KEY_ESC]) { // Keep going until we hit escape.
+		while (speed_counter > 0) { // Do the logic loop while the speed counter is > 0.
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 			/* Things get a little tricky in here. We want to be able to move both images.
 			 * The controls are described at the beginning of this lesson. Lets make some
 			 * statements to take care of moving the images.
@@ -187,39 +235,58 @@ int main(int argc, char *argv[])
 			 */
 
 			/* Key checks for image1 */
-			if(key[KEY_LEFT])
+			if (key[KEY_LEFT])
 				image1_x_position --; //Move image 1 left.
 
+<<<<<<< HEAD
 			if(key[KEY_RIGHT])
 				image1_x_position ++; //Move image 1 right.
 
 			if(key[KEY_DOWN])
+=======
+			if (key[KEY_RIGHT])
+				image1_x_position ++; //Move image 1 right.
+
+			if (key[KEY_DOWN])
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 				image1_y_position ++; //Move image 1 down.
 
-			if(key[KEY_UP])
+			if (key[KEY_UP])
 				image1_y_position --; //Move image 1 up.
 
 			/* Key checks for image2 */
-			if(key[KEY_A])
+			if (key[KEY_A])
 				image2_x_position --; //Move image 2 left.
 
+<<<<<<< HEAD
 			if(key[KEY_D])
+=======
+			if (key[KEY_D])
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 				image2_x_position ++; //Move image 2 right.
 
-			if(key[KEY_S])
+			if (key[KEY_S])
 				image2_y_position ++; //Move image 2 down.
 
-			if(key[KEY_W])
+			if (key[KEY_W])
 				image2_y_position --; //Move image 2 up.
 
 			/* Here's where we use show_bbox.
+<<<<<<< HEAD
              * If the space key is held down, it will show. Otherwise, it wont.
+=======
+			 * If the space key is held down, it will show. Otherwise, it wont.
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 			 * This only works when the space key is held down.
 			 */
-			if(key[KEY_SPACE])
+			if (key[KEY_SPACE])
 				show_bbox = TRUE;
 
+<<<<<<< HEAD
 			else if(!key[KEY_SPACE])
+=======
+			else if (!key[KEY_SPACE])
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 				show_bbox = FALSE;
 
 			/* Things get a little tricky here. Since the player can move the images,
@@ -256,24 +323,18 @@ int main(int argc, char *argv[])
 			 *
 			 * The same logic follows for the other three side comparisons
 			 */
+
 			collision = TRUE; // Assume that there is no collision
 
 			// NOTE: This could easily be concatenated into one big if statement across
 			//	 four 'or' clauses -- but it's split up this way for easy reading
-			if(image1_bb_bottom < image2_bb_top)
-			{
+			if (image1_bb_bottom < image2_bb_top) {
 				collision = FALSE;
-			}
-			else if(image1_bb_top > image2_bb_bottom)
-			{
+			} else if (image1_bb_top > image2_bb_bottom) {
 				collision = FALSE;
-			}
-			else if(image1_bb_right < image2_bb_left)
-			{
+			} else if (image1_bb_right < image2_bb_left) {
 				collision = FALSE;
-			}
-			else if(image1_bb_left > image2_bb_right)
-			{
+			} else if (image1_bb_left > image2_bb_right) {
 				collision = FALSE;
 			}
 
@@ -281,12 +342,11 @@ int main(int argc, char *argv[])
 		} // This is the closing bracket to the (speed_counter > 0) test.
 
 		/* Time for the drawing stuff! */
-		draw_sprite(buffer, image1, image1_x_position, image1_y_position); //Draw image1
-		draw_sprite(buffer, image2, image2_x_position, image2_y_position); //Draw image2
+		draw_sprite (buffer, image1, image1_x_position, image1_y_position); //Draw image1
+		draw_sprite (buffer, image2, image2_x_position, image2_y_position); //Draw image2
 
 		/* Here we do the drawing of the bounding box if the player is hitting space. */
-		if(show_bbox == TRUE)
-		{
+		if (show_bbox == TRUE) {
 			/* This uses the simple line drawing function of allegro.
 			 * It should be quite self explanitory.
 			 *
@@ -306,39 +366,50 @@ int main(int argc, char *argv[])
 			 */
 
 			/* Draw image1's bounding box. */
-			line(buffer, image1_bb_left, image1_bb_top, image1_bb_right, image1_bb_top, makecol(255,0,0));
-			line(buffer, image1_bb_left, image1_bb_bottom, image1_bb_right, image1_bb_bottom, makecol(255,0,0));
-			line(buffer, image1_bb_left, image1_bb_top, image1_bb_left, image1_bb_bottom, makecol(255,0,0));
-			line(buffer, image1_bb_right, image1_bb_top, image1_bb_right, image1_bb_bottom, makecol(255,0,0));
+			line (buffer, image1_bb_left, image1_bb_top, image1_bb_right, image1_bb_top, makecol (255,0,0) );
+			line (buffer, image1_bb_left, image1_bb_bottom, image1_bb_right, image1_bb_bottom, makecol (255,0,0) );
+			line (buffer, image1_bb_left, image1_bb_top, image1_bb_left, image1_bb_bottom, makecol (255,0,0) );
+			line (buffer, image1_bb_right, image1_bb_top, image1_bb_right, image1_bb_bottom, makecol (255,0,0) );
 
 			/* Draw image2's bounding box. */
+<<<<<<< HEAD
 			line(buffer, image2_bb_left, image2_bb_top, image2_bb_right, image2_bb_top, makecol(255,0,0));
 			line(buffer, image2_bb_left, image2_bb_bottom, image2_bb_right, image2_bb_bottom, makecol(255,0,0));
 			line(buffer, image2_bb_left, image2_bb_top, image2_bb_left, image2_bb_bottom, makecol(255,0,0));
 			line(buffer, image2_bb_right, image2_bb_top, image2_bb_right, image2_bb_bottom, makecol(255,0,0));
+=======
+			line (buffer, image2_bb_left, image2_bb_top, image2_bb_right, image2_bb_top, makecol (255,0,0) );
+			line (buffer, image2_bb_left, image2_bb_bottom, image2_bb_right, image2_bb_bottom, makecol (255,0,0) );
+			line (buffer, image2_bb_left, image2_bb_top, image2_bb_left, image2_bb_bottom, makecol (255,0,0) );
+			line (buffer, image2_bb_right, image2_bb_top, image2_bb_right, image2_bb_bottom, makecol (255,0,0) );
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 
 		}	/* Just the closing bracket... */
 
 		/* Now, if there's a collision, we want to state it! */
+<<<<<<< HEAD
 		if(collision == TRUE)
 		{
+=======
+		if (collision == TRUE) {
+>>>>>>> c5958f3b6b238f52ab012985cf5a747373246873
 			/* This is the allegro text printing function. It prints text to the screen.
 			 * It's pretty self explanitory
 			 *
 			 * textprintf_ex(bitmap, font, x_pos, y_pos, color, transparency, "string", formatting stuff); It works just like C style printf.
 			 */
-			textprintf_ex(buffer, font, 0,0, makecol(255,255,255), -1, "Collision!");
+			textprintf_ex (buffer, font, 0,0, makecol (255,255,255), -1, "Collision!");
 		}
 
 		/* Do the normal blitting of the buffer. */
-		blit(buffer, screen, 0, 0, 0, 0, 640, 480); // Blit the buffer
-		clear(buffer); // Clear the buffer
+		blit (buffer, screen, 0, 0, 0, 0, 640, 480); // Blit the buffer
+		clear (buffer); // Clear the buffer
 	}
 
 	/* Destroy bitmaps and quit. */
-	destroy_bitmap(buffer);
-	destroy_bitmap(image1);
-	destroy_bitmap(image2);
+	destroy_bitmap (buffer);
+	destroy_bitmap (image1);
+	destroy_bitmap (image2);
 	return 0;
 }
 END_OF_MAIN()
