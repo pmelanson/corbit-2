@@ -25,7 +25,7 @@ int main (int argc, char *argv[]) {
 
     /* Declare a bitmap my_pic and load the picture into it. */
     BITMAP *my_pic = NULL; //Declare a BITMAP called my_pic
-    my_pic = load_bitmap ("picture.bmp", NULL); // Load our picture
+    my_pic = load_bitmap ("hab.bmp", NULL); // Load our picture
 
     /* Declare another bitmap. This will be our 'buffer'. */
     BITMAP *buffer = NULL; //Declare a BITMAP called buffer.
