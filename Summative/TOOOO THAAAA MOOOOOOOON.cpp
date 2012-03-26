@@ -18,6 +18,7 @@ Forces are as realistic as possible
 
 23/03/2012: Started program, we'll have some fun times with this yet
 24/03/2012: Added momentum physics with WASD keys, and bouncy collision detection off sides. Collision is a bit glitchy
+25/03/2012: Added turning physics, looked at http://www.helixsoft.nl/articles/circle/sincos.htm <--- SO COOL
 
 
 
@@ -29,28 +30,76 @@ Forces are as realistic as possible
 using namespace std;
 
 //globals
+
+BITMAP *buffer = NULL;
 volatile long timer = 0;
-float Vx = 0;
-float Vy = 0;
-float accX = 0;
-float accY = 0;
-float x = 500;
-float y = 500;
-float angle = 0;
-float turnRate = 0;
+float Vx = 0;   //the circle's speed (m/s)
+float Vy = 0;   //''
+float accX = 0; //the circle's acceleration (m/s/s)
+float accY = 0; //''
+float x = 500;  //the center of the circle
+float y = 500;  //''
+fixed allegros = itofix (0);    //allegros = allegro degrees (256 in a circle)
+fixed turnRate = 0; //rate at which the hab turns
+float degrees = 0;  //normal degrees (360 in a circle)
 //float level = 0;
+
+struct ship {
+public:
+    float x;
+    float y;
+    float Vx;
+    float Vy;
+    float accX;
+    float accY;
+    fixed allegros;
+    fixed turnRate;
+    float degrees;
+    int radius;
+    void draw() {
+        circlefill (buffer, 50, 50, 50, makecol (255, 0, 0) );
+
+        circlefill (buffer, ship::x, ship::y, ship::radius, makecol (0, 255, 0) ); // Draw the ship to the buffer
+        line (buffer, ship::x, ship::y, //draws the 'engine'
+              fixtof (ship::x + ship::radius * fcos (ship::allegros) ) + ship::x,
+              fixtof (ship::y + ship::radius * fsin (ship::allegros) ) + ship::y,
+              makecol (255, 0, 0) );
+
+    }
+    END_OF_FUNCTION (ship::draw);
+};
 
 //declarations
 void timeStep();
+int move (float &iPos, float iAcceleration, float &V, int ScreenSize);
+void print (BITMAP buffer);
+
+ship hab;
+
+//void ship::draw () {
+//
+//    circlefill (buffer, 50, 50, 50, makecol (255, 0, 0) );
+//
+//    circlefill (buffer, ship::x, ship::y, ship::radius, makecol (0, 255, 0) ); // Draw the ship to the buffer
+//    line (buffer, ship::x, ship::y, //draws the 'engine'
+//          fixtof (ship::x + ship::radius * fcos (ship::allegros) ) + ship::x,
+//          fixtof (ship::y + ship::radius * fsin (ship::allegros) ) + ship::y,
+//          makecol (255, 0, 0) );
+//
+//}
+//END_OF_FUNCTION (ship::draw);
 
 int main (int argc, char *argv[]) {
+
     allegro_init();
     install_keyboard();
     set_color_depth (desktop_color_depth() );
     set_gfx_mode (GFX_AUTODETECT_WINDOWED, 1000, 800, 0, 0);
 
-    BITMAP *buffer = NULL;
     buffer = create_bitmap (1000, 800);
+
+//    BITMAP *hab = NULL;
+//    hab = load_bitmap ("hab.bmp", NULL);
 
     install_int_ex (timeStep, BPS_TO_TIMER (60) );
 
@@ -59,11 +108,13 @@ int main (int argc, char *argv[]) {
         while (timer > 0) {
 
 
-            if (key[KEY_RIGHT])
-                turnRate ++;
+            if (key[KEY_LEFT]) {
+                hab.allegros = (hab.allegros - itofix (1) ) & 0xFFFFFF;
+            }
 
-            if (key[KEY_LEFT])
-                turnRate --;
+            if (key[KEY_RIGHT]) {
+                hab.allegros = (hab.allegros + itofix (1) ) & 0xFFFFFF;
+            }
 
             if (key[KEY_W]) {
                 accY --;
@@ -87,31 +138,26 @@ int main (int argc, char *argv[]) {
                 accX ++;
             }
 
-
-            if (y <= 40 || y >= SCREEN_H - 40) {
-                Vy = -Vy + (0.1 * Vy);
-            } else
-                Vy += accY;
-
-            if (x <= 40 || x >= SCREEN_W - 40)
-                Vx = -Vx + (0.1 * Vx);
-            else
-                Vx += accX;
-
-
-            y += Vy;
-            x += Vx;
+            move (x, accX, Vx, SCREEN_W - 50);
+            move (y, accY, Vy, SCREEN_H - 50);
 
             timer--;
         }
 
+        accY = 0;
+        accX = 0;
 
-        circlefill (buffer, x, y, 40, (makecol (0, 255, 0) ) ); // Draw the picture to the buffer
+        textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "%d", fixtoi (allegros) * 360 / 256 );
+//        draw_sprite (hab, buffer, x, y);
+//        circlefill (buffer, x, y, 50, makecol (0, 255, 0) ); // Draw the picture to the buffer
+//        line (buffer, x, y, //draws the 'engine'
+//              fixtoi (x + 50 * fcos (allegros) ) + x,
+//              fixtoi (y + 50 * fsin (allegros) ) + y,
+//              makecol (255, 0, 0) );
+        hab.draw();
         draw_sprite (buffer, screen, 1000, 800); // Draw the buffer to the screen
         draw_sprite (screen, buffer, 0, 0);
         clear_bitmap (buffer); // Clear the contents of the buffer bitmap
-        accY = 0;
-        accX = 0;
 
     }
 
@@ -129,3 +175,23 @@ void timeStep() {
 
 }
 END_OF_FUNCTION (timeStep);
+
+int move (float &iPos, float iAcceleration, float &V, int ScreenSize) {
+
+    if (iPos <= 50 || iPos >= ScreenSize) {
+        V = - (0.5 * V);
+
+        if (iPos <= 50)
+            iPos = 51;
+        if (iPos >= ScreenSize)
+            iPos = ScreenSize - 1;
+    }
+
+    else {
+        V += iAcceleration;
+    }
+
+    iPos += V;
+
+}
+END_OF_FUNCTION (move);
