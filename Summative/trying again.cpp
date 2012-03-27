@@ -39,15 +39,15 @@ const fixed PI = ftofix (3.14159265);
 
 struct ship {
 
-    double accX; //the circle's acceleration (m/s/s)
-    double accY; //''
-    int Vx;   //the circle's speed (m/s)
-    int Vy;   //''
+    fixed accX; //the circle's acceleration (m/s/s)
+    fixed accY; //''
+    fixed Vx;   //the circle's speed (m/s)
+    fixed Vy;   //''
     fixed turnRate; //rate at which the hab turns
     int radius;
     int x;  //the center of the circle
     int y;  //''
-    double acc;
+    fixed acc;
     fixed allegros; //allegros = allegro degrees (256 in a circle)
     fixed radians;
     int degrees;  //normal degrees (360 in a circle)
@@ -95,9 +95,9 @@ int main (int argc, char *argv[]) {
             timer --;
         }
         hab.debug();
-        hab.acc = 0;
-        hab.accX = 0;
-        hab.accY = 0;
+//        hab.acc = 0;
+//        hab.accX = 0;
+//        hab.accY = 0;
 
         textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: degrees = %d", fixtoi (hab.allegros) * 360 / 256 );
         textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: allegros = %d", fixtoi (hab.allegros) );
@@ -171,17 +171,17 @@ END_OF_FUNCTION (timeStep);
 
 void ship::move() {
 
-    x -= Vx;
-    y -= Vy;
+    x += fixtoi(Vx);
+    y += fixtoi(Vy);
+
+    acc -= acc;
 }
 END_OF_FUNCTION (ship::move);
 
 void ship::accelerate() {
 
-    radians = (allegros) * ftofix (PI / 128);
-
-    accX = acc * cos (degrees);
-    accY = acc * sin (degrees);
+    accX = fcos (allegros);
+    accY = fsin (allegros);
 
     Vx += accX;
     Vy += accY;
@@ -191,9 +191,10 @@ END_OF_FUNCTION (ship::accelerate);
 void ship::debug() {
 
     textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: is working");
-    textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %d", acc);
-    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %d", accX);
-    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %d", accY);
-    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %d", Vx);
+    textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %f", fixtof(acc));
+    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", fixtof(accX));
+    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", fixtof(accY));
+    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", fixtof(Vx));
+    textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", fixtof(Vy));
 }
 END_OF_FUNCTION (ship::debug() );

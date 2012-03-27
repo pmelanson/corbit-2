@@ -31,7 +31,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="TOOOO THAAAA MOOOOOOOON.cpp" />
+		<Unit filename="trying again.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
