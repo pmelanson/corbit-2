@@ -35,34 +35,25 @@ int screenWidth = 800;
 int screenHeight = 800;
 BITMAP *buffer = NULL;
 volatile long timer = 1;
-int Vx = 0;   //the circle's speed (m/s)
-int Vy = 0;   //''
-int accX = 0; //the circle's acceleration (m/s/s)
-int accY = 0; //''
-int x = 500;  //the center of the circle
-int y = 500;  //''
-fixed allegros = itofix (0);    //allegros = allegro degrees (256 in a circle)
-fixed turnRate = itofix (0); //rate at which the hab turns
-int degrees = 0;  //normal degrees (360 in a circle)
+const fixed PI = ftofix (3.14159265);
 
 struct ship {
 
-    int accX; //the circle's acceleration (m/s/s)
-    int accY; //''
+    double accX; //the circle's acceleration (m/s/s)
+    double accY; //''
     int Vx;   //the circle's speed (m/s)
     int Vy;   //''
     fixed turnRate; //rate at which the hab turns
-    int degrees;  //normal degrees (360 in a circle)
     int radius;
-
-public:
-
     int x;  //the center of the circle
     int y;  //''
-    int acc;
+    double acc;
     fixed allegros; //allegros = allegro degrees (256 in a circle)
-
-
+    fixed radians;
+    int degrees;  //normal degrees (360 in a circle)
+    void move ();
+    void accelerate ();
+    void debug();
 
 };
 
@@ -70,7 +61,6 @@ ship hab;
 
 //declarations
 void timeStep();
-void move();
 void input();
 void drawHab ();
 void drawBuffer ();
@@ -85,22 +75,29 @@ int main (int argc, char *argv[]) {
     install_int_ex (timeStep, BPS_TO_TIMER (60) );
 
     //bitmap initializations
-    buffer = create_bitmap (1000, 800);
+    buffer = create_bitmap (screenWidth, screenHeight);
 
     //data initializations
     hab.x = screenWidth / 2;
     hab.y = screenHeight / 2;
     hab.radius = 50;
-
+//    hab.debug();
     while (!key[KEY_ESC]) {
 
         while (timer > 0) {
 
             input();
 
+
+//            hab.accelerate();
+            hab.move();
+
             timer --;
         }
-
+        hab.debug();
+        hab.acc = 0;
+        hab.accX = 0;
+        hab.accY = 0;
 
         textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: degrees = %d", fixtoi (hab.allegros) * 360 / 256 );
         textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: allegros = %d", fixtoi (hab.allegros) );
@@ -119,21 +116,6 @@ int main (int argc, char *argv[]) {
 END_OF_MAIN();
 
 
-
-
-
-
-
-
-
-
-
-void move () {
-
-
-}
-END_OF_FUNCTION (move);
-
 void input () {
 
     if (key[KEY_A]) {
@@ -145,12 +127,20 @@ void input () {
     }
 
     if (key[KEY_W]) {
-        hab.acc --;
+        hab.acc ++;
+        hab.accelerate();
     }
 
     if (key[KEY_S]) {
-        hab.acc ++;
+        hab.acc --;
+        hab.accelerate();
     }
+
+    if (key[KEY_UP])
+        hab.y --;
+
+    if (key[KEY_DOWN])
+        hab.accY = 5;
 
 }
 END_OF_FUNCTION (input);
@@ -176,6 +166,34 @@ END_OF_FUNCTION (drawBuffer);
 void timeStep() {
 
     timer++;
-
 }
 END_OF_FUNCTION (timeStep);
+
+void ship::move() {
+
+    x -= Vx;
+    y -= Vy;
+}
+END_OF_FUNCTION (ship::move);
+
+void ship::accelerate() {
+
+    radians = (allegros) * ftofix (PI / 128);
+
+    accX = acc * cos (degrees);
+    accY = acc * sin (degrees);
+
+    Vx += accX;
+    Vy += accY;
+}
+END_OF_FUNCTION (ship::accelerate);
+
+void ship::debug() {
+
+    textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: is working");
+    textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %d", acc);
+    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %d", accX);
+    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %d", accY);
+    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %d", Vx);
+}
+END_OF_FUNCTION (ship::debug() );
