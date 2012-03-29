@@ -1,9 +1,8 @@
-#include "check_thii2_2hiit_out.h"
+#include "check_thii2_2hiit_out.cpp"
 
-int main () {
+int main() {
 
-    DoTheFileThing();
+	DoTheFileThing();
 
-
-    return (0);
+	return (0);
 }
