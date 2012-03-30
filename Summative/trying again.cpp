@@ -28,6 +28,7 @@ Forces are as realistic as possible
 
 #include <allegro.h>
 #include <math.h>
+#include <stdlib.h>
 using namespace std;
 
 //globals
@@ -39,18 +40,17 @@ const fixed PI = ftofix (3.14159265);
 
 struct ship {
 
-    fixed accX; //the circle's acceleration (m/s/s)
-    fixed accY; //''
-    fixed Vx;   //the circle's speed (m/s)
-    fixed Vy;   //''
+    float accX; //the circle's acceleration (m/s/s)
+    float accY; //''
+    float Vx;   //the circle's speed (m/s)
+    float Vy;   //''
     fixed turnRate; //rate at which the hab turns
     int radius;
     int x;  //the center of the circle
     int y;  //''
-    fixed acc;
-    fixed allegros; //allegros = allegro degrees (256 in a circle)
-    fixed radians;
-    int degrees;  //normal degrees (360 in a circle)
+    float acc;
+    float radians();
+    float degrees;  //normal degrees (360 in a circle)
     void move ();
     void accelerate ();
     void debug();
@@ -99,8 +99,7 @@ int main (int argc, char *argv[]) {
 //        hab.accX = 0;
 //        hab.accY = 0;
 
-        textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: degrees = %d", fixtoi (hab.allegros) * 360 / 256 );
-        textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: allegros = %d", fixtoi (hab.allegros) );
+        textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: degrees = %f", hab.degrees);
 
 
         drawHab();
@@ -120,11 +119,15 @@ END_OF_MAIN();
 void input () {
 
     if (key[KEY_A]) {
-        hab.allegros = (hab.allegros - itofix (1) ) & 0xFFFFFF;
+        hab.degrees ++;
+        if (hab.degrees > 360)
+            hab.degrees -= 360;
     }
 
     if (key[KEY_D]) {
-        hab.allegros = (hab.allegros + itofix (1) ) & 0xFFFFFF;
+        hab.degrees --;
+        if (hab.degrees < 0)
+            hab.degrees += 360;
     }
 
     if (key[KEY_W]) {
@@ -150,8 +153,8 @@ void drawHab () {
 
     circlefill (buffer, hab.x, hab.y, hab.radius, makecol (0, 255, 0) ); // Draw the picture to the buffer
     line (buffer, hab.x, hab.y, //draws the 'engine'
-          fixtoi (hab.x + 50 * fcos (hab.allegros) ) + hab.x,
-          fixtoi (hab.y + 50 * fsin (hab.allegros) ) + hab.y,
+          hab.x + 50 * cos (hab.radians() ),
+          hab.y + 50 * sin (hab.radians() ),
           makecol (255, 0, 0) );
 }
 END_OF_FUNCTION (drawHab);
@@ -172,8 +175,8 @@ END_OF_FUNCTION (timeStep);
 
 void ship::move() {
 
-    x += fixtoi(Vx);
-    y += fixtoi(Vy);
+    x += Vx;
+    y += Vy;
 
     acc -= acc;
 }
@@ -181,8 +184,8 @@ END_OF_FUNCTION (ship::move);
 
 void ship::accelerate() {
 
-    accX = fcos (allegros);
-    accY = fsin (allegros);
+    accX = fixtof (fcos (degrees) );
+    accY = fixtof (fsin (degrees) );
 
     Vx += accX;
     Vy += accY;
@@ -192,10 +195,16 @@ END_OF_FUNCTION (ship::accelerate);
 void ship::debug() {
 
     textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: is working");
-    textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %f", fixtof(acc));
-    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", fixtof(accX));
-    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", fixtof(accY));
-    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", fixtof(Vx));
-    textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", fixtof(Vy));
+    textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %f", fixtof (acc) );
+    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", fixtof (accX) );
+    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", fixtof (accY) );
+    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", fixtof (Vx) );
+    textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", fixtof (Vy) );
 }
 END_OF_FUNCTION (ship::debug() );
+
+float ship::radians() {
+
+    return (degrees * PI / 180);
+
+}
