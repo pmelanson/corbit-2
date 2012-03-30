@@ -40,8 +40,8 @@ const float PI = 3.14159265;
 
 struct ship {
 
-	float accX; //the circle's acceleration (m/s/s)
-	float accY; //''
+	float accX(); //the circle's acceleration (m/s/s)
+	float accY(); //''
 	float Vx;   //the circle's speed (m/s)
 	float Vy;   //''
 	float turnRate; //rate at which the hab turns
@@ -59,6 +59,12 @@ struct ship {
 
 float ship::radians() {
 	return (degrees * PI / 180);
+}
+float ship::accX() {
+	return ( cos (radians() ) * acc);
+}
+float ship::accY() {
+	return ( sin (radians() ) * acc);
 }
 
 ship hab;
@@ -92,20 +98,14 @@ int main (int argc, char *argv[]) {
 
 			input();
 
+//			hab.accelerate();
 
-//            hab.accelerate();
 			hab.move();
 
 			timer --;
 		}
 
 		hab.debug();
-//        hab.acc = 0;
-//        hab.accX = 0;
-//        hab.accY = 0;
-
-		textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: degrees = %d", hab.degrees );
-
 
 		drawHab();
 
@@ -138,20 +138,14 @@ void input () {
 	}
 
 	if (key[KEY_W]) {
-		hab.accY ++;
+		hab.acc += 0.1;
 		hab.accelerate();
 	}
 
 	if (key[KEY_S]) {
-		hab.accY --;
+		hab.acc -= 0.1;
 		hab.accelerate();
 	}
-
-	if (key[KEY_UP])
-		hab.y --;
-
-	if (key[KEY_DOWN])
-		hab.accY = 5;
 
 }
 END_OF_FUNCTION (input);
@@ -182,29 +176,34 @@ END_OF_FUNCTION (timeStep);
 
 void ship::move() {
 
+    if (x - hab.radius < 0 - Vx || x + hab.radius > screenWidth - Vx)
+        Vx = -Vx + (0.8 * Vx);
+
+    if (y - hab.radius < 0 - Vy || y + hab.radius > screenHeight - Vy)
+        Vy = -Vy + (0.8 * Vy);
+
 	x += Vx;
 	y += Vy;
-
-	acc = 0;
 }
 END_OF_FUNCTION (ship::move);
 
 void ship::accelerate() {
 
-	accX = cos (radians() );
-	accY = sin (radians() );
+	Vx += accX();
+	Vy += accY();
 
-	Vx += accX;
-	Vy += accY;
+	acc = 0;
 }
 END_OF_FUNCTION (ship::accelerate);
 
 void ship::debug() {
 
-	textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: is working");
+	textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: is working");
+	textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: degrees = %d", degrees );
+	textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: radians = %f", radians() );
 	textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %f", acc);
-	textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", accX);
-	textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", accY);
+	textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", accX() );
+	textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", accY() );
 	textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", Vx);
 	textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", Vy);
 }
