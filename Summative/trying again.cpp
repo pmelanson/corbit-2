@@ -40,6 +40,7 @@ const fixed PI = ftofix (3.14159265);
 
 struct ship {
 
+<<<<<<< HEAD
     float accX; //the circle's acceleration (m/s/s)
     float accY; //''
     float Vx;   //the circle's speed (m/s)
@@ -57,6 +58,35 @@ struct ship {
 
 };
 
+=======
+	float accX(); //the circle's acceleration (m/s/s)
+	float accY(); //''
+	float Vx;   //the circle's speed (m/s)
+	float Vy;   //''
+	float turnRate; //rate at which the hab turns
+	int radius;
+	float x;  //the center of the circle
+	float y;  //''
+	float acc;
+	float radians();
+	int degrees;  //normal degrees (360 in a circle)
+	void move ();
+	void accelerate ();
+	void debug();
+
+};
+
+float ship::radians() {
+	return (degrees * PI / 180);
+}
+float ship::accX() {
+	return ( cos (radians() ) * acc);
+}
+float ship::accY() {
+	return ( sin (radians() ) * acc);
+}
+
+>>>>>>> 26c94e0219fe9ec07df82e45a3be9d04fa3ed60d
 ship hab;
 
 //declarations
@@ -88,7 +118,9 @@ int main (int argc, char *argv[]) {
 
             input();
 
+//			hab.accelerate();
 
+<<<<<<< HEAD
 //            hab.accelerate();
             hab.move();
 
@@ -101,6 +133,14 @@ int main (int argc, char *argv[]) {
 
         textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: degrees = %f", hab.degrees);
 
+=======
+			hab.move();
+
+			timer --;
+		}
+
+		hab.debug();
+>>>>>>> 26c94e0219fe9ec07df82e45a3be9d04fa3ed60d
 
         drawHab();
 
@@ -135,6 +175,7 @@ void input () {
         hab.accelerate();
     }
 
+<<<<<<< HEAD
     if (key[KEY_S]) {
         hab.acc --;
         hab.accelerate();
@@ -146,6 +187,18 @@ void input () {
     if (key[KEY_DOWN])
         hab.accY = 5;
 
+=======
+	if (key[KEY_W]) {
+		hab.acc += 0.1;
+		hab.accelerate();
+	}
+
+	if (key[KEY_S]) {
+		hab.acc -= 0.1;
+		hab.accelerate();
+	}
+
+>>>>>>> 26c94e0219fe9ec07df82e45a3be9d04fa3ed60d
 }
 END_OF_FUNCTION (input);
 
@@ -175,31 +228,60 @@ END_OF_FUNCTION (timeStep);
 
 void ship::move() {
 
+<<<<<<< HEAD
     x += Vx;
     y += Vy;
 
     acc -= acc;
+=======
+    if (x - hab.radius < 0 - Vx || x + hab.radius > screenWidth - Vx)
+        Vx = -Vx + (0.8 * Vx);
+
+    if (y - hab.radius < 0 - Vy || y + hab.radius > screenHeight - Vy)
+        Vy = -Vy + (0.8 * Vy);
+
+	x += Vx;
+	y += Vy;
+>>>>>>> 26c94e0219fe9ec07df82e45a3be9d04fa3ed60d
 }
 END_OF_FUNCTION (ship::move);
 
 void ship::accelerate() {
 
+<<<<<<< HEAD
     accX = fixtof (fcos (degrees) );
     accY = fixtof (fsin (degrees) );
 
     Vx += accX;
     Vy += accY;
+=======
+	Vx += accX();
+	Vy += accY();
+
+	acc = 0;
+>>>>>>> 26c94e0219fe9ec07df82e45a3be9d04fa3ed60d
 }
 END_OF_FUNCTION (ship::accelerate);
 
 void ship::debug() {
 
+<<<<<<< HEAD
     textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: is working");
     textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %f", fixtof (acc) );
     textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", fixtof (accX) );
     textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", fixtof (accY) );
     textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", fixtof (Vx) );
     textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", fixtof (Vy) );
+=======
+	textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: is working");
+	textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: degrees = %d", degrees );
+	textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: radians = %f", radians() );
+	textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %f", acc);
+	textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", accX() );
+	textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", accY() );
+	textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", Vx);
+	textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", Vy);
+>>>>>>> 26c94e0219fe9ec07df82e45a3be9d04fa3ed60d
 }
 END_OF_FUNCTION (ship::debug() );
 

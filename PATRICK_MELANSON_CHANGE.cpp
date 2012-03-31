@@ -20,8 +20,8 @@ int main() {
 	cin >> money;
 	cout << "You have " << quarters (money) << " quarters, ";
 	cout << dimes (money) << " dimes, ";
-	cout << nickels (money) << " nickels, and ";
-	cout << money << " pennies left." << endl;
+	cout << nickels (money) << " nickels, and you would have ";
+	cout << money << " pennies left, were the Canadian mint still going to make them." << endl;
 
 	system ("pause");
 	return (0);
