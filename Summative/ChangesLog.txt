@@ -1,0 +1,6 @@
+31 March 2012
+   Corbit v1.06.1:
+
+     Change log:
+        -Added: AutoVersioning support
+
