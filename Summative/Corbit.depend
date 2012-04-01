@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1333242623 source:c:\users\melanson\hax\summative\trying again.cpp
+	<allegro.h>
+	<math.h>
+	"version.h"
+
+1333242470 c:\users\melanson\hax\summative\version.h
+

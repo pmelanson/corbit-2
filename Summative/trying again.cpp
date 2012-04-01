@@ -39,27 +39,32 @@ const float PI = 3.14159265;
 
 struct ship {
 
-    float accX(); //the circle's acceleration (m/s/s)
-    float accY(); //''
+    float acc;
+    float accX (float acc); //the circle's acceleration (m/s/s)
+    float accY (float acc); //''
+    float x;  //the center of the circle
+    float y;  //''
+    float radians();
+    int radius;
+    void move ();
+    void accelerate ();
+    void turn ();
+    void debug();
+    void draw();
+
+//private:
     float Vx;   //the circle's speed (m/s)
     float Vy;   //''
     float turnRate; //rate at which the hab turns
-    int radius;
-    float x;  //the center of the circle
-    float y;  //''
-    float acc;
-    float radians();
     float degrees;  //normal degrees (360 in a circle)
-    void move ();
-    void accelerate ();
-    void debug();
-    void draw();
 
 };
 
 ship hab;
 
-//declarationshab.degrees = 360 + hab.degrees;
+
+
+//declarations
 void timeStep();
 void input();
 void drawHab ();
@@ -73,7 +78,6 @@ int main (int argc, char *argv[]) {
     set_color_depth (desktop_color_depth() );
     set_gfx_mode (GFX_AUTODETECT_WINDOWED, screenWidth, screenHeight, 0, 0);
     install_int_ex (timeStep, BPS_TO_TIMER (60) );
-    install_int_ex (input, BPS_TO_TIMER (10) );
 
     //bitmap initializations
     buffer = create_bitmap (screenWidth, screenHeight);
@@ -87,9 +91,9 @@ int main (int argc, char *argv[]) {
 
         while (timer > 0) {
 
-//            input();
+            input();
 
-//			hab.accelerate();
+			hab.accelerate();
 
             hab.move();
 
@@ -97,8 +101,6 @@ int main (int argc, char *argv[]) {
         }
 
         hab.debug();
-
-//        drawHab();
 
         hab.draw();
 
@@ -118,40 +120,23 @@ void input () {
 
     if (key[KEY_A]) {
         hab.turnRate -= 0.1;
-
-        if (hab.degrees < 0)
-            hab.degrees += 360;
     }
 
     if (key[KEY_D]) {
         hab.turnRate += 0.1;
-
-        if (hab.degrees > 360)
-            hab.degrees -= 360;
     }
 
     if (key[KEY_W]) {
         hab.acc += 0.1;
-        hab.accelerate();
+
     }
 
     if (key[KEY_S]) {
         hab.acc -= 0.1;
-        hab.accelerate();
     }
 
 }
 END_OF_FUNCTION (input);
-
-void drawHab () {
-
-    circlefill (buffer, hab.x, hab.y, hab.radius, makecol (0, 255, 0) ); // Draw the picture to the buffer
-    line (buffer, hab.x, hab.y, //draws the 'engine'
-          hab.x + hab.radius * cos (hab.radians() ),
-          hab.y + hab.radius * sin (hab.radians() ),
-          makecol (255, 0, 0) );
-}
-END_OF_FUNCTION (drawHab);
 
 void drawBuffer () {
 
@@ -173,6 +158,12 @@ void ship::move() {
 
     degrees += turnRate;
 
+    if (hab.degrees < 0)
+        hab.degrees += 360;
+
+    if (hab.degrees > 360)
+        hab.degrees -= 360;
+
     if (x - hab.radius < 0 - Vx || x + hab.radius > screenWidth - Vx)
         Vx = -Vx + (0.8 * Vx);
 
@@ -186,8 +177,8 @@ END_OF_FUNCTION (ship::move);
 
 void ship::accelerate() {
 
-    Vx += accX();
-    Vy += accY();
+    Vx += accX(acc);
+    Vy += accY(acc);
 
     acc = 0;
 }
@@ -199,20 +190,20 @@ void ship::debug() {
     textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: degrees = %d", degrees );
     textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: radians = %f", radians() );
     textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %f", acc);
-    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", accX() );
-    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", accY() );
+    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", accX(acc) );
+    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", accY(acc) );
     textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", Vx);
     textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", Vy);
 }
-END_OF_FUNCTION (ship::debug() );
+END_OF_FUNCTION (ship::debug);
 
 float ship::radians() {
     return (degrees * PI / 180);
 }
-float ship::accX() {
+float ship::accX (float acc) {
     return ( cos (radians() ) * acc);
 }
-float ship::accY() {
+float ship::accY (float acc) {
     return ( sin (radians() ) * acc);
 }
 
@@ -224,4 +215,16 @@ void ship::draw() {
           y + radius * sin (radians() ),
           makecol (255, 0, 0) );
 
+}
+END_OF_FUNCTION(ship::draw)
+
+void ship::turn () {
+
+    degrees += turnRate;
+
+    if (hab.degrees < 0)
+        hab.degrees += 360;
+
+    if (hab.degrees > 360)
+        hab.degrees -= 360;
 }
