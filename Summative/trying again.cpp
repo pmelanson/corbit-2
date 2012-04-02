@@ -37,13 +37,24 @@ BITMAP *buffer = NULL;
 volatile long timer = 1;
 const float PI = 3.14159265;
 
+//struct body {
+//
+//    float acc;
+//    float accX (float acc);
+//    float accY (float acc);
+//    float x, y;
+//
+//
+//};
+
 struct ship {
 
+    int mass;   //mass of ship, to be used in calculation F=ma
     float acc;
     float accX (float acc); //the circle's acceleration (m/s/s)
     float accY (float acc); //''
-    float x;  //the center of the circle
-    float y;  //''
+    float engine;   //engine level of the ship
+    float x, y; //the center of the ship
     float radians();
     int radius;
     void move ();
@@ -51,10 +62,7 @@ struct ship {
     void turn ();
     void debug();
     void draw();
-
-//private:
-    float Vx;   //the circle's speed (m/s)
-    float Vy;   //''
+    float Vx, Vy;   //the circle's speed (m/s)
     float turnRate; //rate at which the hab turns
     float degrees;  //normal degrees (360 in a circle)
 
@@ -86,6 +94,7 @@ int main (int argc, char *argv[]) {
     hab.x = screenWidth / 2;
     hab.y = screenHeight / 2;
     hab.radius = 50;
+    hab.mass = 500;
 
     while (!key[KEY_ESC]) {
 
@@ -93,7 +102,7 @@ int main (int argc, char *argv[]) {
 
             input();
 
-			hab.accelerate();
+            hab.accelerate();
 
             hab.move();
 
@@ -127,12 +136,14 @@ void input () {
     }
 
     if (key[KEY_W]) {
-        hab.acc += 0.1;
+//        hab.acc += 0.1;
+        hab.engine += 0.5;
 
     }
 
     if (key[KEY_S]) {
-        hab.acc -= 0.1;
+//        hab.acc -= 0.1;
+        hab.engine -= 0.5;
     }
 
 }
@@ -172,26 +183,28 @@ void ship::move() {
 
     x += Vx;
     y += Vy;
+
+    acc = 0;
 }
 END_OF_FUNCTION (ship::move);
 
 void ship::accelerate() {
 
-    Vx += accX(acc);
-    Vy += accY(acc);
+    acc += engine / mass;
 
-    acc = 0;
+    Vx += accX (acc);
+    Vy += accY (acc);
 }
 END_OF_FUNCTION (ship::accelerate);
 
 void ship::debug() {
 
     textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: turnRate: %f", turnRate);
-    textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: degrees = %d", degrees );
+    textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: degrees = %f", degrees );
     textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: radians = %f", radians() );
     textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %f", acc);
-    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", accX(acc) );
-    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", accY(acc) );
+    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", accX (acc) );
+    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", accY (acc) );
     textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", Vx);
     textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", Vy);
 }
@@ -216,7 +229,7 @@ void ship::draw() {
           makecol (255, 0, 0) );
 
 }
-END_OF_FUNCTION(ship::draw)
+END_OF_FUNCTION (ship::draw)
 
 void ship::turn () {
 
