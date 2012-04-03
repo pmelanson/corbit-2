@@ -37,6 +37,12 @@ BITMAP *buffer = NULL;
 volatile long timer = 0;
 const float PI = 3.14159265;
 
+struct pilotable {
+
+	float engine;   //engine level of the ship
+
+};
+
 struct object {
 
 	int mass, radius;   //mass of object, to be used in calculation F=ma, and radius of object
@@ -56,42 +62,13 @@ struct object {
 
 	void debug();   //prints debug information for object
 	void draw();    //draws object
+	void clearValues();
 
-	struct ship {
-
-		float engine;   //engine level of the ship
-		float x, y; //the center of the ship
-		void move ();
-		void accelerate ();
-		void turn ();
-		void debug();
-		void draw();
-		void clearValues();
-		float Vx, Vy;   //the circle's speed (m/s)
-		float turnRate; //rate at which the hab turns
-		float degrees;  //normal degrees (360 in a circle)
-
-	};
+	struct pilotable ship;
 
 };
 
-//struct body {
-//
-//	float acc;
-//	float accX (float acc);
-//	float accY (float acc);
-//	float x, y;
-//	int mass, radius;
-//
-//
-//
-//};
-
-
-
-ship hab;
-
-
+object hab;
 
 //declarations
 void timeStep();
@@ -160,20 +137,20 @@ void input () {
 
 	if (key[KEY_W]) {
 //        hab.acc += 0.1;
-		hab.engine += 0.5;
+		hab.ship.engine += 0.5;
 
 	}
 
 	if (key[KEY_S]) {
 //        hab.acc -= 0.1;
-		hab.engine -= 0.5;
+		hab.ship.engine -= 0.5;
 	}
 
 	if (key[KEY_BACKSPACE]) {
 		if (key[KEY_LSHIFT])
 			hab.turnRate = 0;
 		else
-			hab.engine = 0;
+			hab.ship.engine = 0;
 	}
 
 
@@ -196,7 +173,7 @@ void timeStep() {
 }
 END_OF_FUNCTION (timeStep);
 
-void ship::move() {
+void object::move() {
 
 	degrees += turnRate;
 
@@ -217,24 +194,24 @@ void ship::move() {
 
 	debug();
 
-	acc = 0;
+	hab.acc = 0;
 }
 END_OF_FUNCTION (ship::move);
 
-void ship::accelerate() {
+void object::accelerate() {
 
-	acc += engine / mass;   //a = F / m (F=ma)
+	hab.acc += hab.ship.engine / hab.mass;   //a = F / m (F=ma)
 
-	Vx += accX (acc);
-	Vy += accY (acc);
+	hab.Vx += hab.accX (hab.acc);
+	hab.Vy += hab.accY (hab.acc);
 }
 END_OF_FUNCTION (ship::accelerate);
 
-void ship::debug() {
+void object::debug() {
 
 	textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: turnRate: %f", turnRate);
 	textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: degrees = %f", degrees );
-	textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: engines = %f", engine );
+	textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: engines = %f", ship.engine );
 	textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: acc: %f", acc);
 	textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: accX: %f", accX (acc) );
 	textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: accY: %f", accY (acc) );
@@ -243,17 +220,17 @@ void ship::debug() {
 }
 END_OF_FUNCTION (ship::debug);
 
-float ship::radians() {
-	return (degrees * PI / 180);
+float object::radians() {
+	return (hab.degrees * PI / 180);
 }
-float ship::accX (float acc) {
-	return ( cos (radians() ) * acc);
+float object::accX (float acc) {
+	return ( cos (hab.radians() ) * hab.acc);
 }
-float ship::accY (float acc) {
-	return ( sin (radians() ) * acc);
+float object::accY (float acc) {
+	return ( sin (hab.radians() ) * hab.acc);
 }
 
-void ship::draw() {
+void object::draw() {
 
 	circlefill (buffer, x, y, radius, makecol (0, 255, 0) ); // Draw the picture to the buffer
 	line (buffer, x, y, //draws the 'engine'
@@ -264,7 +241,7 @@ void ship::draw() {
 }
 END_OF_FUNCTION (ship::draw)
 
-void ship::turn () {
+void object::turn () {
 
 	degrees += turnRate;
 
@@ -275,8 +252,8 @@ void ship::turn () {
 		hab.degrees -= 360;
 }
 
-void ship::clearValues() {
+void object::clearValues() {
 
-	acc = 0;
+	hab.acc = 0;
 
 }
