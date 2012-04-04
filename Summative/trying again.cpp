@@ -37,13 +37,20 @@ BITMAP *buffer = NULL;
 volatile long timer = 0;
 const float PI = 3.14159265;
 
-struct pilotable {
+struct pilotable {  //refers to data in relation to objects that are pilotable (e.g. engine level, fuel left, etc.)
 
 	float engine;   //engine level of the ship
 
 };
 
-struct object {
+struct body {   //stores
+
+    int atmosphereHeight;
+    int atmosphereDrag;
+
+};
+
+struct object { //stores data about any physical object, such as mass and radius, acceleration, velocity, and angle from right
 
 	int mass, radius;   //mass of object, to be used in calculation F=ma, and radius of object
 	float x, y; //the center of the object
@@ -65,10 +72,12 @@ struct object {
 	void clearValues();
 
 	struct pilotable ship;
+	struct body planet;
 
 };
 
-object hab;
+object hab; //the default ship, the Hawking III Habitat
+object earth;   //good old earth. What would we ever do without you?
 
 //declarations
 void timeStep();
@@ -89,10 +98,16 @@ int main (int argc, char *argv[]) {
 	buffer = create_bitmap (screenWidth, screenHeight);
 
 	//data initializations
+
+	earth.x = screenWidth / 2;
+	earth.y = screenHeight / 2;
+	earth.radius = 80;
+	earth.mass = 1;
+
 	hab.x = screenWidth / 2;
 	hab.y = screenHeight / 2;
 	hab.radius = 50;
-	hab.mass = 500;
+	hab.mass = 20000;
 
 	while (!key[KEY_ESC]) {
 
@@ -137,13 +152,13 @@ void input () {
 
 	if (key[KEY_W]) {
 //        hab.acc += 0.1;
-		hab.ship.engine += 0.5;
+		hab.ship.engine ++;
 
 	}
 
 	if (key[KEY_S]) {
 //        hab.acc -= 0.1;
-		hab.ship.engine -= 0.5;
+		hab.ship.engine --;
 	}
 
 	if (key[KEY_BACKSPACE]) {
@@ -152,6 +167,9 @@ void input () {
 		else
 			hab.ship.engine = 0;
 	}
+
+	if (key[KEY_ENTER])
+        hab.ship.engine = 100;
 
 
 }
