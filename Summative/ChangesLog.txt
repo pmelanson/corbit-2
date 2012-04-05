@@ -1,3 +1,9 @@
+04 April 2012
+   Corbit v1.034.6:
+
+     Change log:
+        -Cleaned: made ship inherit from object class, neater yay!
+
 03 April 2012
    Corbit v1.028.5:
 
