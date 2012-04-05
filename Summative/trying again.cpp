@@ -151,13 +151,11 @@ void input () {
 	}
 
 	if (key[KEY_W]) {
-//        hab.acc += 0.1;
 		hab.ship.engine ++;
 
 	}
 
 	if (key[KEY_S]) {
-//        hab.acc -= 0.1;
 		hab.ship.engine --;
 	}
 
