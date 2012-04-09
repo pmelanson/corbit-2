@@ -282,7 +282,7 @@ void debug() {
     textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", craft[HAB].Vx);
     textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", craft[HAB].Vy);
     textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: G: %e", G);
-    textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: arc tan: %f", atan2 (craft[HAB].x - planet[EARTH].x, craft[HAB].y - planet[EARTH].y) );
+    textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: arc tan: %f", atan2 (craft[HAB].x - planet[EARTH].x, craft[HAB].y - planet[EARTH].y) + PI * 0.5 );
     textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %f", pow (zoomMagnitude, camera.zoom) );
     textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: Camera zoom: %f", camera.zoom);
     textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: Earth's gravity: %e", planet[EARTH].gravity);
@@ -371,11 +371,11 @@ float entity::b() {
 void entity::gravitate() {
 
     float theta = atan2f (x - planet[EARTH].x, y - planet[EARTH].y);
-    float gravity = - G * ( (mass * planet[EARTH].mass) / (distance (planet[EARTH].x, planet[EARTH].y) * planet[EARTH].x, planet[EARTH].y) );
-    theta = 0;
+    float gravity = G * ( (mass * planet[EARTH].mass) / (distance (planet[EARTH].x, planet[EARTH].y) * planet[EARTH].x, planet[EARTH].y) );
+    theta += PI * 0.5;
 
     accX (theta, gravity);
-    accY (theta, gravity);
+    accY (-theta, gravity);
 }
 
 float entity::distance (float targetX, float targetY) {
