@@ -371,12 +371,11 @@ float entity::b() {
 void entity::gravitate() {
 
     float theta = atan2f (x - planet[EARTH].x, y - planet[EARTH].y);
+    float gravity = - G * ( (mass * planet[EARTH].mass) / (distance (planet[EARTH].x, planet[EARTH].y) * planet[EARTH].x, planet[EARTH].y) );
     theta = 0;
 
-    accX (theta, - G * ( (mass * planet[EARTH].mass) / (distance (planet[EARTH].x, planet[EARTH].y) * planet[EARTH].x, planet[EARTH].y) ) );
-    accY (theta, - G * ( (mass * planet[EARTH].mass) / (distance (planet[EARTH].x, planet[EARTH].y) * planet[EARTH].x, planet[EARTH].y) ) );
-
-//    accX (theta, -5000000);
+    accX (theta, gravity);
+    accY (theta, gravity);
 }
 
 float entity::distance (float targetX, float targetY) {
