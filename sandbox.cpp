@@ -17,11 +17,24 @@ int pointers() {
 
 int enumerate() {
 
+    int n;
+
     enum card {ACE = 1, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, JOKER};
 
     card outCard = QUEEN;
 
     cout << outCard << endl;
+
+    enum zoom {LOW = 1, MED = 5, HIGH = 15};
+
+    zoom level;
+
+    level = LOW;
+
+    for (n = 0; n < 3; n++) {
+        cout << "level " << n << ": " << level << endl;
+        level;
+    }
 
     return (0);
 }
@@ -50,7 +63,7 @@ int destruct() {
 int classes() {
 
     class entity {
-        public:
+    public:
         int mass;
         int size;
         float density (int mass, int size) {
@@ -66,7 +79,7 @@ int classes() {
     hab.mass = 500;
     hab.size = 800;
 
-    cout << hab.density(hab.mass, hab.size);
+    cout << hab.density (hab.mass, hab.size);
 
 }
 
