@@ -70,7 +70,7 @@ struct entity { //stores data about any physical entity, such as mass and radius
 
     double mass;
     unsigned int radius;   //mass of entity, to be used in calculation F=ma, and radius of entity
-    void gravitate(struct ship craft);
+    void gravitate (struct ship craft);
     float x, y; //the center of the entity
     float a();
     float b();
@@ -127,7 +127,7 @@ int main () {
     LOCK_VARIABLE (timer);
     LOCK_FUNCTION (timestep);
     install_int_ex (timeStep, BPS_TO_TIMER (frameRate) );
-//    install_int_ex (input, BPS_TO_TIMER (1) );
+//    install_int_ex (input, BPS_TO_TIMER (10) );
 
     //bitmap initializations
     buffer = create_bitmap (screenWidth, screenHeight);
@@ -155,7 +155,7 @@ int main () {
     craft[HAB].y = screenHeight / 2;
     craft[HAB].mass = 35000;
 
-    strcpy (planet[EARTH].name, "Earth");
+    strcpy (planet[MARS].name, "Mars");
     planet[MARS].x = 0;
     planet[MARS].y = 0;
     planet[MARS].radius = 200;
@@ -176,20 +176,20 @@ int main () {
 
 //            craft[HAB].turn();
 //            craft[HAB].fireEngine();
+//            craft[HAB].move();
 //            craft[HAB].gravitate();
             detectCollision();
-//            craft[HAB].move();
 //            planet[EARTH].move();
-            for (n = 0; n < PLANETMAX - 1; n++)
+            for (n = 0; n < PLANETMAX; n++)
                 planet[n].move();
-            for (n = 0; n < CRAFTMAX - 1; n++) {
+            for (n = 0; n < CRAFTMAX; n++) {
                 craft[n].turn();
                 craft[n].fireEngine();
                 craft[n].move();
             }
-//
-            for (n = 0; n < PLANETMAX - 1; n++)
-                for (i = 0; i < CRAFTMAX - 1; i++)
+
+            for (n = 0; n < PLANETMAX; n++)
+                for (i = 0; i < CRAFTMAX; i++)
                     planet[n].gravitate (craft[i]);
 
             timer--;
@@ -221,11 +221,11 @@ END_OF_MAIN();
 void input () {
 
     if (key[KEY_A]) {
-        craft[HAB].turnRate -= 0.1;
+        craft[HAB].turnRate -= 0.01 * PI / 180;
     }
 
     if (key[KEY_D]) {
-        craft[HAB].turnRate += 0.1;
+        craft[HAB].turnRate += 0.01 * PI / 180;
     }
 
     if (key[KEY_W]) {
@@ -309,8 +309,10 @@ void debug() {
     textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: arc tan: %f", atan2 (craft[HAB].x - planet[EARTH].x, craft[HAB].y - planet[EARTH].y) + PI * 0.5 );
     textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %f", pow (zoomMagnitude, camera.zoom) );
     textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: Camera zoom: %f", camera.zoom);
+    textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: turn Radians: %f", craft[HAB].turnRadians);
+    textprintf_ex (buffer, font, 0, 120, makecol (255, 255, 255), -1, "DEBUG: turn Degrees: %f", craft[HAB].turnRadians * 180 / PI);
+    textprintf_ex (buffer, font, 0, 130, makecol (255, 255, 255), -1, "DEBUG: turn Rate: %f", craft[HAB].turnRate);
 }
-END_OF_FUNCTION (entity::debug);
 
 float entity::degrees() {
 
@@ -351,7 +353,7 @@ void ship::draw() {
 
 void entity::turn () {
 
-    turnRadians += turnRate * PI / 180;
+    turnRadians += turnRate;
 
     if (turnRadians < 0)
         turnRadians += 2 * PI;
@@ -389,7 +391,7 @@ float entity::b() { //on-screen y position of entity
 void entity::gravitate (struct ship craft) { //calculates gravitational forces, and accelerates, between two entities
 
     float theta = atan2f (craft.y - y, craft.x - x);    //finds angle at which hab is from earth
-    float gravity = G * (craft.mass * mass) / (distance (x, y) * distance (x, y) ); //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
+    float gravity = G * (craft.mass * mass) / (distance (craft.x, craft.y) * distance (craft.x, craft.y) ); //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
 
     accX (theta, -gravity);
     accY (theta, -gravity);

@@ -1,4 +1,16 @@
 09 April 2012
+   Corbit v1.078.12:
+
+     Change log:
+        -Typo: fast hab turning speed, degree/radian conversion error
+
+09 April 2012
+   Corbit v1.073.11:
+
+     Change log:
+        -Typo: gravity arctan values calculate properly (it's y, x not x, y!)
+
+09 April 2012
    Corbit v1.064.10:
 
      Change log:
