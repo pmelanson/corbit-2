@@ -42,6 +42,7 @@ const float PI = 3.14159265;
 const double G = 6.673e-11;
 enum craft {HAB, CRAFTMAX};
 enum planet {MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLANETMAX};
+const unsigned short int frameRate = 60;
 
 
 //prototypes
@@ -69,8 +70,7 @@ struct entity { //stores data about any physical entity, such as mass and radius
 
     double mass;
     unsigned int radius;   //mass of entity, to be used in calculation F=ma, and radius of entity
-    long double gravity;  //G * mass of object
-    void gravitate();
+    void gravitate(struct ship craft);
     float x, y; //the center of the entity
     float a();
     float b();
@@ -90,8 +90,7 @@ struct entity { //stores data about any physical entity, such as mass and radius
     float degrees();  //normal degrees (360 in a circle) at which the entity is rotated from facing right
 
     void draw();    //draws entity
-    int fillColour;
-    void clearValues();
+    unsigned int fillColour;
 };
 
 struct ship : entity {  //stores information about a pilotable ship, in addition to information already stored by an entity
@@ -107,8 +106,8 @@ struct body : entity {   //stores information about an astronomical body, in add
 
     unsigned int atmosphereHeight;
     unsigned int atmosphereDrag;
-
     unsigned int atmosphereColour;
+
     void draw();
 };
 
@@ -127,12 +126,17 @@ int main () {
 
     LOCK_VARIABLE (timer);
     LOCK_FUNCTION (timestep);
-    install_int_ex (timeStep, BPS_TO_TIMER (60) );
+    install_int_ex (timeStep, BPS_TO_TIMER (frameRate) );
+//    install_int_ex (input, BPS_TO_TIMER (1) );
 
     //bitmap initializations
     buffer = create_bitmap (screenWidth, screenHeight);
 
     //data initializations
+
+    bool gravitated[CRAFTMAX-1][PLANETMAX-1] = {};
+    unsigned short int n = 0;
+    unsigned short int i = 0;
 
     strcpy (planet[EARTH].name, "Earth");
     planet[EARTH].x = screenWidth / 2;
@@ -142,7 +146,6 @@ int main () {
     planet[EARTH].fillColour = makecol (0, 255, 0);
     planet[EARTH].atmosphereColour = makecol (0, 0, 255);
     planet[EARTH].atmosphereHeight = 3;
-    planet[EARTH].gravity = planet[EARTH].mass * G;
 
     strcpy (craft[HAB].name, "Habitat");
     craft[HAB].fillColour = makecol (211, 211, 211);
@@ -151,6 +154,15 @@ int main () {
     craft[HAB].x = screenWidth / 2 + planet[EARTH].radius + craft[HAB].radius;
     craft[HAB].y = screenHeight / 2;
     craft[HAB].mass = 35000;
+
+    strcpy (planet[EARTH].name, "Earth");
+    planet[MARS].x = 0;
+    planet[MARS].y = 0;
+    planet[MARS].radius = 200;
+    planet[MARS].mass = 5.9742e8;
+    planet[MARS].fillColour = makecol (205, 164, 150);
+    planet[MARS].atmosphereColour = makecol (160, 40, 40);
+    planet[MARS].atmosphereHeight = 7;
 
     camera.zoom = pow (camera.actualZoom(), 1 / zoomMagnitude);
     camera.x = craft[HAB].x - (screenWidth / 4);
@@ -162,25 +174,40 @@ int main () {
 
             input();
 
-            craft[HAB].turn();
-            craft[HAB].fireEngine();
-            craft[HAB].gravitate();
+//            craft[HAB].turn();
+//            craft[HAB].fireEngine();
+//            craft[HAB].gravitate();
             detectCollision();
-            craft[HAB].move();
-
+//            craft[HAB].move();
+//            planet[EARTH].move();
+            for (n = 0; n < PLANETMAX - 1; n++)
+                planet[n].move();
+            for (n = 0; n < CRAFTMAX - 1; n++) {
+                craft[n].turn();
+                craft[n].fireEngine();
+                craft[n].move();
+            }
+//
+            for (n = 0; n < PLANETMAX - 1; n++)
+                for (i = 0; i < CRAFTMAX - 1; i++)
+                    planet[n].gravitate (craft[i]);
 
             timer--;
         }
 
         drawGrid();
+//        for (n = 0; n < PLANETMAX - 1; n++)
+//            planet[n].draw();
+//        for (n = 0; n < CRAFTMAX - 1; n++)
+//            craft[n].draw();
+
         planet[EARTH].draw();
         craft[HAB].draw();
-        craft[HAB].clearValues();
+        planet[MARS].draw();
 
         debug();
 
         drawBuffer();
-
 
     }
 
@@ -203,7 +230,6 @@ void input () {
 
     if (key[KEY_W]) {
         craft[HAB].engine ++;
-
     }
 
     if (key[KEY_S]) {
@@ -262,8 +288,6 @@ void entity::move() {
 
     x += Vx;
     y += Vy;
-
-    clearValues();
 }
 
 void ship::fireEngine() {
@@ -278,14 +302,13 @@ void debug() {
     textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: hab.y = %f", craft[HAB].y );
     textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: camera.x = %f", camera.x );
     textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: camera.y = %f", camera.y );
-    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: : %d", milliseconds);
-    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", craft[HAB].Vx);
-    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", craft[HAB].Vy);
-    textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: G: %e", G);
+    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", craft[HAB].Vx);
+    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", craft[HAB].Vy);
+    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Earth.Vx: %f", planet[EARTH].Vx);
+    textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Earth.Vy: %f", planet[EARTH].Vy);
     textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: arc tan: %f", atan2 (craft[HAB].x - planet[EARTH].x, craft[HAB].y - planet[EARTH].y) + PI * 0.5 );
     textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %f", pow (zoomMagnitude, camera.zoom) );
     textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: Camera zoom: %f", camera.zoom);
-    textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: Earth's gravity: %e", planet[EARTH].gravity);
 }
 END_OF_FUNCTION (entity::debug);
 
@@ -304,14 +327,14 @@ void entity::accY (float radians, float acc) {
 
 void entity::draw() {
 
-    circlefill (buffer, x - camera.x, y - camera.y, radius * camera.zoom, fillColour ); // Draw the entity to the buffer
+    circlefill (buffer, x - camera.x, y - camera.y, radius * camera.zoom, fillColour ); //draws the entity to the buffer
 }
 
 void body::draw() {
 
-    circlefill (buffer, a(), b(), radius * camera.actualZoom() + atmosphereHeight, atmosphereColour);
+    circlefill (buffer, a(), b(), radius * camera.actualZoom() + atmosphereHeight, atmosphereColour);   //draws the atmosphere to the buffer
 
-    circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour ); // Draw the entity to the buffer
+    circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour ); //draws the entity to the buffer
 }
 
 void ship::draw() {
@@ -319,7 +342,7 @@ void ship::draw() {
     float A = a();  //so that the program doesn't have to calculate a and b every time
     float B = b();
 
-    circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); // Draw the picture to the buffer
+    circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
     line (buffer, A, B, //draws the 'engine'
           A + radius * cos (turnRadians) * camera.actualZoom(),
           B + radius * sin (turnRadians) * camera.actualZoom(),
@@ -335,11 +358,6 @@ void entity::turn () {
 
     if (turnRadians > 2 * PI)
         turnRadians -= 2 * PI;
-}
-
-void entity::clearValues() {
-
-    acc = 0;
 }
 
 void detectCollision () {
@@ -358,32 +376,34 @@ float viewpoint::actualZoom() {
     return (pow (zoomMagnitude, zoom) );
 }
 
-float entity::a() {
+float entity::a() { //on-screen x position of entity
 
     return ( (x - camera.x) * camera.actualZoom() );
 }
 
-float entity::b() {
+float entity::b() { //on-screen y position of entity
 
     return ( (y - camera.y) * camera.actualZoom() );
 }
 
-void entity::gravitate() {
+void entity::gravitate (struct ship craft) { //calculates gravitational forces, and accelerates, between two entities
 
-    float theta = atan2f (x - planet[EARTH].x, y - planet[EARTH].y);
-    float gravity = G * ( (mass * planet[EARTH].mass) / (distance (planet[EARTH].x, planet[EARTH].y) * planet[EARTH].x, planet[EARTH].y) );
-    theta += PI * 0.5;
+    float theta = atan2f (craft.y - y, craft.x - x);    //finds angle at which hab is from earth
+    float gravity = G * (craft.mass * mass) / (distance (x, y) * distance (x, y) ); //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
 
-    accX (theta, gravity);
-    accY (-theta, gravity);
+    accX (theta, -gravity);
+    accY (theta, -gravity);
+
+    craft.accX (theta, gravity);
+    craft.accY (theta, gravity);
 }
 
-float entity::distance (float targetX, float targetY) {
+float entity::distance (float targetX, float targetY) { //finds distance from entity to target
 
     return (sqrtf ( ( (targetX - x) * (targetX - x) ) + ( (targetY - y) * (targetY - y) ) ) ); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
 
-void drawGrid () {
+void drawGrid () {  //draws a grid to the screen, later on I will be making gravity distort it
 
     unsigned int n;
 
@@ -392,6 +412,4 @@ void drawGrid () {
 
     for (n = 0; n < screenHeight * camera.actualZoom(); n++)
         line (buffer, 0, n * 20 * fabs (camera.zoom), screenWidth, n * 20 * fabs (camera.zoom), makecol (100, 100, 100) );
-
-
 }
