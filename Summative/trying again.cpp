@@ -112,8 +112,8 @@ struct body : entity {   //stores information about an astronomical body, in add
 };
 
 viewpoint camera;
-ship craft[CRAFTMAX - 1]; //all ships. Default ship is the Hab, the first one declared
-body planet[PLANETMAX - 1];    //all planets in our solar system, ordered in distance from sun. Earth is 3
+ship craft[CRAFTMAX]; //all ships. Default ship is the Hab, the first one declared
+body planet[PLANETMAX];    //all planets in our solar system, ordered in distance from sun. Earth is 3
 
 
 int main () {
