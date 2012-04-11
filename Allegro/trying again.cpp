@@ -27,11 +27,11 @@ See changelog.txt for changelog past 31/03/2012
 
 #include <allegro.h>
 #include <math.h>
-#include "version.h"
+//#include "version.h"
 
 //globals
-const int screenWidth = 1040;
-const int screenHeight = 820;
+const int screenWidth = 1240;
+const int screenHeight = 950;
 const float zoomMagnitude = 2;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.02; //rate at which cameras zoom out
 const double maxZoom = 20;
@@ -155,17 +155,14 @@ int main () {
 	craft[HAB].y = screenHeight / 2;
 	craft[HAB].mass = 35000;
 
-//	strcpy (planet[MARS].name, "Mars");
-//	planet[MARS].x = 0;
-//	planet[MARS].y = 0;
-//	planet[MARS].radius = 200;
-//	planet[MARS].mass = 5.9742e8;
-//	planet[MARS].fillColour = makecol (205, 164, 150);
-//	planet[MARS].atmosphereColour = makecol (160, 40, 40);
-//	planet[MARS].atmosphereHeight = 7;
-	planet[MARS] = planet[EARTH];
-	planet[MARS].x = 50;
-	planet[MARS].y = 50;
+	strcpy (planet[MARS].name, "Mars");
+	planet[MARS].x = 0;
+	planet[MARS].y = 0;
+	planet[MARS].radius = 200;
+	planet[MARS].mass = 5.9742e8;
+	planet[MARS].fillColour = makecol (205, 164, 150);
+	planet[MARS].atmosphereColour = makecol (160, 40, 40);
+	planet[MARS].atmosphereHeight = 7;
 
 	camera.zoom = pow (camera.actualZoom(), 1 / zoomMagnitude);
 	camera.x = craft[HAB].x - (screenWidth / 4);
@@ -193,24 +190,22 @@ int main () {
 				craft[n].move();
 			}
 
-			for (i = 0; i < PLANETMAX; i++)
-				for (n = 0; n < CRAFTMAX; n++)
-					planet[i].gravitate (craft[n]);
+			for (n = 0; n < PLANETMAX; n++)
+				for (i = 0; i < CRAFTMAX; i++)
+					planet[n].gravitate (craft[i]);
 
 			timer--;
 		}
 
 		drawGrid();
+//        for (n = 0; n < PLANETMAX - 1; n++)
+//            planet[n].draw();
+//        for (n = 0; n < CRAFTMAX - 1; n++)
+//            craft[n].draw();
 
-		for (n = 0; n < PLANETMAX; n++)
-			planet[n].draw();
-
-		for (n = 0; n < CRAFTMAX; n++)
-			craft[n].draw();
-
-//		planet[EARTH].draw();
-//		planet[MARS].draw();
+		planet[EARTH].draw();
 		craft[HAB].draw();
+		planet[MARS].draw();
 
 		debug();
 
@@ -379,7 +374,7 @@ void detectCollision () {
 //        craft[HAB].engine = 0;
 	}
 }
-//		planet[MARS].draw();
+
 float viewpoint::actualZoom() {
 
 	return (pow (zoomMagnitude, zoom) );
@@ -420,5 +415,5 @@ void drawGrid () {  //draws a grid to the screen, later on I will be making grav
 		line (buffer, n * 20 * fabs (camera.zoom), 0, n * 20 * fabs (camera.zoom), screenHeight, makecol (100, 100, 100) );
 
 	for (n = 0; n < screenHeight * camera.actualZoom(); n++)
-		line (buffer, 0, n * 20 * fabs (camera.actualzoom), screenWidth, n * 20 * fabs (camera.zoom), makecol (100, 100, 100) );
+		line (buffer, 0, n * 20 * fabs (camera.zoom), screenWidth, n * 20 * fabs (camera.zoom), makecol (100, 100, 100) );
 }
