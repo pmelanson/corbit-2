@@ -68,10 +68,10 @@ struct entity { //stores data about any physical entity, such as mass and radius
 
     char name[21];
 
-    long double mass;
+    double mass;
     unsigned int radius;   //mass of entity, to be used in calculation F=ma, and radius of entity
-    void gravitate (struct entity object);
-    double x, y; //the center of the entity
+    void gravitate (struct ship craft);
+    float x, y; //the center of the entity
     float a();
     float b();
     float turnRadians;
@@ -81,9 +81,9 @@ struct entity { //stores data about any physical entity, such as mass and radius
     void accelerate();
     float acc;  //net acceleration of entity
     float radians;    //the degree at which the entity is velocitying from the right, in radians
-    void accX (long double radians, long double acc); //the entity's acceleration (m/s/s) along the x axis
-    void accY (long double radians, long double acc); //''
-    long double Vx, Vy;   //the entity's speed (m/s) along each axis
+    void accX (float radians, float acc); //the entity's acceleration (m/s/s) along the x axis
+    void accY (float radians, float acc); //''
+    float Vx, Vy;   //the entity's speed (m/s) along each axis
 
     void turn ();   //turns the entity
     float turnRate; //rate at which the entity turns
@@ -135,8 +135,8 @@ int main () {
     //data initializations
 
     bool gravitated[CRAFTMAX-1][PLANETMAX-1] = {};
-    unsigned int n = 0;
-    unsigned int i = 0;
+    unsigned short int n = 0;
+    unsigned short int i = 0;
 
     strcpy (planet[EARTH].name, "Earth");
     planet[EARTH].x = screenWidth / 2;
@@ -174,7 +174,7 @@ int main () {
 
             input();
 
-//            craft[HAB].gravitate (planet[EARTH]);
+//            craft[HAB].gravitate();
             detectCollision();
 //            planet[EARTH].move();
             for (n = 0; n < PLANETMAX; n++)
@@ -185,23 +185,22 @@ int main () {
                 craft[n].move();
             }
 
-//            for (n = 0; n < PLANETMAX; n++)
-//                for (i = n; i < CRAFTMAX; i++)
-//                    planet[n].gravitate (planet[i]);
+            for (n = 0; n < PLANETMAX; n++)
+                for (i = 0; i < CRAFTMAX; i++)
+                    planet[n].gravitate (craft[i]);
 
             timer--;
         }
 
         drawGrid();
-//        for (n = 0; n < PLANETMAX; n++)
+//        for (n = 0; n < PLANETMAX - 1; n++)
 //            planet[n].draw();
+//        for (n = 0; n < CRAFTMAX - 1; n++)
+//            craft[n].draw();
 
         planet[EARTH].draw();
         craft[HAB].draw();
         planet[MARS].draw();
-
-//        for (n = 0; n < CRAFTMAX; n++)
-//            craft[n].draw();
 
         debug();
 
@@ -300,10 +299,10 @@ void debug() {
     textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: hab.y = %f", craft[HAB].y );
     textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: camera.x = %f", camera.x );
     textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: camera.y = %f", camera.y );
-    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %Lf", craft[HAB].Vx);
-    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vy: %Lf", craft[HAB].Vy);
-    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Earth.Vx: %Lf", planet[EARTH].Vx);
-    textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Earth.Vy: %Lf", planet[EARTH].Vy);
+    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %f", craft[HAB].Vx);
+    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vy: %f", craft[HAB].Vy);
+    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Earth.Vx: %f", planet[EARTH].Vx);
+    textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Earth.Vy: %f", planet[EARTH].Vy);
     textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: arc tan: %f", atan2 (craft[HAB].x - planet[EARTH].x, craft[HAB].y - planet[EARTH].y) + PI * 0.5 );
     textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %f", pow (zoomMagnitude, camera.zoom) );
     textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: Camera zoom: %f", camera.zoom);
@@ -316,11 +315,11 @@ float entity::degrees() {
 
     return (radians * 180 / PI);
 }
-void entity::accX (long double radians, long double acc) {
+void entity::accX (float radians, float acc) {
 
     Vx += cos (radians) * acc / mass;
 }
-void entity::accY (long double radians, long double acc) {
+void entity::accY (float radians, float acc) {
 
     Vy += sin (radians) * acc / mass;
 }
@@ -386,18 +385,16 @@ float entity::b() { //on-screen y position of entity
     return ( (y - camera.y) * camera.actualZoom() );
 }
 
-void entity::gravitate (struct entity object) { //calculates gravitational forces, and accelerates, between two entities
+void entity::gravitate (struct ship craft) { //calculates gravitational forces, and accelerates, between two entities
 
-//    float theta = atan2f (object.y - y, object.x - x);    //finds angle at which hab is from earth
-//    float theta = PI;
-//    float gravity = G * ( (object.mass * mass) / (distance (object.x, object.y) * distance (object.x, object.y) ) ); //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
-//    float gravity = -2.3;
-//
-//    accX (PI, 1);
-//    accY (PI, 5);
+    float theta = atan2f (craft.y - y, craft.x - x);    //finds angle at which hab is from earth
+    float gravity = G * (craft.mass * mass) / (distance (craft.x, craft.y) * distance (craft.x, craft.y) ); //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
 
-//    object.accX (PI, gravity);
-//    object.accY (PI, gravity);
+    accX (theta, -gravity);
+    accY (theta, -gravity);
+
+    craft.accX (theta, gravity);
+    craft.accY (theta, gravity);
 }
 
 float entity::distance (float targetX, float targetY) { //finds distance from entity to target
