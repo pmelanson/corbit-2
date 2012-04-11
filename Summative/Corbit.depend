@@ -1,8 +1,7 @@
 # depslib dependency file v1.0
-1334107038 source:c:\users\melanson\hax\summative\trying again.cpp
+1334112720 source:c:\users\melanson\hax\summative\trying again.cpp
 	<allegro.h>
 	<math.h>
-	"version.h"
 
 1334027332 c:\users\melanson\hax\summative\version.h
 

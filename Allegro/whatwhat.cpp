@@ -387,18 +387,21 @@ float entity::b() { //on-screen y position of entity
 
 void entity::gravitate (struct ship craft) { //calculates gravitational forces, and accelerates, between two entities
 
-    float theta = atan2f (craft.y - y, craft.x - x);    //finds angle at which hab is from earth
-    float gravity = G * (craft.mass * mass) / (distance (craft.x, craft.y) * distance (craft.x, craft.y) ); //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
+//    float theta = atan2f (craft.y - y, craft.x - x);    //finds angle at which hab is from earth
+//    float gravity = G * (craft.mass * mass) / (distance (craft.x, craft.y) * distance (craft.x, craft.y) ); //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
+    float theta = PI;
+    float gravity = 5;
 
-    accX (theta, -gravity);
-    accY (theta, -gravity);
+    accX (theta, gravity);
+//    accY (theta, gravity);
 
-    craft.accX (theta, gravity);
-    craft.accY (theta, gravity);
+//    craft.accX (theta, gravity);
+//    craft.accY (theta, gravity);
 }
 
 float entity::distance (float targetX, float targetY) { //finds distance from entity to target
 
+//    return (4.2);
     return (sqrtf ( ( (targetX - x) * (targetX - x) ) + ( (targetY - y) * (targetY - y) ) ) ); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
 

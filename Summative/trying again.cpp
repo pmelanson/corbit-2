@@ -264,7 +264,6 @@ void input () {
     if (key[KEY_MINUS] || key[KEY_MINUS_PAD]) {
         camera.zoom -= zoomStep;
     }
-
 }
 
 void drawBuffer () {
@@ -389,10 +388,10 @@ float entity::b() { //on-screen y position of entity
 void entity::gravitate (struct entity object) { //calculates gravitational forces, and accelerates, between two entities
 
 //    float theta = atan2f (object.y - y, object.x - x);    //finds angle at which hab is from earth
-//    float theta = PI;
+    float theta = PI;
 //    float gravity = G * ( (object.mass * mass) / (distance (object.x, object.y) * distance (object.x, object.y) ) ); //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
-//    float gravity = -2.3;
-//
+    float gravity = 2.3;
+
 //    accX (PI, 1);
 //    accY (PI, 5);
 
