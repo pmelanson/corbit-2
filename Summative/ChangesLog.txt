@@ -1,3 +1,15 @@
+11 April 2012
+   Corbit v1.099.15:
+
+     Change log:
+        -Cleaned: Virtually no memory limit in C++? EVERYTHING IS LONG DOUBLES YAY
+
+11 April 2012
+   Corbit v1.089.14:
+
+     Change log:
+        -Fixed: crafts being declared in an array of size 0. I feel sheepish. Color, weird values fixed.
+
 09 April 2012
    Corbit v1.078.12:
 
