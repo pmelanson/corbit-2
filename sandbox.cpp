@@ -58,6 +58,7 @@ int destruct() {
     cout << Awesum.length << endl;
     cout << Awesum.rating << endl;
 
+    return (0);
 }
 
 int classes() {
@@ -81,6 +82,7 @@ int classes() {
 
     cout << hab.density (hab.mass, hab.size);
 
+    return (0);
 }
 
 int main() {
