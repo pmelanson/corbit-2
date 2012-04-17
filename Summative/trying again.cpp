@@ -55,7 +55,7 @@ cut engines    stop turning
 //globals
 const unsigned short int screenWidth = 1280;
 //const unsigned short int screenWidth = 1144;    //school resolution
-const unsigned short int screenHeight = 982;
+const unsigned short int screenHeight = 1008;
 //const unsigned short int screenHeight = 830;    //school resolution
 const float zoomMagnitude = 2;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.02; //rate at which cameras zoom out
@@ -117,7 +117,7 @@ struct entity { //stores data about any physical entity, such as mass and radius
     long double turnRate; //rate at which the entity turns
     double degrees();  //normal degrees (360 in a circle) at which the entity is rotated from facing right
 
-    void draw();    //draws entity
+    virtual void draw();    //draws entity
     unsigned int fillColour;
 };
 
@@ -455,12 +455,12 @@ long double viewpoint::actualZoom() {
 
 float entity::a() { //on-screen x position of entity
 
-    return ( (x - camera.x) * camera.actualZoom() / screenWidth * camera.actualZoom() + screenWidth / 2);
+    return ( (x - camera.x) * camera.actualZoom() + camera.actualZoom() + screenWidth / 4);
 }
 
 float entity::b() { //on-screen y position of entity
 
-    return ( (y - camera.y) * camera.actualZoom() / screenHeight * camera.actualZoom() + screenHeight / 2);
+    return ( (y - camera.y) * camera.actualZoom() + camera.actualZoom() + screenHeight / 4);
 }
 
 void entity::gravitate (struct entity object) { //calculates gravitational forces, and accelerates, between two entities
@@ -495,9 +495,6 @@ void viewpoint::shift() {
 }
 
 void viewpoint::autoZoom() {
-
-
-
 
 //    zoom = sqrtf ( ( (target->x - reference->x) * (target->x - reference->x) ) + ( (target->y - reference->y) * (target->y - reference->y) ) ) / zoom;
 //    zoom = sqrtf ( ( (target->x - reference->x) * (target->x - reference->x) ) + ( (target->y - reference->y) * (target->y - reference->y) ) ) / zoom;
