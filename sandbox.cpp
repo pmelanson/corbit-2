@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
 using namespace std;
 
 int pointers() {
@@ -83,6 +84,36 @@ int classes() {
     cout << hab.density (hab.mass, hab.size);
 
     return (0);
+}
+
+void vectors () {
+
+    vector <int> integers;
+    vector <char> characters;
+    vector <string> stringy;
+
+    integers.pushback (5);
+    integers.pushback (10);
+    integers.pushback (20);
+
+    characters.pushback ('a');
+    characters.pushback ('e');
+    characters.pushback ('i');
+
+    stringy.pushback ("stringys");
+    stringy.pushback ("yay!");
+
+    int n;
+
+    cout << "integers";
+
+    for (n = 0; n < integers.size(); n++)
+        cout << integers[n] << endl;
+
+
+
+
+
 }
 
 int main() {
