@@ -125,7 +125,7 @@ void DisplayAuditorium() {
             if (seat[y][x].sold == true)
                 printf (" X");
             else if (seat[y][x].sold == false)
-                printf (" _");
+                printf (" -");
 
         printf ("\n");
     }

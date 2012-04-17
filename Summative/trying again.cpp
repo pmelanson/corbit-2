@@ -53,10 +53,10 @@ cut engines    stop turning
 #include "version.h"
 
 //globals
-const unsigned short int screenWidth = 1280;
-//const unsigned short int screenWidth = 1144;    //school resolution
-const unsigned short int screenHeight = 982;
-//const unsigned short int screenHeight = 830;    //school resolution
+//const unsigned short int screenWidth = 1280;
+const unsigned short int screenWidth = 1144;    //school resolution
+//const unsigned short int screenHeight = 982;
+const unsigned short int screenHeight = 830;    //school resolution
 const float zoomMagnitude = 2;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.02; //rate at which cameras zoom out
 const unsigned short int maxZoom = 20;
@@ -455,12 +455,12 @@ long double viewpoint::actualZoom() {
 
 float entity::a() { //on-screen x position of entity
 
-    return ( (x - camera.x) * camera.actualZoom() / screenWidth * camera.actualZoom() + screenWidth / 2);
+    return ( (x - camera.x) * camera.actualZoom() );
 }
 
 float entity::b() { //on-screen y position of entity
 
-    return ( (y - camera.y) * camera.actualZoom() / screenHeight * camera.actualZoom() + screenHeight / 2);
+    return ( (y - camera.y) * camera.actualZoom() );
 }
 
 void entity::gravitate (struct entity object) { //calculates gravitational forces, and accelerates, between two entities
