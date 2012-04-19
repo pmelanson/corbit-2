@@ -50,6 +50,7 @@ cut engines    stop turning
 
 #include <allegro.h>
 #include <math.h>
+#include <vector>
 #include "version.h"
 
 //globals
@@ -67,7 +68,6 @@ const long double G = 6.673e-11;
 enum craft {HAB, CRAFTMAX};
 enum planet {MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLANETMAX};
 const unsigned short int frameRate = 60;
-
 
 //prototypes
 void timeStep();
@@ -141,7 +141,8 @@ struct body : entity {   //stores information about an astronomical body, in add
 
 viewpoint camera;
 ship craft[CRAFTMAX]; //all ships. Default ship is the Hab, the first one declared
-body planet[PLANETMAX];    //all planets in our solar system, ordered in distance from sun. Earth is 3
+//body planet[PLANETMAX];    //all planets in our solar system, ordered in distance from sun. Earth is 3
+std::vector<body> planet;
 
 
 int main () {
