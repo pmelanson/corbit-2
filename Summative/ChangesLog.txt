@@ -1,0 +1,84 @@
+11 April 2012
+   Corbit v1.099.15:
+
+     Change log:
+        -Cleaned: Virtually no memory limit in C++? EVERYTHING IS LONG DOUBLES YAY
+
+11 April 2012
+   Corbit v1.089.14:
+
+     Change log:
+        -Fixed: crafts being declared in an array of size 0. I feel sheepish. Color, weird values fixed.
+
+09 April 2012
+   Corbit v1.078.12:
+
+     Change log:
+        -Typo: fast hab turning speed, degree/radian conversion error
+
+09 April 2012
+   Corbit v1.073.11:
+
+     Change log:
+        -Typo: gravity arctan values calculate properly (it's y, x not x, y!)
+
+09 April 2012
+   Corbit v1.064.10:
+
+     Change log:
+        -Added: gravity calculations
+
+08 April 2012
+   Corbit v1.055.9:
+
+     Change log:
+        -Fixed: distances between objects not scaling with camera zoom. Simple BEDMAS bracket error -_-
+
+07 April 2012
+   Corbit v1.047.8:
+
+     Change log:
+        -Cleaned: made an array of crafts and planets, used enum to label all
+        -Added: collision detect on earth, still working on incidence reflection
+        -Added: tan of hab/earth calculations
+
+06 April 2012
+   Corbit v1.044.7:
+
+     Change log:
+        -New: earth
+        -Added: collision detection function
+        -Added: controllable camera
+
+04 April 2012
+   Corbit v1.034.6:
+
+     Change log:
+        -Cleaned: made ship inherit from object class, neater yay!
+
+03 April 2012
+   Corbit v1.028.5:
+
+     Change log:
+        -Added: engine and turn cancel buttons
+        -Added: Object struct
+        -Applied: ship is now member of object struct
+
+01 April 2012
+   Corbit v1.016.3:
+
+     Change log:
+        -Added: engines
+
+31 March 2012
+   Corbit v1.09.2:
+
+     Change log:
+        -Cleaned: structure of struct ship (accX, accY)
+
+31 March 2012
+   Corbit v1.06.1:
+
+     Change log:
+        -Added: AutoVersioning support
+
