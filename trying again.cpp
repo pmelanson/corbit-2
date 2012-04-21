@@ -54,10 +54,10 @@ cut engines    stop turning
 #include "version.h"
 
 //globals
-//const unsigned short int screenWidth = 1280;
-const unsigned short int screenWidth = 1144;    //school resolution
-//const unsigned short int screenHeight = 1008;
-const unsigned short int screenHeight = 830;    //school resolution
+const unsigned short int screenWidth = 1280;
+//const unsigned short int screenWidth = 1144;    //school resolution
+const unsigned short int screenHeight = 1008;
+//const unsigned short int screenHeight = 830;    //school resolution
 const float zoomMagnitude = 2;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.02; //rate at which cameras zoom out
 const unsigned short int maxZoom = 20;
