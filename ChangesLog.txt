@@ -1,3 +1,9 @@
+21 April 2012
+   Corbit v1.0104.16:
+
+     Change log:
+        -Applied: vectors, sticking with the format of one vector for ships, one for planets, because that makes sense.
+
 11 April 2012
    Corbit v1.099.15:
 
