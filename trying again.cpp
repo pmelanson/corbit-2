@@ -81,6 +81,7 @@ Isn't that an awesome license?
 #include <allegro.h>
 #include <math.h>
 #include <vector>
+#include <memory>
 #include "version.h"
 using namespace std;
 
@@ -156,6 +157,7 @@ struct ship : entity {  //stores information about a pilotable ship, in addition
 
     void fireEngine();
     float engine;
+    unsigned int engineColour;
 
     virtual void draw();
 };
@@ -171,15 +173,11 @@ struct body : entity {   //stores information about an astronomical body, in add
 
 struct habitat : ship {
 
-    unsigned int engineColour;
-
     void draw();
 };
 
 viewpoint camera;
-//ship craft[CRAFTMAX]; //all ships. Default ship is the Hab, the first one declared
-//body planet[PLANETMAX];    //all planets in our solar system, ordered in distance from sun. Earth is 3
-vector <ship> craft (CRAFTMAX);
+vector <ship*> craft;
 vector <body> planet (PLANETMAX);
 
 
@@ -218,19 +216,19 @@ int main () {
     planet[EARTH].x = screenWidth / 2;
     planet[EARTH].y = screenHeight / 2;
 
-    ship * hab;
+    craft.push_back ( new habitat() );
 
-    strcpy (craft[HAB].name, "Habitat");
-    craft[HAB].fillColour = makecol (211, 211, 211);
-    craft[HAB].engineColour = makecol (139, 0, 0);
-    craft[HAB].radius = 30;
-    craft[HAB].Vx = planet[EARTH].Vx;
-    craft[HAB].Vy = planet[EARTH].Vy;
-    craft[HAB].x = screenWidth / 2 + planet[EARTH].radius + craft[HAB].radius;
-    craft[HAB].y = screenHeight / 2;
-    craft[HAB].mass = 50000;
-    craft[HAB].turnRadians = 0;
-    craft[HAB].turnRate = 0;
+    strcpy (craft[HAB]->name, "Habitat");
+    craft[HAB]->fillColour = makecol (211, 211, 211);
+    craft[HAB]->engineColour = makecol (139, 0, 0);
+    craft[HAB]->radius = 30;
+    craft[HAB]->Vx = planet[EARTH].Vx;
+    craft[HAB]->Vy = planet[EARTH].Vy;
+    craft[HAB]->x = screenWidth / 2 + planet[EARTH].radius + craft[HAB]->radius;
+    craft[HAB]->y = screenHeight / 2;
+    craft[HAB]->mass = 50000;
+    craft[HAB]->turnRadians = 0;
+    craft[HAB]->turnRate = 0;
 
 
     strcpy (planet[MARS].name, "Mars");
@@ -243,10 +241,10 @@ int main () {
     planet[MARS].atmosphereHeight = 7;
 
     camera.zoom = pow (camera.actualZoom(), 1 / zoomMagnitude);
-    camera.x = craft[HAB].x - (screenWidth / 4);
-    camera.y = craft[HAB].y - (screenHeight / 4);
+    camera.x = craft[HAB]->x - (screenWidth / 4);
+    camera.y = craft[HAB]->y - (screenHeight / 4);
 
-    camera.target = &craft[HAB];
+    camera.target = craft[HAB];
     camera.reference = &planet[EARTH];
 
     while (!key[KEY_ESC]) {
@@ -277,10 +275,10 @@ int main () {
             for (vector<body>::iterator rock = planet.begin(); rock != planet.end(); ++rock)
                 rock->move();
 
-            for (vector<ship>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-                spaceship->turn();
-                spaceship->fireEngine();
-                spaceship->move();
+            for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
+                (*spaceship)->turn();
+                (*spaceship)->fireEngine();
+                (*spaceship)->move();
             }
 
             camera.autoZoom();
@@ -297,10 +295,10 @@ int main () {
         for (vector<body>::iterator rock = planet.begin(); rock != planet.end(); ++rock)
             rock->draw();
 
-        for (vector<ship>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
-            spaceship->draw();
+        for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
+            (*spaceship)->draw();
 
-//        craft[HAB].detectCollision (planet[EARTH]);
+        craft[HAB]->detectCollision (planet[EARTH]);
 
         debug();
 
@@ -310,6 +308,7 @@ int main () {
 
     //end of program
     destroy_bitmap (buffer);
+    release_screen();
     return (0);
 }
 END_OF_MAIN();
@@ -318,30 +317,30 @@ END_OF_MAIN();
 void input () {
 
     if (key[KEY_A]) {
-        craft[HAB].turnRate -= 0.1 * PI / 180;
+        craft[HAB]->turnRate -= 0.1 * PI / 180;
     }
 
     if (key[KEY_D]) {
-        craft[HAB].turnRate += 0.1 * PI / 180;
+        craft[HAB]->turnRate += 0.1 * PI / 180;
     }
 
     if (key[KEY_W]) {
-        craft[HAB].engine ++;
+        craft[HAB]->engine ++;
     }
 
     if (key[KEY_S]) {
-        craft[HAB].engine --;
+        craft[HAB]->engine --;
     }
 
     if (key[KEY_BACKSPACE]) {
         if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
-            craft[HAB].turnRate = 0;
+            craft[HAB]->turnRate = 0;
         else
-            craft[HAB].engine = 0;
+            craft[HAB]->engine = 0;
     }
 
     if (key[KEY_ENTER])
-        craft[HAB].engine = 100;
+        craft[HAB]->engine = 100;
 
     if (key[KEY_LEFT])
         camera.x -= maxZoom + 1 - camera.actualZoom();
@@ -404,24 +403,24 @@ void ship::fireEngine() {
 
 void debug() {
 
-    textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: hab.x: %Lf", craft[HAB].x);
-    textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: hab.y = %Lf", craft[HAB].y );
+    textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: hab.x: %Lf", craft[HAB]->x);
+    textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: hab.y = %Lf", craft[HAB]->y );
     textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: Mars.x = %Lf", planet[MARS].x );
     textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: Mars.y = %Lf", planet[MARS].y );
-    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %Lf", craft[HAB].Vx);
-    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vy: %Lf", craft[HAB].Vy);
+    textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %Lf", craft[HAB]->Vx);
+    textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vy: %Lf", craft[HAB]->Vy);
     textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Earth.Vx: %Lf", planet[EARTH].Vx);
     textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Earth.Vy: %Lf", planet[EARTH].Vy);
-    textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: arc tan: %Lf", atan2f (craft[HAB].x - planet[EARTH].x, craft[HAB].y - planet[EARTH].y) + PI * 0.5 );
+    textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: arc tan: %Lf", atan2f (craft[HAB]->x - planet[EARTH].x, craft[HAB]->y - planet[EARTH].y) + PI * 0.5 );
     textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %Lf", camera.actualZoom() );
     textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: Camera zoom: %Lf", camera.zoom);
-    textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: turn Radians: %Lf", craft[HAB].turnRadians);
-    textprintf_ex (buffer, font, 0, 120, makecol (255, 255, 255), -1, "DEBUG: turn Degrees: %Lf", craft[HAB].turnRadians * 180 / PI);
-    textprintf_ex (buffer, font, 0, 130, makecol (255, 255, 255), -1, "DEBUG: turn Rate: %Lf", craft[HAB].turnRate);
+    textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: turn Radians: %Lf", craft[HAB]->turnRadians);
+    textprintf_ex (buffer, font, 0, 120, makecol (255, 255, 255), -1, "DEBUG: turn Degrees: %Lf", craft[HAB]->turnRadians * 180 / PI);
+    textprintf_ex (buffer, font, 0, 130, makecol (255, 255, 255), -1, "DEBUG: turn Rate: %Lf", craft[HAB]->turnRate);
     textprintf_ex (buffer, font, 0, 140, makecol (255, 255, 255), -1, "DEBUG: camera X: %Lf", camera.x);
     textprintf_ex (buffer, font, 0, 150, makecol (255, 255, 255), -1, "DEBUG: camera Y: %Lf", camera.y);
-    textprintf_ex (buffer, font, 0, 160, makecol (255, 255, 255), -1, "DEBUG: hab a: %f", craft[HAB].a() );
-    textprintf_ex (buffer, font, 0, 170, makecol (255, 255, 255), -1, "DEBUG: hab b: %f", craft[HAB].b() );
+    textprintf_ex (buffer, font, 0, 160, makecol (255, 255, 255), -1, "DEBUG: hab a: %f", craft[HAB]->a() );
+    textprintf_ex (buffer, font, 0, 170, makecol (255, 255, 255), -1, "DEBUG: hab b: %f", craft[HAB]->b() );
 }
 
 double entity::degrees() {
@@ -459,6 +458,23 @@ void ship::draw() {
           A + radius * cos (turnRadians) * camera.actualZoom(),
           B + radius * sin (turnRadians) * camera.actualZoom(),
           engineColour);
+}
+
+void habitat::draw() {
+
+    float A = a();  //so that the program doesn't have to calculate a and b every time
+    float B = b();
+
+
+    circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
+    circlefill (buffer, //draws the 'engine'
+                A + radius * cos (turnRadians - PI) * camera.actualZoom(),
+                B + radius * sin (turnRadians - PI) * camera.actualZoom(),
+                radius * camera.actualZoom() / 10,
+                engineColour);
+
+    textprintf_ex (buffer, font, 0, 190, makecol (255, 255, 255), -1, "IT WORKS");
+
 }
 
 void entity::turn () {
