@@ -1,0 +1,33 @@
+# depslib dependency file v1.0
+1334453559 source:c:\users\melanson\hax\summative\trying again.cpp
+	<allegro.h>
+	<math.h>
+	"version.h"
+
+1334183823 c:\users\melanson\hax\summative\version.h
+
+1334852750 source:d:\zoosmell\hax\summative\trying again.cpp
+	<allegro.h>
+	<math.h>
+	"version.h"
+
+1334164120 d:\zoosmell\hax\summative\version.h
+
+1335145447 source:c:\users\melanson\corbit\trying again.cpp
+	<allegro.h>
+	<math.h>
+	<vector>
+	<memory>
+	"version.h"
+
+1335040913 c:\users\melanson\corbit\version.h
+
+1335202081 source:d:\zoosmell\corbit\trying again.cpp
+	<allegro.h>
+	<math.h>
+	<vector>
+	<memory>
+	"version.h"
+
+1335198362 d:\zoosmell\corbit\version.h
+
