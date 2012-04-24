@@ -86,10 +86,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-//const unsigned short int screenWidth = 1280;
-const unsigned short int screenWidth = 1144;    //school resolution
-//const unsigned short int screenHeight = 980;
-const unsigned short int screenHeight = 830;    //school resolution
+const unsigned short int screenWidth = 1280;
+//const unsigned short int screenWidth = 1144;    //school resolution
+const unsigned short int screenHeight = 980;
+//const unsigned short int screenHeight = 830;    //school resolution
 const float zoomMagnitude = 2;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.02; //rate at which cameras zoom out
 const unsigned short int maxZoom = 20;
@@ -114,6 +114,7 @@ void drawGrid();
 //beginning of class declarations
 struct viewpoint {
 
+<<<<<<< HEAD
     long double x;
     long double y;
     long double zoom;
@@ -122,6 +123,17 @@ struct viewpoint {
     struct entity *target;
     struct entity *reference;
     void autoZoom();
+=======
+	long double x;
+	long double y;
+	long double zoom;
+	long double actualZoom();
+	void shift();
+	struct entity *target;
+	struct entity *reference;
+	void autoZoom();
+	bool track;
+>>>>>>> b936cc1b67149e9dbb611e8e37c62e240cceea16
 };
 
 struct entity { //stores data about any physical entity, such as mass and radius, acceleration, velocity, and angle from right
@@ -199,8 +211,29 @@ int main () {
 
     //data initializations
 
+<<<<<<< HEAD
 //    for (vector<body*>::iterator rock = planet.begin(); rock != planet.end(); ++rock)
         planet.push_back ( new body() );
+=======
+    int n;
+////    for (vector<body*>::iterator rock = planet.begin(); rock != planet.end(); ++rock)
+    for (n = 0; n < PLANETMAX; n++)
+        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+>>>>>>> b936cc1b67149e9dbb611e8e37c62e240cceea16
 
     strcpy (planet[EARTH]->name, "Earth");
     planet[EARTH]->Vx = 0;
@@ -366,9 +399,22 @@ void input () {
         camera.zoom -= zoomStep;
     }
 
+<<<<<<< HEAD
     if (key[KEY_Q]) {
         camera.zoom = 2;
     }
+=======
+	if (key[KEY_MINUS_PAD]) {
+        camera.zoom += zoomStep;
+    }
+
+    if (key[KEY_TAB])
+        camera.track = ~camera.track;
+
+	if (key[KEY_Q]) {
+		camera.zoom = 2;
+	}
+>>>>>>> b936cc1b67149e9dbb611e8e37c62e240cceea16
 
     if (key[KEY_E])
         camera.zoom = 3;
