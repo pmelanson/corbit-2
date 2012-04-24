@@ -86,10 +86,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-//const unsigned short int screenWidth = 1280;
-const unsigned short int screenWidth = 1144;    //school resolution
-//const unsigned short int screenHeight = 980;
-const unsigned short int screenHeight = 830;    //school resolution
+const unsigned short int screenWidth = 1280;
+//const unsigned short int screenWidth = 1144;    //school resolution
+const unsigned short int screenHeight = 980;
+//const unsigned short int screenHeight = 830;    //school resolution
 const float zoomMagnitude = 2;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.02; //rate at which cameras zoom out
 const unsigned short int maxZoom = 20;
@@ -122,6 +122,7 @@ struct viewpoint {
 	struct entity *target;
 	struct entity *reference;
 	void autoZoom();
+	bool track;
 };
 
 struct entity { //stores data about any physical entity, such as mass and radius, acceleration, velocity, and angle from right
@@ -199,8 +200,24 @@ int main () {
 
 	//data initializations
 
-    for (vector<body*>::iterator rock = planet.begin(); rock != planet.end(); ++rock)
-        rock->push_back ( new body() );
+    int n;
+////    for (vector<body*>::iterator rock = planet.begin(); rock != planet.end(); ++rock)
+    for (n = 0; n < PLANETMAX; n++)
+        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
+//        planet.push_back ( new body() );
 
 	strcpy (planet[EARTH]->name, "Earth");
 	planet[EARTH]->Vx = 0;
@@ -365,6 +382,13 @@ void input () {
 	if (key[KEY_MINUS_PAD]) {
 		camera.zoom -= zoomStep;
 	}
+
+	if (key[KEY_MINUS_PAD]) {
+        camera.zoom += zoomStep;
+    }
+
+    if (key[KEY_TAB])
+        camera.track = ~camera.track;
 
 	if (key[KEY_Q]) {
 		camera.zoom = 2;
