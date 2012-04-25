@@ -31,7 +31,9 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="trying again.cpp" />
+		<Unit filename="corbit.cpp">
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="version.h" />
 		<Extensions>
 			<AutoVersioning>
