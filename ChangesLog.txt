@@ -1,3 +1,9 @@
+25 April 2012
+   Corbit v1.0111.17:
+
+     Change log:
+        -Applied: planets now stored in a vector, all iterators work properly
+
 21 April 2012
    Corbit v1.0104.16:
 
