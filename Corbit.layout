@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-<<<<<<< HEAD
-	<File name="trying again.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="11919" topLine="370" />
-=======
 	<File name="corbit.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="19786" topLine="538" />
->>>>>>> bc9ebefef41e80ab4148b6b81ee63ceaaa8ff860
+		<Cursor position="11784" topLine="406" />
 	</File>
 </CodeBlocks_layout_file>
