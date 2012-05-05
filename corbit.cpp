@@ -202,12 +202,28 @@ int main () {
 
     //looping variables
     unsigned short int n;
-    vector<ship*>::iterator spaceship;
-    vector<body*>::iterator rock;
-
 
     for (n = 0; n < PLANETMAX; n++)
         planet.push_back ( new body() );
+
+    craft.push_back (new habitat() );
+
+    vector<ship*>::iterator spaceship;
+    vector<body*>::iterator rock;
+
+    for (rock = planet.begin(); rock != planet.end(); ++rock) {
+        strcpy (planet[EARTH]->name, "Blank");
+        (*rock)->Vx = 0;
+        (*rock)->Vy = 0;
+        (*rock)->radius = 100;
+        (*rock)->mass = 1e10;
+        (*rock)->fillColour = makecol (50, 50, 50);
+        (*rock)->atmosphereColour = makecol (100, 100, 100);
+        (*rock)->atmosphereHeight = 1;
+        (*rock)->x = 1000;
+        (*rock)->y = 20;
+    }
+
 
     strcpy (planet[EARTH]->name, "Earth");
     planet[EARTH]->Vx = 0;
@@ -220,6 +236,7 @@ int main () {
     planet[EARTH]->x = SCREEN_W / 2;
     planet[EARTH]->y = SCREEN_H / 2;
 
+
     strcpy (planet[MARS]->name, "Mars");
     planet[MARS]->x = planet[EARTH]->x + planet[EARTH]->radius + 800;
     planet[MARS]->y = planet[EARTH]->y;
@@ -229,8 +246,6 @@ int main () {
     planet[MARS]->atmosphereColour = makecol (160, 40, 40);
     planet[MARS]->atmosphereHeight = 7;
 
-    for (n = 0; n < CRAFTMAX; n++)
-        craft.push_back ( new habitat() );
 
     strcpy (craft[HAB]->name, "Habitat");
     craft[HAB]->fillColour = makecol (211, 211, 211);
@@ -535,23 +550,20 @@ float entity::b() { //on-screen y position of entity
 void gravitate () { //calculates gravitational forces, and accelerates, between two entities
 
     long double theta, gravity; //theta being the angle at which the object is accelerated, gravity being the rate at which it is accelerated
-    //looping pointers, for looping
 
     for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
 
-        for (vector<body*>::iterator rock = planet.begin(); rock != planet.end(); ++rock) {
-            theta = atan2f ( (*spaceship)->x - (*rock)->x, (*spaceship)->y - (*rock)->y) + PI * 0.5;
-//            system ("pause");
-//			gravity =
-//			G *
-//			( (*spaceship)->mass * (*rock)->mass) /
-//			( (*ship)->distance ( (*rock)->x, (*rock)->y) * (*ship)->distance ( (*rock)->x, (*rock)->y) );
-            //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
-            gravity = 100;
+        for (vector<body*>::iterator rock = planet.begin(); rock != planet.end(); ++rock) { //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
+            theta = atan2f ( (*spaceship)->y - (*rock)->y, (*spaceship)->x - (*rock)->x);                               //angle objects are from each other
+            gravity +=
+                G *                                                                                                         //G
+                ( (*spaceship)->mass * (*rock)->mass) /                                                                     //m1 * m2
+                ( (*spaceship)->distance ( (*rock)->x, (*rock)->y) * (*spaceship)->distance ( (*rock)->x, (*rock)->y) );    //r^2, but actually r * r
+
         }
 
-        (*spaceship)->accX (theta, gravity);
-        (*spaceship)->accY (theta, gravity);
+        (*spaceship)->accX (theta, -gravity);
+        (*spaceship)->accY (theta, -gravity);
 
     }
 }
@@ -585,8 +597,8 @@ void drawGrid () {  //draws a grid to the screen, later on I will be making grav
 
 void viewpoint::shift() {
 
-    x = target->x - SCREEN_W / 4;
-    y = target->y - SCREEN_H / 4;
+//    x = target->x - SCREEN_W / 4;
+//    y = target->y - SCREEN_H / 4;
 }
 
 void viewpoint::autoZoom() {
