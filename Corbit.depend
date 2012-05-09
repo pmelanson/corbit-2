@@ -38,10 +38,11 @@
 	<memory>
 	"version.h"
 
-1336502295 source:d:\zoosmell\corbit\corbit.cpp
+1336582781 source:d:\zoosmell\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
 	"version.h"
 	<iostream>
+	<fstream>
 

@@ -39,7 +39,7 @@ cut engines    stop turning
 
 /*******************
 
-This software is licensed under the WTFPL license, in 2012, as follows:
+This software is licensed under the WTFPL license 2012, as follows:
 
 
 
@@ -84,6 +84,8 @@ Isn't that an awesome license? I like it.
 //#include <memory>
 #include "version.h"
 #include <iostream>
+#include <fstream>
+#include
 using namespace std;
 
 //globals
@@ -198,6 +200,12 @@ int main () {
 
 	//bitmap initializations
 	buffer = create_bitmap (SCREEN_W, SCREEN_H);
+
+	//file initializations
+	ifstream solarSystem;
+	solarSystem.open ("solarSystem.txt");
+	if (!solarSystem.is_open || !solarSystem.good);
+
 
 	//data initializations
 
@@ -557,22 +565,22 @@ void detectCollision () {
 	vector <entity*>::iterator collider, collided;
 
 
-	for (collider = craft.begin(); collider != craft.end(); ++collider)
-
-		stepDistance = (*collider)->distance ( (*collided)->x + (*collided)->Vx, (*collided)->y + (*collided)->Vy)
-		               + ( (*collider)->Vx + (*collider)->Vy)
-		               - ( (*collider)->radius + (*collided)->radius); //the distance the objects will be at the next move
-
-	if (stepDistance < 0) {
-		(*collider)->Vx = (*collided)->Vx;
-		(*collider)->Vy = (*collided)->Vy;
-
-		if (stepDistance < -0.01 ) {
-			long double angle = atan2l ( (*collided)->y - (*collider)->y, (*collided)->x - (*collider)->x);
-			(*collider)->x -= cos (angle);
-			(*collider)->y -= sin (angle);
-		}   //end of stepDistance < -0.01
-	}   //end of stepDistance < 0
+//	for (collider = craft.begin(); collider != craft.end(); ++collider)
+//
+//		stepDistance = (*collider)->distance ( (*collided)->x + (*collided)->Vx, (*collided)->y + (*collided)->Vy)
+//		               + ( (*collider)->Vx + (*collider)->Vy)
+//		               - ( (*collider)->radius + (*collided)->radius); //the distance the objects will be at the next move
+//
+//	if (stepDistance < 0) {
+//		(*collider)->Vx = (*collided)->Vx;
+//		(*collider)->Vy = (*collided)->Vy;
+//
+//		if (stepDistance < -0.01 ) {
+//			long double angle = atan2l ( (*collided)->y - (*collider)->y, (*collided)->x - (*collider)->x);
+//			(*collider)->x -= cos (angle);
+//			(*collider)->y -= sin (angle);
+//		}   //end of stepDistance < -0.01
+//	}   //end of stepDistance < 0
 
 //
 //	if (stepDistance < 0) {

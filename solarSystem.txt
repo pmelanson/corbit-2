@@ -1,0 +1,10 @@
+[name]	[ave dist]  [mass]  [radius]
+Mercury  5.701e10  3.301e23  2.42e6
+Venus    1.082e11  4.869e24  6.085e6
+Earth    1.496e11  5.978e24  6.378e6
+Mars     2.279e11  6.420e23  3.375e6
+Jupiter  7.783e11  1.899e27  7.14e7
+Saturn   1.427e12  5.685e26  6.04e7
+Uranus   2.869e12  8.686e25  2.36e7
+Neptune  4.498e12  1.025e26  2.23e7
+Pluto    5.900e12  5.0e23    3.0e6
