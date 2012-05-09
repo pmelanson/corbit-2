@@ -31,11 +31,10 @@
 
 1335373863 d:\zoosmell\corbit\version.h
 
-1335645943 source:c:\users\melanson\corbit\corbit.cpp
+1336245260 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
-	<memory>
 	"version.h"
 
 1336066669 source:d:\zoosmell\corbit\corbit.cpp

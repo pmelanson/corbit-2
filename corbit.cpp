@@ -18,6 +18,11 @@ See changelog.txt for changelog past 31/03/2012
 
        CONTROLS
 
+   PROGRAM CONTROLS
+
+ESCAPE
+exit corbit
+
     CAMERA CONTROLS
 
 ARROW KEYS     NUMPAD +/-
@@ -78,7 +83,7 @@ Isn't that an awesome license? I like it.
 
 *******************/
 
-#include <allegro.h>
+#include <allegro5/allegro.h>
 #include <math.h>
 #include <vector>
 //#include <memory>
@@ -86,10 +91,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-//const unsigned short int screenWidth = 1280;
-const unsigned short int screenWidth = 1144;    //school resolution
-//const unsigned short int screenHeight = 980;
-const unsigned short int screenHeight = 830;    //school resolution
+const unsigned short int screenWidth = 1280;
+//const unsigned short int screenWidth = 1144;    //school resolution
+const unsigned short int screenHeight = 980;
+//const unsigned short int screenHeight = 830;    //school resolution
 const float zoomMagnitude = 2;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.02; //rate at which cameras zoom out
 const unsigned short int maxZoom = 20;
@@ -120,41 +125,41 @@ struct viewpoint {
 	long double zoom;
 	long double actualZoom();
 	void shift();
-	struct entity *target;
-	struct entity *reference;
+	struct body *target;
+	struct body *reference;
 	void autoZoom();
 	bool track;
 };
 
-struct entity { //stores data about any physical entity, such as mass and radius, acceleration, velocity, and angle from right
+struct body { //stores data about any physical body, such as mass and radius, acceleration, velocity, and angle from right
 
 	char name[21];
 
 	long double mass;
-	unsigned int radius;   //mass of entity, to be used in calculation F=ma, and radius of entity
-	long double x, y; //the center of the entity
+	unsigned int radius;   //mass of body, to be used in calculation F=ma, and radius of body
+	long double x, y; //the center of the body
 	float a();
 	float b();
 	long double turnRadians;
 	long double distance (long double x, long double y);
-	void move();   //moves entity
+	void move();   //moves body
 
 	void accelerate();
-	long double acc;  //net acceleration of entity
-	long double radians;    //the degree at which the entity is velocitying from the right, in radians
-	void accX (long double radians, long double acc); //the entity's acceleration (m/s/s) along the x axis
+	long double acc;  //net acceleration of body
+	long double radians;    //the degree at which the body is velocitying from the right, in radians
+	void accX (long double radians, long double acc); //the body's acceleration (m/s/s) along the x axis
 	void accY (long double radians, long double acc); //''
-	long double Vx, Vy;   //the entity's speed (m/s) along each axis
+	long double Vx, Vy;   //the body's speed (m/s) along each axis
 
-	void turn ();   //turns the entity
-	long double turnRate; //rate at which the entity turns
-	double degrees();  //normal degrees (360 in a circle) at which the entity is rotated from facing right
+	void turn ();   //turns the body
+	long double turnRate; //rate at which the body turns
+	double degrees();  //normal degrees (360 in a circle) at which the body is rotated from facing right
 
-	virtual void draw();    //draws entity
+	virtual void draw();    //draws body
 	unsigned int fillColour;
 };
 
-struct ship : entity {  //stores information about a pilotable ship, in addition to information already stored by an entity
+struct ship : body {  //stores information about a pilotable ship, in addition to information already stored by an body
 
 	void fireEngine();
 	float engine;
@@ -169,7 +174,7 @@ struct habitat : ship {
 	void draw();
 };
 
-struct solarBody : entity {   //stores information about an astronomical body, in addition to information already stored by an entity
+struct solarBody : body {   //stores information about an astronomical body, in addition to information already stored by an body
 
 	unsigned int atmosphereHeight;
 	unsigned int atmosphereDrag;
@@ -185,111 +190,6 @@ vector <solarBody*> body;
 
 int main () {
 
-<<<<<<< HEAD
-    //allegro initializations
-    allegro_init();
-    install_keyboard();
-    set_color_depth (desktop_color_depth() );
-    set_gfx_mode (GFX_AUTODETECT_WINDOWED, screenWidth, screenHeight, 0, 0);
-
-    LOCK_VARIABLE (timer);
-    LOCK_FUNCTION (timestep);
-    install_int_ex (timeStep, BPS_TO_TIMER (frameRate) );
-
-    //bitmap initializations
-    buffer = create_bitmap (SCREEN_W, SCREEN_H);
-
-    //data initializations
-
-    //looping variables
-    unsigned short int n;
-
-    for (n = 0; n < PLANETMAX; n++)
-        planet.push_back ( new body() );
-
-    craft.push_back (new habitat() );
-
-    vector<ship*>::iterator spaceship;
-    vector<body*>::iterator rock;
-
-    for (rock = planet.begin(); rock != planet.end(); ++rock) {
-        strcpy (planet[EARTH]->name, "Blank");
-        (*rock)->Vx = 0;
-        (*rock)->Vy = 0;
-        (*rock)->radius = 100;
-        (*rock)->mass = 1e10;
-        (*rock)->fillColour = makecol (50, 50, 50);
-        (*rock)->atmosphereColour = makecol (100, 100, 100);
-        (*rock)->atmosphereHeight = 1;
-        (*rock)->x = 1000;
-        (*rock)->y = 20;
-    }
-
-
-    strcpy (planet[EARTH]->name, "Earth");
-    planet[EARTH]->Vx = 0;
-    planet[EARTH]->Vy = 0;
-    planet[EARTH]->radius = 200;
-    planet[EARTH]->mass = 5.9742e2;
-    planet[EARTH]->fillColour = makecol (0, 255, 0);
-    planet[EARTH]->atmosphereColour = makecol (0, 0, 255);
-    planet[EARTH]->atmosphereHeight = 3;
-    planet[EARTH]->x = SCREEN_W / 2;
-    planet[EARTH]->y = SCREEN_H / 2;
-
-
-    strcpy (planet[MARS]->name, "Mars");
-    planet[MARS]->x = planet[EARTH]->x + planet[EARTH]->radius + 800;
-    planet[MARS]->y = planet[EARTH]->y;
-    planet[MARS]->radius = 150;
-    planet[MARS]->mass = 6e1;
-    planet[MARS]->fillColour = makecol (205, 164, 150);
-    planet[MARS]->atmosphereColour = makecol (160, 40, 40);
-    planet[MARS]->atmosphereHeight = 7;
-
-
-    strcpy (craft[HAB]->name, "Habitat");
-    craft[HAB]->fillColour = makecol (211, 211, 211);
-    craft[HAB]->engineColour = makecol (139, 0, 0);
-    craft[HAB]->radius = 30;
-    craft[HAB]->Vx = planet[EARTH]->Vx;
-    craft[HAB]->Vy = planet[EARTH]->Vy;
-    craft[HAB]->x = SCREEN_W / 2 + planet[EARTH]->radius + craft[HAB]->radius;
-    craft[HAB]->y = SCREEN_H / 2;
-    craft[HAB]->mass = 50000;
-    craft[HAB]->turnRadians = 0;
-    craft[HAB]->turnRate = 0;
-    craft[HAB]->engineRadius = 8;
-
-    camera.zoom = 0;
-    camera.x = craft[HAB]->x - (SCREEN_W / 4);
-    camera.y = craft[HAB]->y - (SCREEN_H / 4);
-
-    camera.target = craft[HAB];
-    camera.reference = planet[EARTH];
-
-    while (!key[KEY_ESC]) {
-
-        while (timer > 0) {
-
-            input();
-
-//            for (i = 0; i < CRAFTMAX; i++)
-//                for (n = 0; n < PLANETMAX; n++) {
-//                    craft[i].gravitate (planet[n]);
-//                    craft[i].detectCollision (planet[n]);
-//                    planet[n].gravitate (craft[i]);
-//                }
-
-//            for (i = 1; i < 4; i++)
-//                for (n = 1; n < 4; n++) {
-////					craft[i].gravitate (planet[n]);
-//                    if (n != i)
-//                        planet[n].gravitate (planet[i]);
-//
-//                    planet[n].detectCollision (planet[i]);
-//                }
-=======
 	//allegro initializations
 	allegro_init();
 	install_keyboard();
@@ -365,7 +265,6 @@ int main () {
 	camera.zoom = 0;
 	camera.x = craft[HAB]->x - (SCREEN_W / 4);
 	camera.y = craft[HAB]->y - (SCREEN_H / 4);
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 
 	camera.target = craft[HAB];
 	camera.reference = body[EARTH];
@@ -494,7 +393,7 @@ void timeStep() {
 }
 END_OF_FUNCTION (timeStep);
 
-void entity::move() {
+void body::move() {
 
 	x += Vx;
 	y += Vy;
@@ -529,29 +428,29 @@ void debug() {
 	textprintf_ex (buffer, font, 0, 180, makecol (255, 255, 255), -1, "DEBUG: hab engine: %f", craft[HAB]->engine );
 }
 
-double entity::degrees() {
+double body::degrees() {
 
 	return (radians * 180 / PI);
 }
-void entity::accX (long double radians, long double acc) {
+void body::accX (long double radians, long double acc) {
 
 	Vx += cos (radians) * acc / mass;
 }
-void entity::accY (long double radians, long double acc) {
+void body::accY (long double radians, long double acc) {
 
 	Vy += sin (radians) * acc / mass;
 }
 
-void entity::draw() {
+void body::draw() {
 
-	circlefill (buffer, x - camera.x, y - camera.y, radius * camera.zoom, fillColour ); //draws the entity to the buffer
+	circlefill (buffer, x - camera.x, y - camera.y, radius * camera.zoom, fillColour ); //draws the body to the buffer
 }
 
 void solarBody::draw() {
 
 	circlefill (buffer, a(), b(), radius * camera.actualZoom() + atmosphereHeight, atmosphereColour);   //draws the atmosphere to the buffer
 
-	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the entity to the buffer
+	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the body to the buffer
 }
 
 void ship::draw() {
@@ -590,7 +489,7 @@ void habitat::draw() {
 				engineColour);
 }
 
-void entity::turn () {
+void body::turn () {
 
 	turnRadians += turnRate;
 
@@ -680,21 +579,18 @@ long double viewpoint::actualZoom() {
 	return (pow (zoomMagnitude, zoom) );
 }
 
-float entity::a() { //on-screen x position of entity
+float body::a() { //on-screen x position of body
 
 	return ( (x - camera.x) * camera.actualZoom() );
 }
 
-float entity::b() { //on-screen y position of entity
+float body::b() { //on-screen y position of body
 
 	return ( (y - camera.y) * camera.actualZoom() );
 }
 
 void gravitate () { //calculates gravitational forces, and accelerates, between two entities
 
-<<<<<<< HEAD
-    long double theta, gravity; //theta being the angle at which the object is accelerated, gravity being the rate at which it is accelerated
-=======
 	long double theta, gravity; //theta being the angle at which the object is accelerated, gravity being the rate at which it is accelerated
 	//looping pointers, for looping
 
@@ -732,31 +628,16 @@ void gravitate () { //calculates gravitational forces, and accelerates, between 
 					(*otherRock)->accX (theta, -gravity);
 					(*otherRock)->accY (theta, -gravity);
 				}
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 
 			}
 
-<<<<<<< HEAD
-        for (vector<body*>::iterator rock = planet.begin(); rock != planet.end(); ++rock) { //finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
-            theta = atan2f ( (*spaceship)->y - (*rock)->y, (*spaceship)->x - (*rock)->x);                               //angle objects are from each other
-            gravity +=
-                G *                                                                                                         //G
-                ( (*spaceship)->mass * (*rock)->mass) /                                                                     //m1 * m2
-                ( (*spaceship)->distance ( (*rock)->x, (*rock)->y) * (*spaceship)->distance ( (*rock)->x, (*rock)->y) );    //r^2, but actually r * r
-
-        }
-
-        (*spaceship)->accX (theta, -gravity);
-        (*spaceship)->accY (theta, -gravity);
-=======
 		}
 
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 
 	}
 }
 
-long double entity::distance (long double targetX, long double targetY) { //finds distance from entity to target
+long double body::distance (long double targetX, long double targetY) { //finds distance from body to target
 
 	return (sqrtf ( ( (targetX - x) * (targetX - x) ) + ( (targetY - y) * (targetY - y) ) ) ); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
@@ -785,13 +666,8 @@ void drawGrid () {  //draws a grid to the screen, later on I will be making grav
 
 void viewpoint::shift() {
 
-<<<<<<< HEAD
-//    x = target->x - SCREEN_W / 4;
-//    y = target->y - SCREEN_H / 4;
-=======
 	x = target->x - SCREEN_W / 4;
 	y = target->y - SCREEN_H / 4;
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 }
 
 void viewpoint::autoZoom() {

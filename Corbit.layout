@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-<<<<<<< HEAD
-	<File name="corbit.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="18180" topLine="524" />
-=======
 	<File name="corbit.cpp" open="1" top="1" tabpos="0">
-<<<<<<< HEAD
-		<Cursor position="15831" topLine="427" />
-=======
-		<Cursor position="11784" topLine="406" />
->>>>>>> 04f631cd46cb9e36c26a27b1e0f6b8f42bc4f302
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
+		<Cursor position="2048" topLine="62" />
 	</File>
 </CodeBlocks_layout_file>
