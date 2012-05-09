@@ -88,6 +88,7 @@ Isn't that an awesome license? I like it.
 #include <vector>
 //#include <memory>
 #include "version.h"
+#include <iostream>
 using namespace std;
 
 //globals
@@ -105,7 +106,7 @@ const long double G = 6.673e-11;
 enum playerShips {HAB, CRAFTMAX};
 enum solarSystem {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, BODYMAX};
 const unsigned short int frameRate = 60;
-const unsigned short int gridSpace = 30;
+const unsigned short int gridSpace = 50;
 
 
 //prototypes
@@ -242,7 +243,7 @@ int main () {
 	body[MARS]->x = body[EARTH]->x + body[EARTH]->radius + 800;
 	body[MARS]->y = body[EARTH]->y;
 	body[MARS]->radius = 150;
-	body[MARS]->mass = 6e12;
+	body[MARS]->mass = 6e1;
 	body[MARS]->fillColour = makecol (205, 164, 150);
 	body[MARS]->atmosphereColour = makecol (160, 40, 40);
 	body[MARS]->atmosphereHeight = 7;
@@ -275,7 +276,7 @@ int main () {
 
 			input();
 
-			gravitate();
+//			gravitate();
 			detectCollision();
 
 			for (rock = body.begin(); rock != body.end(); ++rock)
@@ -460,9 +461,9 @@ void ship::draw() {
 
 	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
 	line (buffer, A, B, //draws the 'engine'
-		  A + radius * cos (turnRadians) * camera.actualZoom(),
-		  B + radius * sin (turnRadians) * camera.actualZoom(),
-		  engineColour);
+	      A + radius * cos (turnRadians) * camera.actualZoom(),
+	      B + radius * sin (turnRadians) * camera.actualZoom(),
+	      engineColour);
 }
 
 void habitat::draw() {
@@ -473,20 +474,20 @@ void habitat::draw() {
 
 	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
 	circlefill (buffer, //draws the center 'engine'
-				A + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
-				B + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
-				engineRadius * camera.actualZoom(),
-				engineColour);
+	            A + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
+	            B + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
+	            engineRadius * camera.actualZoom(),
+	            engineColour);
 	circlefill (buffer, //draws the left 'engine'
-				A + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
-				B + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
-				engineRadius * camera.actualZoom(),
-				engineColour);
+	            A + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
+	            B + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
+	            engineRadius * camera.actualZoom(),
+	            engineColour);
 	circlefill (buffer, //draws the right 'engine'
-				A + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-				B + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-				engineRadius * camera.actualZoom(),
-				engineColour);
+	            A + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+	            B + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+	            engineRadius * camera.actualZoom(),
+	            engineColour);
 }
 
 void body::turn () {
@@ -498,80 +499,6 @@ void body::turn () {
 
 	if (turnRadians > 2 * PI)
 		turnRadians -= 2 * PI;
-}
-
-void detectCollision () {
-
-	long double stepDistance;
-//
-//	if (stepDistance < 0) {
-//		Vx = object.Vx;
-//		Vy = object.Vy;
-//
-//		if (stepDistance < -0.01 ) {
-//			long double angle = atan2l (object.y - y, object.x - x);
-//			x -= cos (angle);
-//			y -= sin (angle);
-//		}
-//	}
-
-	for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-
-		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
-
-			stepDistance = (*spaceship)->distance ( (*rock)->x + (*rock)->Vx, (*rock)->y + (*rock)->Vy) + ( (*spaceship)->Vx + (*spaceship)->Vy) - ( (*spaceship)->radius + (*rock)->radius); //the distance the objects will be at the next move
-
-			if (stepDistance < 0) {
-				(*spaceship)->Vx = (*rock)->Vx;
-				(*spaceship)->Vy = (*rock)->Vy;
-
-				if (stepDistance < -0.01 ) {
-					long double angle = atan2l ( (*rock)->y - (*spaceship)->y, (*rock)->x - (*spaceship)->x);
-					(*spaceship)->x -= sin (angle);
-					(*spaceship)->y -= sin (angle);
-				}
-			}
-
-		}
-
-		for (vector<ship*>::iterator flyer = spaceship + 1; flyer != craft.end(); ++flyer) {
-
-			stepDistance = (*spaceship)->distance ( (*flyer)->x + (*flyer)->Vx, (*flyer)->y + (*flyer)->Vy) + ( (*spaceship)->Vx + (*spaceship)->Vy) - ( (*spaceship)->radius + (*flyer)->radius); //the distance the objects will be at the next move
-
-			if (stepDistance < 0) {
-				(*spaceship)->Vx = (*flyer)->Vx;
-				(*spaceship)->Vy = (*flyer)->Vy;
-
-				if (stepDistance < -0.01 ) {
-					long double angle = atan2l ( (*flyer)->y - (*spaceship)->y, (*flyer)->x - (*spaceship)->x);
-					(*spaceship)->x -= cos (angle);
-					(*spaceship)->y -= sin (angle);
-				}
-			}
-
-		}
-
-	}
-
-	/*for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
-
-		for (vector<solarBody*>::iterator otherRock = rock; otherRock != body.end(); ++otherRock) {
-
-			stepDistance = (*rock)->distance ( (*otherRock)->x + (*otherRock)->Vx, (*otherRock)->y + (*otherRock)->Vy) + ( (*rock)->Vx + (*rock)->Vy) - ( (*rock)->radius + (*otherRock)->radius); //the distance the objects will be at the next move
-
-			if (stepDistance < 0) {
-				(*rock)->Vx = (*otherRock)->Vx;
-				(*rock)->Vy = (*otherRock)->Vy;
-
-				if (stepDistance < -0.01 ) {
-					long double angle = atan2l ( (*otherRock)->y - (*rock)->y, (*otherRock)->x - (*rock)->x);
-					(*rock)->x -= 1;
-					(*rock)->y -= 1;
-				}
-			}
-
-		}
-	}*/
 }
 
 long double viewpoint::actualZoom() {
@@ -589,6 +516,7 @@ float body::b() { //on-screen y position of body
 	return ( (y - camera.y) * camera.actualZoom() );
 }
 
+<<<<<<< HEAD
 void gravitate () { //calculates gravitational forces, and accelerates, between two entities
 
 	long double theta, gravity; //theta being the angle at which the object is accelerated, gravity being the rate at which it is accelerated
@@ -638,6 +566,9 @@ void gravitate () { //calculates gravitational forces, and accelerates, between 
 }
 
 long double body::distance (long double targetX, long double targetY) { //finds distance from body to target
+=======
+long double entity::distance (long double targetX, long double targetY) { //finds distance from entity to target
+>>>>>>> 1a810651efd4537a8b92d326c654ce7dc4ccc36e
 
 	return (sqrtf ( ( (targetX - x) * (targetX - x) ) + ( (targetY - y) * (targetY - y) ) ) ); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
@@ -648,20 +579,20 @@ void drawGrid () {  //draws a grid to the screen, later on I will be making grav
 
 	for (n = 0; n < SCREEN_W; n++)
 		line (buffer,
-			  n * gridSpace,
-			  0,
-			  n * gridSpace,
-			  SCREEN_H,
-			  makecol (100, 100, 100)
-			 );
+		      n * gridSpace,
+		      0,
+		      n * gridSpace,
+		      SCREEN_H,
+		      makecol (100, 100, 100)
+		     );
 
 	for (n = 0; n < SCREEN_H; n++)
 		line (buffer,
-			  0,
-			  n * gridSpace,
-			  SCREEN_W, n * gridSpace,
-			  makecol (100, 100, 100)
-			 );
+		      0,
+		      n * gridSpace,
+		      SCREEN_W, n * gridSpace,
+		      makecol (100, 100, 100)
+		     );
 }
 
 void viewpoint::shift() {
@@ -674,4 +605,147 @@ void viewpoint::autoZoom() {
 
 //    zoom = sqrtf ( ( (target->x - reference->x) * (target->x - reference->x) ) + ( (target->y - reference->y) * (target->y - reference->y) ) ) / zoom;
 //    zoom = sqrtf ( ( (target->x - reference->x) * (target->x - reference->x) ) + ( (target->y - reference->y) * (target->y - reference->y) ) ) / zoom;
+}
+
+void detectCollision () {
+
+	long double stepDistance;
+
+	vector <entity*>::iterator collider, collided;
+
+
+	for (collider = craft.begin(); collider != craft.end(); ++collider)
+
+		stepDistance = (*collider)->distance ( (*collided)->x + (*collided)->Vx, (*collided)->y + (*collided)->Vy)
+		               + ( (*collider)->Vx + (*collider)->Vy)
+		               - ( (*collider)->radius + (*collided)->radius); //the distance the objects will be at the next move
+
+	if (stepDistance < 0) {
+		(*collider)->Vx = (*collided)->Vx;
+		(*collider)->Vy = (*collided)->Vy;
+
+		if (stepDistance < -0.01 ) {
+			long double angle = atan2l ( (*collided)->y - (*collider)->y, (*collided)->x - (*collider)->x);
+			(*collider)->x -= cos (angle);
+			(*collider)->y -= sin (angle);
+		}   //end of stepDistance < -0.01
+	}   //end of stepDistance < 0
+
+//
+//	if (stepDistance < 0) {
+//		Vx = object.Vx;
+//		Vy = object.Vy;
+//
+//		if (stepDistance < -0.01 ) {
+//			long double angle = atan2l (object.y - y, object.x - x);
+//			x -= cos (angle);
+//			y -= sin (angle);
+//		}
+//	}
+
+//	for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
+//
+//		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
+//
+//			stepDistance = (*spaceship)->distance ( (*rock)->x + (*rock)->Vx, (*rock)->y + (*rock)->Vy) + ( (*spaceship)->Vx + (*spaceship)->Vy) - ( (*spaceship)->radius + (*rock)->radius); //the distance the objects will be at the next move
+//
+//			if (stepDistance < 0) {
+//				(*spaceship)->Vx = (*rock)->Vx;
+//				(*spaceship)->Vy = (*rock)->Vy;
+//
+//				if (stepDistance < -0.01 ) {
+//					long double angle = atan2l ( (*rock)->y - (*spaceship)->y, (*rock)->x - (*spaceship)->x);
+//					(*spaceship)->x -= sin (angle);
+//					(*spaceship)->y -= sin (angle);
+//				}
+//			}
+
+//		}
+//
+//		for (vector<ship*>::iterator flyer = spaceship + 1; flyer != craft.end(); ++flyer) {
+//
+//			stepDistance = (*spaceship)->distance ( (*flyer)->x + (*flyer)->Vx, (*flyer)->y + (*flyer)->Vy) + ( (*spaceship)->Vx + (*spaceship)->Vy) - ( (*spaceship)->radius + (*flyer)->radius); //the distance the objects will be at the next move
+//
+//			if (stepDistance < 0) {
+//				(*spaceship)->Vx = (*flyer)->Vx;
+//				(*spaceship)->Vy = (*flyer)->Vy;
+//
+//				if (stepDistance < -0.01 ) {
+//					long double angle = atan2l ( (*flyer)->y - (*spaceship)->y, (*flyer)->x - (*spaceship)->x);
+//					(*spaceship)->x -= cos (angle);
+//					(*spaceship)->y -= sin (angle);
+//				}
+//			}
+//
+//		}
+//
+//	}
+
+	/*for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
+
+		for (vector<solarBody*>::iterator otherRock = rock; otherRock != body.end(); ++otherRock) {
+
+			stepDistance = (*rock)->distance ( (*otherRock)->x + (*otherRock)->Vx, (*otherRock)->y + (*otherRock)->Vy) + ( (*rock)->Vx + (*rock)->Vy) - ( (*rock)->radius + (*otherRock)->radius); //the distance the objects will be at the next move
+
+			if (stepDistance < 0) {
+				(*rock)->Vx = (*otherRock)->Vx;
+				(*rock)->Vy = (*otherRock)->Vy;
+
+				if (stepDistance < -0.01 ) {
+					long double angle = atan2l ( (*otherRock)->y - (*rock)->y, (*otherRock)->x - (*rock)->x);
+					(*rock)->x -= 1;
+					(*rock)->y -= 1;
+				}
+			}
+
+		}
+	}*/
+}
+
+void gravitate () { //calculates gravitational forces, and accelerates, between two entities
+//
+//	long double theta, gravity; //theta being the angle at which the object is accelerated, gravity being the rate at which it is accelerated
+//	//looping pointers, for looping
+//
+//	for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
+//
+//		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
+//			theta = atan2l ( (*spaceship)->x - (*rock)->x, (*spaceship)->y - (*rock)->y) + PI * 0.5;
+//			gravity =
+//			    G *
+//			    ( (*spaceship)->mass * (*rock)->mass) /
+//			    ( (*spaceship)->distance ( (*rock)->x, (*rock)->y) * (*spaceship)->distance ( (*rock)->x, (*rock)->y) );
+//			//finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
+//
+//			(*spaceship)->accX (theta, gravity);
+//			(*spaceship)->accY (theta, gravity);
+//			(*rock)->accX (theta, -gravity);
+//			(*rock)->accY (theta, -gravity);
+//		}
+//
+//		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
+//
+//			for (vector<solarBody*>::iterator otherRock = body.begin(); otherRock != body.end(); ++otherRock) {
+//
+//				if (rock == otherRock) {
+//
+//					theta = atan2l ( (*rock)->x - (*otherRock)->x, (*rock)->y - (*otherRock)->y) + PI * 0.5;
+//					gravity =
+//					    G *
+//					    ( (*rock)->mass * (*otherRock)->mass) /
+//					    ( (*rock)->distance ( (*otherRock)->x, (*otherRock)->y) * (*rock)->distance ( (*otherRock)->x, (*otherRock)->y) );
+//					//finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
+//
+//					(*rock)->accX (theta, gravity);
+//					(*rock)->accY (theta, gravity);
+//					(*otherRock)->accX (theta, -gravity);
+//					(*otherRock)->accY (theta, -gravity);
+//				}
+//
+//			}
+//
+//		}
+//
+//
+//	}
 }
