@@ -18,11 +18,6 @@ See changelog.txt for changelog past 31/03/2012
 
        CONTROLS
 
-   PROGRAM CONTROLS
-
-ESCAPE
-exit corbit
-
     CAMERA CONTROLS
 
 ARROW KEYS     NUMPAD +/-
@@ -83,7 +78,7 @@ Isn't that an awesome license? I like it.
 
 *******************/
 
-#include <allegro5/allegro.h>
+#include <allegro.h>
 #include <math.h>
 #include <vector>
 //#include <memory>
@@ -92,10 +87,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-const unsigned short int screenWidth = 1280;
-//const unsigned short int screenWidth = 1144;    //school resolution
-const unsigned short int screenHeight = 980;
-//const unsigned short int screenHeight = 830;    //school resolution
+//const unsigned short int screenWidth = 1280;
+const unsigned short int screenWidth = 1144;    //school resolution
+//const unsigned short int screenHeight = 980;
+const unsigned short int screenHeight = 830;    //school resolution
 const float zoomMagnitude = 2;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.02; //rate at which cameras zoom out
 const unsigned short int maxZoom = 20;
@@ -126,41 +121,41 @@ struct viewpoint {
 	long double zoom;
 	long double actualZoom();
 	void shift();
-	struct body *target;
-	struct body *reference;
+	struct entity *target;
+	struct entity *reference;
 	void autoZoom();
 	bool track;
 };
 
-struct body { //stores data about any physical body, such as mass and radius, acceleration, velocity, and angle from right
+struct entity { //stores data about any physical entity, such as mass and radius, acceleration, velocity, and angle from right
 
-	char name[21];
+	string name;    //I love C++ over C so much more for this
 
 	long double mass;
-	unsigned int radius;   //mass of body, to be used in calculation F=ma, and radius of body
-	long double x, y; //the center of the body
+	unsigned int radius;   //mass of entity, to be used in calculation F=ma, and radius of entity
+	long double x, y; //the center of the entity
 	float a();
 	float b();
 	long double turnRadians;
 	long double distance (long double x, long double y);
-	void move();   //moves body
+	void move();   //moves entity
 
 	void accelerate();
-	long double acc;  //net acceleration of body
-	long double radians;    //the degree at which the body is velocitying from the right, in radians
-	void accX (long double radians, long double acc); //the body's acceleration (m/s/s) along the x axis
+	long double acc;  //net acceleration of entity
+	long double radians;    //the degree at which the entity is velocitying from the right, in radians
+	void accX (long double radians, long double acc); //the entity's acceleration (m/s/s) along the x axis
 	void accY (long double radians, long double acc); //''
-	long double Vx, Vy;   //the body's speed (m/s) along each axis
+	long double Vx, Vy;   //the entity's speed (m/s) along each axis
 
-	void turn ();   //turns the body
-	long double turnRate; //rate at which the body turns
-	double degrees();  //normal degrees (360 in a circle) at which the body is rotated from facing right
+	void turn ();   //turns the entity
+	long double turnRate; //rate at which the entity turns
+	double degrees();  //normal degrees (360 in a circle) at which the entity is rotated from facing right
 
-	virtual void draw();    //draws body
+	virtual void draw();    //draws entity
 	unsigned int fillColour;
 };
 
-struct ship : body {  //stores information about a pilotable ship, in addition to information already stored by an body
+struct ship : entity {  //stores information about a pilotable ship, in addition to information already stored by an entity
 
 	void fireEngine();
 	float engine;
@@ -175,7 +170,7 @@ struct habitat : ship {
 	void draw();
 };
 
-struct solarBody : body {   //stores information about an astronomical body, in addition to information already stored by an body
+struct solarBody : entity {   //stores information about an astronomical body, in addition to information already stored by an entity
 
 	unsigned int atmosphereHeight;
 	unsigned int atmosphereDrag;
@@ -216,7 +211,7 @@ int main () {
 	vector<solarBody*>::iterator rock;
 
 	for (rock = body.begin(); rock != body.end(); ++rock) {
-		strcpy ( (*rock)->name, "Blank");
+		(*rock)->name = "Blank";
 		(*rock)->Vx = 0;
 		(*rock)->Vy = 0;
 		(*rock)->radius = 100;
@@ -228,7 +223,7 @@ int main () {
 		(*rock)->y = 0;
 	}
 
-	strcpy (body[EARTH]->name, "Earth");
+	body[EARTH]->name = "Earth";
 	body[EARTH]->Vx = 0;
 	body[EARTH]->Vy = 0;
 	body[EARTH]->radius = 200;
@@ -239,7 +234,7 @@ int main () {
 	body[EARTH]->x = SCREEN_W / 2;
 	body[EARTH]->y = SCREEN_H / 2;
 
-	strcpy (body[MARS]->name, "Mars");
+	body[MARS]->name = "Mars";
 	body[MARS]->x = body[EARTH]->x + body[EARTH]->radius + 800;
 	body[MARS]->y = body[EARTH]->y;
 	body[MARS]->radius = 150;
@@ -250,7 +245,7 @@ int main () {
 
 	craft.push_back ( new habitat() );
 
-	strcpy (craft[HAB]->name, "Habitat");
+	craft[HAB]->name = "Habitat";
 	craft[HAB]->fillColour = makecol (211, 211, 211);
 	craft[HAB]->engineColour = makecol (139, 0, 0);
 	craft[HAB]->radius = 30;
@@ -394,7 +389,7 @@ void timeStep() {
 }
 END_OF_FUNCTION (timeStep);
 
-void body::move() {
+void entity::move() {
 
 	x += Vx;
 	y += Vy;
@@ -429,29 +424,29 @@ void debug() {
 	textprintf_ex (buffer, font, 0, 180, makecol (255, 255, 255), -1, "DEBUG: hab engine: %f", craft[HAB]->engine );
 }
 
-double body::degrees() {
+double entity::degrees() {
 
 	return (radians * 180 / PI);
 }
-void body::accX (long double radians, long double acc) {
+void entity::accX (long double radians, long double acc) {
 
 	Vx += cos (radians) * acc / mass;
 }
-void body::accY (long double radians, long double acc) {
+void entity::accY (long double radians, long double acc) {
 
 	Vy += sin (radians) * acc / mass;
 }
 
-void body::draw() {
+void entity::draw() {
 
-	circlefill (buffer, x - camera.x, y - camera.y, radius * camera.zoom, fillColour ); //draws the body to the buffer
+	circlefill (buffer, x - camera.x, y - camera.y, radius * camera.zoom, fillColour ); //draws the entity to the buffer
 }
 
 void solarBody::draw() {
 
 	circlefill (buffer, a(), b(), radius * camera.actualZoom() + atmosphereHeight, atmosphereColour);   //draws the atmosphere to the buffer
 
-	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the body to the buffer
+	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the entity to the buffer
 }
 
 void ship::draw() {
@@ -490,7 +485,7 @@ void habitat::draw() {
 	            engineColour);
 }
 
-void body::turn () {
+void entity::turn () {
 
 	turnRadians += turnRate;
 
@@ -506,69 +501,17 @@ long double viewpoint::actualZoom() {
 	return (pow (zoomMagnitude, zoom) );
 }
 
-float body::a() { //on-screen x position of body
+float entity::a() { //on-screen x position of entity
 
 	return ( (x - camera.x) * camera.actualZoom() );
 }
 
-float body::b() { //on-screen y position of body
+float entity::b() { //on-screen y position of entity
 
 	return ( (y - camera.y) * camera.actualZoom() );
 }
 
-<<<<<<< HEAD
-void gravitate () { //calculates gravitational forces, and accelerates, between two entities
-
-	long double theta, gravity; //theta being the angle at which the object is accelerated, gravity being the rate at which it is accelerated
-	//looping pointers, for looping
-
-	for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-
-		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
-			theta = atan2l ( (*spaceship)->x - (*rock)->x, (*spaceship)->y - (*rock)->y) + PI * 0.5;
-			gravity =
-				G *
-				( (*spaceship)->mass * (*rock)->mass) /
-				( (*spaceship)->distance ( (*rock)->x, (*rock)->y) * (*spaceship)->distance ( (*rock)->x, (*rock)->y) );
-			//finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
-
-			(*spaceship)->accX (theta, gravity);
-			(*spaceship)->accY (theta, gravity);
-			(*rock)->accX (theta, -gravity);
-			(*rock)->accY (theta, -gravity);
-		}
-
-		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
-
-			for (vector<solarBody*>::iterator otherRock = body.begin(); otherRock != body.end(); ++otherRock) {
-
-				if (rock == otherRock) {
-
-					theta = atan2l ( (*rock)->x - (*otherRock)->x, (*rock)->y - (*otherRock)->y) + PI * 0.5;
-					gravity =
-						G *
-						( (*rock)->mass * (*otherRock)->mass) /
-						( (*rock)->distance ( (*otherRock)->x, (*otherRock)->y) * (*rock)->distance ( (*otherRock)->x, (*otherRock)->y) );
-					//finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
-
-					(*rock)->accX (theta, gravity);
-					(*rock)->accY (theta, gravity);
-					(*otherRock)->accX (theta, -gravity);
-					(*otherRock)->accY (theta, -gravity);
-				}
-
-			}
-
-		}
-
-
-	}
-}
-
-long double body::distance (long double targetX, long double targetY) { //finds distance from body to target
-=======
 long double entity::distance (long double targetX, long double targetY) { //finds distance from entity to target
->>>>>>> 1a810651efd4537a8b92d326c654ce7dc4ccc36e
 
 	return (sqrtf ( ( (targetX - x) * (targetX - x) ) + ( (targetY - y) * (targetY - y) ) ) ); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
