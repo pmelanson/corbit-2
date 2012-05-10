@@ -1,3 +1,9 @@
+10 May 2012
+   Corbit v1.0119.18:
+
+     Change log:
+        -Applied: All planets are proportional yay
+
 25 April 2012
    Corbit v1.0111.17:
 

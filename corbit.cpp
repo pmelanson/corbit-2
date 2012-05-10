@@ -39,7 +39,7 @@ cut engines    stop turning
 
 /*******************
 
-This software is licensed under the WTFPL license, in 2012, as follows:
+This software is licensed under the WTFPL license 2012, as follows:
 
 
 
@@ -99,7 +99,7 @@ volatile int timer = 0;
 const long double PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587006606315588174881520920962829254091715364367892590360011330530548820466521384146951941511609433057270365759591953092186117381932611793105118548074462379962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420198938095257201065485863278865936153381827968230301952035301852968995773622599413891249721775283479131515574857242454150695950829533116861727855889075098381754637464939319255060400927701671139009848824012858361603563707660104710181942955596198946767;
 const long double G = 6.673e-11;
 enum playerShips {HAB, CRAFTMAX};
-enum solarSystem {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, BODYMAX};
+enum solarSystem {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, BODYMAX};
 const unsigned short int frameRate = 60;
 const unsigned short int gridSpace = 50;
 
@@ -129,7 +129,11 @@ struct viewpoint {
 
 struct entity { //stores data about any physical entity, such as mass and radius, acceleration, velocity, and angle from right
 
+<<<<<<< HEAD
 	string name;    //I love C++ over C so much more for this
+=======
+	string name;    //I love C++ over C so much for this
+>>>>>>> 58ae319bede080c92a2d4b18afc04e3d0d10113e
 
 	long double mass;
 	unsigned int radius;   //mass of entity, to be used in calculation F=ma, and radius of entity
@@ -223,6 +227,7 @@ int main () {
 		(*rock)->y = 0;
 	}
 
+<<<<<<< HEAD
 	body[EARTH]->name = "Earth";
 	body[EARTH]->Vx = 0;
 	body[EARTH]->Vy = 0;
@@ -241,7 +246,107 @@ int main () {
 	body[MARS]->mass = 6e1;
 	body[MARS]->fillColour = makecol (205, 164, 150);
 	body[MARS]->atmosphereColour = makecol (160, 40, 40);
+=======
+	body[MERCURY]->name = "Mercury";
+	body[MERCURY]->x = 5.701e10;
+	body[MERCURY]->y = 0;
+	body[MERCURY]->Vx = 0;
+	body[MERCURY]->Vy = 47.87e3;
+	body[MERCURY]->mass = 3.301e23;
+	body[MERCURY]->radius = 2.42e9;
+	body[MERCURY]->fillColour = makecol (169, 169, 169);
+	body[MERCURY]->atmosphereColour = makecol (100, 169, 169);
+	body[MERCURY]->atmosphereHeight = 7;
+
+	body[VENUS]->name = "Venus";
+	body[VENUS]->x = 1.082e11;
+	body[VENUS]->y = 0;
+	body[VENUS]->Vx = 0;
+	body[VENUS]->Vy = 35.02e3;
+	body[VENUS]->mass = 4.869e24;
+	body[VENUS]->radius = 6.085e9;
+	body[VENUS]->fillColour = makecol (250, 235, 215);
+	body[VENUS]->atmosphereColour = makecol (250, 200, 215);
+	body[VENUS]->atmosphereHeight = 7;
+
+	body[EARTH]->name = "Earth";
+	body[EARTH]->x = 1.496e11;
+	body[EARTH]->y = 0;
+	body[EARTH]->Vx = 0;
+	body[EARTH]->Vy = 29.78e3;
+	body[EARTH]->mass = 5.978e24;
+	body[EARTH]->radius = pow (5, 8) * 6 * 2.71828182845904523536028747135266249775724709369995;    //[within actual variation]
+	body[EARTH]->fillColour = makecol (34, 139, 34);
+	body[EARTH]->atmosphereColour = makecol (65, 105, 225);
+	body[EARTH]->atmosphereHeight = 7;
+
+	body[MARS]->name = "Mars";
+	body[MARS]->x = 2.279e11;
+	body[MARS]->y = 0;
+	body[MARS]->Vx = 0;
+	body[MARS]->Vy = 24.077e3;
+	body[MARS]->mass = 6.420e23;
+	body[MARS]->radius = 3.375e9;
+	body[MARS]->fillColour = makecol (255, 164, 96);
+	body[MARS]->atmosphereColour = makecol (200, 164, 96);
+>>>>>>> 58ae319bede080c92a2d4b18afc04e3d0d10113e
 	body[MARS]->atmosphereHeight = 7;
+
+	body[JUPITER]->name = "Jupiter";
+	body[JUPITER]->x = 7.783e11;
+	body[JUPITER]->y = 0;
+	body[JUPITER]->Vx = 0;
+	body[JUPITER]->Vy = 13.07e3;
+	body[JUPITER]->mass = 1.899e27;
+	body[JUPITER]->radius = 7.14e10;
+	body[JUPITER]->fillColour = makecol (240, 184, 135);
+	body[JUPITER]->atmosphereColour = makecol (240, 184, 100);
+	body[JUPITER]->atmosphereHeight = 7;
+
+	body[SATURN]->name = "Saturn";
+	body[SATURN]->x = 1.427e12;
+	body[SATURN]->y = 0;
+	body[SATURN]->Vx = 0;
+	body[SATURN]->Vy = 9.69e3;
+	body[SATURN]->mass = 5.685e26;
+	body[SATURN]->radius = 6.04e10;
+	body[SATURN]->fillColour = makecol (240, 230, 140);
+	body[SATURN]->atmosphereColour = makecol (240, 200, 140);
+	body[SATURN]->atmosphereHeight = 7;
+
+	body[URANUS]->name = "Uranus";
+	body[URANUS]->x = 2.869e12;
+	body[URANUS]->y = 0;
+	body[URANUS]->Vx = 0;
+	body[URANUS]->Vy = 6.81e3;
+	body[URANUS]->mass = 8.686e25;
+	body[URANUS]->radius = 2.36e10;
+	body[URANUS]->fillColour = makecol (176, 224, 230);
+	body[URANUS]->atmosphereColour = makecol (100, 224, 230);
+	body[URANUS]->atmosphereHeight = 7;
+
+	body[NEPTUNE]->name = "Neptune";
+	body[NEPTUNE]->x = 4.498e12;
+	body[NEPTUNE]->y = 0;
+	body[NEPTUNE]->Vx = 0;
+	body[NEPTUNE]->Vy = 5.43e3;
+	body[NEPTUNE]->mass = 1.025e26;
+	body[NEPTUNE]->radius = 2.23e10;
+	body[NEPTUNE]->fillColour = makecol (30, 144, 255);
+	body[NEPTUNE]->atmosphereColour = makecol (30, 100, 255);
+	body[NEPTUNE]->atmosphereHeight = 10;
+
+	body[PLUTO]->name = "Pluto";
+	body[PLUTO]->x = 5.900e12;
+	body[PLUTO]->y = 0;
+	body[PLUTO]->Vx = 0;
+	body[PLUTO]->Vy = 4.666e3;
+	body[PLUTO]->mass = 5.0e23;
+	body[PLUTO]->radius = 3.0e9;
+	body[PLUTO]->fillColour = makecol (222, 184, 135);
+	body[PLUTO]->atmosphereColour = makecol (256, 235, 215);
+	body[PLUTO]->atmosphereHeight = 7;
+
 
 	craft.push_back ( new habitat() );
 
@@ -253,7 +358,7 @@ int main () {
 	craft[HAB]->Vy = body[EARTH]->Vy;
 	craft[HAB]->x = SCREEN_W / 2 + body[EARTH]->radius + craft[HAB]->radius;
 	craft[HAB]->y = SCREEN_H / 2;
-	craft[HAB]->mass = 5e4;
+	craft[HAB]->mass = 5e3;
 	craft[HAB]->turnRadians = 0;
 	craft[HAB]->turnRate = 0;
 	craft[HAB]->engineRadius = 8;
@@ -262,7 +367,8 @@ int main () {
 	camera.x = craft[HAB]->x - (SCREEN_W / 4);
 	camera.y = craft[HAB]->y - (SCREEN_H / 4);
 
-	camera.target = craft[HAB];
+//	camera.target = craft[HAB];
+    camera.target = body[EARTH];
 	camera.reference = body[EARTH];
 
 	while (!key[KEY_ESC]) {
@@ -271,7 +377,7 @@ int main () {
 
 			input();
 
-//			gravitate();
+			gravitate();
 			detectCollision();
 
 			for (rock = body.begin(); rock != body.end(); ++rock)
@@ -540,8 +646,8 @@ void drawGrid () {  //draws a grid to the screen, later on I will be making grav
 
 void viewpoint::shift() {
 
-	x = target->x - SCREEN_W / 4;
-	y = target->y - SCREEN_H / 4;
+	x = target->x + SCREEN_H / 2;
+	y = target->y + SCREEN_W / 2;
 }
 
 void viewpoint::autoZoom() {
@@ -557,22 +663,22 @@ void detectCollision () {
 	vector <entity*>::iterator collider, collided;
 
 
-	for (collider = craft.begin(); collider != craft.end(); ++collider)
-
-		stepDistance = (*collider)->distance ( (*collided)->x + (*collided)->Vx, (*collided)->y + (*collided)->Vy)
-		               + ( (*collider)->Vx + (*collider)->Vy)
-		               - ( (*collider)->radius + (*collided)->radius); //the distance the objects will be at the next move
-
-	if (stepDistance < 0) {
-		(*collider)->Vx = (*collided)->Vx;
-		(*collider)->Vy = (*collided)->Vy;
-
-		if (stepDistance < -0.01 ) {
-			long double angle = atan2l ( (*collided)->y - (*collider)->y, (*collided)->x - (*collider)->x);
-			(*collider)->x -= cos (angle);
-			(*collider)->y -= sin (angle);
-		}   //end of stepDistance < -0.01
-	}   //end of stepDistance < 0
+//	for (collider = craft.begin(); collider != craft.end(); ++collider)
+//
+//		stepDistance = (*collider)->distance ( (*collided)->x + (*collided)->Vx, (*collided)->y + (*collided)->Vy)
+//		               + ( (*collider)->Vx + (*collider)->Vy)
+//		               - ( (*collider)->radius + (*collided)->radius); //the distance the objects will be at the next move
+//
+//	if (stepDistance < 0) {
+//		(*collider)->Vx = (*collided)->Vx;
+//		(*collider)->Vy = (*collided)->Vy;
+//
+//		if (stepDistance < -0.01 ) {
+//			long double angle = atan2l ( (*collided)->y - (*collider)->y, (*collided)->x - (*collider)->x);
+//			(*collider)->x -= cos (angle);
+//			(*collider)->y -= sin (angle);
+//		}   //end of stepDistance < -0.01
+//	}   //end of stepDistance < 0
 
 //
 //	if (stepDistance < 0) {
