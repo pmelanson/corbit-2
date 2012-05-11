@@ -87,17 +87,23 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-const unsigned short int screenWidth = 1280;
-//const unsigned short int screenWidth = 1144;    //school resolution
-const unsigned short int screenHeight = 980;
-//const unsigned short int screenHeight = 830;    //school resolution
+//const unsigned short int screenWidth = 1280;  //my computer's resolution
+const unsigned short int screenWidth = 1144;    //school resolution
+//const unsigned short int screenHeight = 980;  //my computer's resolution
+const unsigned short int screenHeight = 830;    //school resolution
+
 const float zoomMagnitude = 5;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.1; //rate at which cameras zoom out
-const unsigned short int maxZoom = 50;
+const unsigned short int maxZoom = 30;
+const unsigned short int panSpeed = 2;
+
 BITMAP *buffer = NULL;
 volatile int timer = 0;
+
 const long double PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587006606315588174881520920962829254091715364367892590360011330530548820466521384146951941511609433057270365759591953092186117381932611793105118548074462379962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420198938095257201065485863278865936153381827968230301952035301852968995773622599413891249721775283479131515574857242454150695950829533116861727855889075098381754637464939319255060400927701671139009848824012858361603563707660104710181942955596198946767;
 const long double G = 6.673e-11;
+const long double AU = 1495978707e2;
+
 enum playerShips {HAB, CRAFTMAX};
 enum solarSystem {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, BODYMAX};
 const unsigned short int frameRate = 60;
@@ -112,6 +118,7 @@ void debug();
 void gravitate();
 void drawGrid();
 void detectCollision();
+void drawHUD();
 
 //beginning of class declarations
 struct viewpoint {
@@ -127,22 +134,29 @@ struct viewpoint {
     bool track;
 };
 
+struct display {
+
+    struct entity *target;
+    struct entity *reference;
+
+    void drawHUD();
+};
+
 struct entity { //stores data about any physical entity, such as mass and radius, acceleration, velocity, and angle from right
 
     string name;    //I love C++ over C so much for this
 
-    long double mass;
+    long int mass;
     unsigned int radius;   //mass of entity, to be used in calculation F=ma, and radius of entity
     long double x, y; //the center of the entity
-    long double a();
-    long double b();
-    long double turnRadians;
-    long double distance (long double x, long double y);
+    long int a();
+    long int b();
+    float turnRadians;
+    long int distance (long double x, long double y);
     void move();   //moves entity
 
-    void accelerate();
     long double acc;  //net acceleration of entity
-    long double radians;    //the degree at which the entity is velocitying from the right, in radians
+    long double radians;    //the degree at which the entity is velocitying [sic] from the right, in radians
     void accX (long double radians, long double acc); //the entity's acceleration (m/s/s) along the x axis
     void accY (long double radians, long double acc); //''
     long double Vx, Vy;   //the entity's speed (m/s) along each axis
@@ -180,6 +194,7 @@ struct solarBody : entity {   //stores information about an astronomical body, i
 };
 
 viewpoint camera;
+display HUD;
 vector <ship*> craft;
 vector <solarBody*> body;
 
@@ -224,7 +239,7 @@ int main () {
     }
 
     body[MERCURY]->name = "Mercury";
-    body[MERCURY]->x = 5.701e10;
+    body[MERCURY]->x = 0.466697 * AU;
     body[MERCURY]->y = 0;
     body[MERCURY]->Vx = 0;
     body[MERCURY]->Vy = -47.87e3;
@@ -235,7 +250,7 @@ int main () {
     body[MERCURY]->atmosphereHeight = 7;
 
     body[VENUS]->name = "Venus";
-    body[VENUS]->x = 1.082e11;
+    body[VENUS]->x = 0.72823128 * AU;
     body[VENUS]->y = 0;
     body[VENUS]->Vx = 0;
     body[VENUS]->Vy = -35.02e3;
@@ -246,7 +261,7 @@ int main () {
     body[VENUS]->atmosphereHeight = 7;
 
     body[EARTH]->name = "Earth";
-    body[EARTH]->x = 1.496e11;
+    body[EARTH]->x = 1.01671388 * AU;
     body[EARTH]->y = 0;
     body[EARTH]->Vx = 0;
     body[EARTH]->Vy = -29.78e3;
@@ -257,7 +272,7 @@ int main () {
     body[EARTH]->atmosphereHeight = 7;
 
     body[MARS]->name = "Mars";
-    body[MARS]->x = 2.279e11;
+    body[MARS]->x = 1.665861 * AU;
     body[MARS]->y = 0;
     body[MARS]->Vx = 0;
     body[MARS]->Vy = -24.077e3;
@@ -268,7 +283,7 @@ int main () {
     body[MARS]->atmosphereHeight = 7;
 
     body[JUPITER]->name = "Jupiter";
-    body[JUPITER]->x = 7.783e11;
+    body[JUPITER]->x = 5.458104 * AU;
     body[JUPITER]->y = 0;
     body[JUPITER]->Vx = 0;
     body[JUPITER]->Vy = -13.07e3;
@@ -279,7 +294,7 @@ int main () {
     body[JUPITER]->atmosphereHeight = 7;
 
     body[SATURN]->name = "Saturn";
-    body[SATURN]->x = 1.427e12;
+    body[SATURN]->x = 10.11595804 * AU;
     body[SATURN]->y = 0;
     body[SATURN]->Vx = 0;
     body[SATURN]->Vy = -9.69e3;
@@ -290,7 +305,7 @@ int main () {
     body[SATURN]->atmosphereHeight = 7;
 
     body[URANUS]->name = "Uranus";
-    body[URANUS]->x = 2.869e12;
+    body[URANUS]->x = 20.08330526 * AU;
     body[URANUS]->y = 0;
     body[URANUS]->Vx = 0;
     body[URANUS]->Vy = -6.81e3;
@@ -301,7 +316,7 @@ int main () {
     body[URANUS]->atmosphereHeight = 7;
 
     body[NEPTUNE]->name = "Neptune";
-    body[NEPTUNE]->x = 4.498e12;
+    body[NEPTUNE]->x = 30.44125206 * AU;
     body[NEPTUNE]->y = 0;
     body[NEPTUNE]->Vx = 0;
     body[NEPTUNE]->Vy = -5.43e3;
@@ -312,7 +327,7 @@ int main () {
     body[NEPTUNE]->atmosphereHeight = 10;
 
     body[PLUTO]->name = "Pluto";
-    body[PLUTO]->x = 5.900e12;
+    body[PLUTO]->x = 48.871 * AU;
     body[PLUTO]->y = 0;
     body[PLUTO]->Vx = 0;
     body[PLUTO]->Vy = -4.666e3;
@@ -432,16 +447,16 @@ void input () {
         craft[HAB]->engine = 100;
 
     if (key[KEY_LEFT])
-        camera.x -= maxZoom * fabs (camera.zoom);
+        camera.x -= panSpeed * (maxZoom - fabs (camera.zoom));
 
     if (key[KEY_RIGHT])
-        camera.x += maxZoom * fabs (camera.zoom);
+        camera.x += panSpeed * (maxZoom - fabs (camera.zoom));
 
     if (key[KEY_UP])
-        camera.y -= maxZoom * fabs (camera.zoom);
+        camera.y -= pow (panSpeed, (maxZoom - fabs (camera.zoom)) );
 
     if (key[KEY_DOWN])
-        camera.y += maxZoom * fabs (camera.zoom);
+        camera.y += pow (panSpeed, (maxZoom - fabs (camera.zoom)) );
 
     if (key[KEY_PLUS_PAD]) {
         if (camera.actualZoom() < maxZoom)
@@ -484,21 +499,23 @@ void ship::fireEngine() {
 
 void debug() {
 
-    textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: hab.x: %Lf", craft[HAB]->x);
-    textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: hab.y = %Lf", craft[HAB]->y );
-    textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: hab a: %Lf", craft[HAB]->a() );
-    textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: hab b: %Lf", craft[HAB]->b() );
+    textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: hab.x: %Li", craft[HAB]->x);
+    textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: hab.y = %Li", craft[HAB]->y );
+    textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: hab a: %Li", craft[HAB]->a() );
+    textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: hab b: %Li", craft[HAB]->b() );
     textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %Lf", craft[HAB]->Vx);
     textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vy: %Lf", craft[HAB]->Vy);
-    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Venus.a: %Lf", body[VENUS]->a() );
-    textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Venus.b: %Lf", body[VENUS]->b() );
-    textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: Venus.x: %Lf", body[VENUS]->x);
-    textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Venus.y: %Lf", body[VENUS]->y);
-    textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: arc tan: %Lf", atan2f (craft[HAB]->x - body[EARTH]->x, craft[HAB]->y - body[EARTH]->y) + PI * 0.5 );
-    textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %Lf", camera.actualZoom() );
-    textprintf_ex (buffer, font, 0, 120, makecol (255, 255, 255), -1, "DEBUG: camera X: %Lf", camera.x);
-    textprintf_ex (buffer, font, 0, 130, makecol (255, 255, 255), -1, "DEBUG: camera Y: %Lf", camera.y);
-    textprintf_ex (buffer, font, 0, 140, makecol (255, 255, 255), -1, "DEBUG: hab engine: %f", craft[HAB]->engine );
+    textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Venus.a: %Li", body[VENUS]->a() );
+    textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Venus.b: %Li", body[VENUS]->b() );
+    textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: Earth.a: %Li", body[EARTH]->a() );
+    textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Earth.b: %Li", body[EARTH]->b() );
+    textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: Venus.x: %Li", body[VENUS]->x);
+    textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: Venus.y: %Li", body[VENUS]->y);
+    textprintf_ex (buffer, font, 0, 120, makecol (255, 255, 255), -1, "DEBUG: arc tan: %Lf", atan2f (craft[HAB]->x - body[EARTH]->x, craft[HAB]->y - body[EARTH]->y) + PI * 0.5 );
+    textprintf_ex (buffer, font, 0, 130, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %Lf", camera.actualZoom() );
+    textprintf_ex (buffer, font, 0, 140, makecol (255, 255, 255), -1, "DEBUG: camera X: %Li", camera.x);
+    textprintf_ex (buffer, font, 0, 150, makecol (255, 255, 255), -1, "DEBUG: camera Y: %Li", camera.y);
+    textprintf_ex (buffer, font, 0, 160, makecol (255, 255, 255), -1, "DEBUG: hab engine: %f", craft[HAB]->engine );
 }
 
 double entity::degrees() {
@@ -575,20 +592,20 @@ void entity::turn () {
 
 long double viewpoint::actualZoom() {
 
-    return (pow (zoomMagnitude, zoom) + 0.000001);
+    return (pow (zoomMagnitude, zoom) + 0.00000000000001);  //to avoid divide by zero errors
 }
 
-long double entity::a() { //on-screen x position of entity
+long int entity::a() { //on-screen x position of entity
 
     return ( (x - camera.x) * camera.actualZoom() + SCREEN_W / 2);
 }
 
-long double entity::b() { //on-screen y position of entity
+long int entity::b() { //on-screen y position of entity
 
     return ( (y - camera.y) * camera.actualZoom() + SCREEN_H / 2);
 }
 
-long double entity::distance (long double targetX, long double targetY) { //finds distance from entity to target
+long int entity::distance (long double targetX, long double targetY) { //finds distance from entity to target
 
     return (sqrtf ( ( (targetX - x) * (targetX - x) ) + ( (targetY - y) * (targetY - y) ) ) ); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
@@ -770,117 +787,9 @@ void gravitate () { //calculates gravitational forces, and accelerates, between 
 //	}
 }
 
-/* REQUIRED VARIABLES:
-	platform3
-	platform
-	platform4
-	platform5
-	platform7
-	lwall
-	rwall
-	loose2
-	pushable4
-	player
-	angry
-	angry2
-	angry3
-	angry4
-	pad2
-	pad3
-	spike2
-	spike3
-	spike4
-	spike6
-	end
-	pushable3
-	spike7
-*/
+void display::drawHUD () {
 
-/*
-platform3.resetObj(100, 150, 100, 50, GRASS);
-platform.resetObj(50, 200, 50, 100, GRASS);
-platform4.resetObj(100, 300, 50, 50, GRASS);
-platform5.resetObj(50, 350, 50, 100, GRASS);
-platform7.resetObj(100, 450, 100, 50, GRASS);
-lwall.resetObj(200, 400, 50, 50, GRASS);
-rwall.resetObj(200, 200, 50, 50, GRASS);
-loose2.resetObj(550, 300, 50, 50, UNSTABLE);
-pushable4.resetObj(300, 300, 50, 50, CRATE);
-player.resetObj(105, 255, 40, 40, USER);
-angry.resetObj(100, 400, 50, 50, ANGRY);
-angry2.resetObj(150, 400, 50, 50, ANGRY);
-angry3.resetObj(100, 350, 50, 50, ANGRY);
-angry4.resetObj(150, 350, 50, 50, ANGRY);
-pad2.resetObj(250, 350, 300, 50, BOUNCE);
-pad3.resetObj(250, 250, 300, 50, BOUNCE);
-spike2.resetObj(650, 450, 50, 50, SPIKE);
-spike3.resetObj(550, 450, 50, 50, SPIKE);
-spike4.resetObj(550, 550, 50, 50, SPIKE);
-spike6.resetObj(600, 550, 50, 50, SPIKE);
-end.resetObj(610, 510, 30, 30, COIN);
-pushable3.resetObj(650, 400, 50, 50, CRATE);
-spike7.resetObj(650, 550, 50, 50, SPIKE);
+//will fill this in later
 
-solids.push_back(&platform3);
-solids.push_back(&platform);
-solids.push_back(&platform4);
-solids.push_back(&platform5);
-solids.push_back(&platform7);
-solids.push_back(&lwall);
-solids.push_back(&rwall);
-solids.push_back(&pushable4);
-solids.push_back(&player);
-solids.push_back(&angry);
-solids.push_back(&angry2);
-solids.push_back(&angry3);
-solids.push_back(&angry4);
-solids.push_back(&pad2);
-solids.push_back(&pad3);
-solids.push_back(&spike2);
-solids.push_back(&spike3);
-solids.push_back(&spike4);
-solids.push_back(&spike6);
-solids.push_back(&pushable3);
-solids.push_back(&spike7);
 
-physics.push_back(&pushable4);
-physics.push_back(&player);
-physics.push_back(&angry);
-physics.push_back(&angry2);
-physics.push_back(&angry3);
-physics.push_back(&angry4);
-physics.push_back(&pushable3);
-
-lethal.push_back(&angry);
-lethal.push_back(&angry2);
-lethal.push_back(&angry3);
-lethal.push_back(&angry4);
-lethal.push_back(&spike2);
-lethal.push_back(&spike3);
-lethal.push_back(&spike4);
-lethal.push_back(&spike6);
-lethal.push_back(&spike7);
-
-visible.push_back(&platform3);
-visible.push_back(&platform);
-visible.push_back(&platform4);
-visible.push_back(&platform5);
-visible.push_back(&platform7);
-visible.push_back(&lwall);
-visible.push_back(&rwall);
-visible.push_back(&pushable4);
-visible.push_back(&player);
-visible.push_back(&angry);
-visible.push_back(&angry2);
-visible.push_back(&angry3);
-visible.push_back(&angry4);
-visible.push_back(&pad2);
-visible.push_back(&pad3);
-visible.push_back(&spike2);
-visible.push_back(&spike3);
-visible.push_back(&spike4);
-visible.push_back(&spike6);
-visible.push_back(&end);
-visible.push_back(&pushable3);
-visible.push_back(&spike7);
-*/
+}
