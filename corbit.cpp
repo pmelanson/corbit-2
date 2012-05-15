@@ -84,6 +84,7 @@ Isn't that an awesome license? I like it.
 //#include <memory>
 #include "version.h"
 #include <iostream>
+#include <boost/numeric/ublas/vector.hpp>
 using namespace std;
 
 //globals
@@ -92,9 +93,10 @@ const unsigned short int screenWidth = 1144;    //school resolution
 //const unsigned short int screenHeight = 980;  //my computer's resolution
 const unsigned short int screenHeight = 830;    //school resolution
 
-const float zoomMagnitude = 5;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
+const double zoomMagnitude = 5;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.1; //rate at which cameras zoom out
 const unsigned short int maxZoom = 30;
+const unsigned short int minZoom = 0.01;
 const unsigned short int panSpeed = 2;
 
 BITMAP *buffer = NULL;
@@ -125,7 +127,7 @@ struct viewpoint {
 
     long double x;
     long double y;
-    long double zoom;
+    double zoom;
     long double actualZoom();
     void shift();
     struct entity *target;
@@ -266,7 +268,7 @@ int main () {
     body[EARTH]->Vx = 0;
     body[EARTH]->Vy = -29.78e3;
     body[EARTH]->mass = 5.978e24;
-    body[EARTH]->radius = pow (5, 8) * 6 * 2.71828182845904523536028747135266249775724709369995;    //[within actual variation]
+    body[EARTH]->radius = pow (5.0, 8) * 6 * 2.71828182845904523536028747135266249775724709369995;    //[within actual variation]
     body[EARTH]->fillColour = makecol (34, 139, 34);
     body[EARTH]->atmosphereColour = makecol (65, 105, 225);
     body[EARTH]->atmosphereHeight = 7;
@@ -545,36 +547,29 @@ void solarBody::draw() {
 
 void ship::draw() {
 
-    float A = a();  //so that the program doesn't have to calculate a and b every time
-    float B = b();
-
-    circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
-    line (buffer, A, B, //draws the 'engine'
-          A + radius * cos (turnRadians) * camera.actualZoom(),
-          B + radius * sin (turnRadians) * camera.actualZoom(),
+    circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
+    line (buffer, a(), b(), //draws the 'engine'
+          a() + radius * cos (turnRadians) * camera.actualZoom(),
+          b() + radius * sin (turnRadians) * camera.actualZoom(),
           engineColour);
 }
 
 void habitat::draw() {
 
-    float A = a();  //so that the program doesn't have to calculate a and b every time
-    float B = b();
-
-
-    circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
+    circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
     circlefill (buffer, //draws the center 'engine'
-                A + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
-                B + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
+                a() + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
+                b() + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
                 engineRadius * camera.actualZoom(),
                 engineColour);
     circlefill (buffer, //draws the left 'engine'
-                A + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
-                B + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
+                a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
+                b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
                 engineRadius * camera.actualZoom(),
                 engineColour);
     circlefill (buffer, //draws the right 'engine'
-                A + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-                B + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+                a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+                b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
                 engineRadius * camera.actualZoom(),
                 engineColour);
 }
@@ -592,7 +587,7 @@ void entity::turn () {
 
 long double viewpoint::actualZoom() {
 
-    return (pow (zoomMagnitude, zoom) + 0.00000000000001);  //to avoid divide by zero errors
+    return (pow (zoomMagnitude, zoom) + 0.0000000001);  //to avoid divide by zero errors
 }
 
 long int entity::a() { //on-screen x position of entity
