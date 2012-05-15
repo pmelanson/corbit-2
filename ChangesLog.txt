@@ -1,3 +1,9 @@
+13 May 2012
+   Corbit v1.0128.19:
+
+     Change log:
+        -Cleaned: made extra sure all radii were in meters, as well as orbit distances
+
 10 May 2012
    Corbit v1.0119.18:
 
