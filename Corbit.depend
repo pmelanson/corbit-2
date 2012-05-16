@@ -31,12 +31,13 @@
 
 1336676420 d:\zoosmell\corbit\version.h
 
-1336957899 source:c:\users\melanson\corbit\corbit.cpp
+1337132611 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
 	"version.h"
 	<iostream>
+	<boost/numeric/ublas/vector.hpp>
 
 1336757687 source:d:\zoosmell\corbit\corbit.cpp
 	<allegro.h>
