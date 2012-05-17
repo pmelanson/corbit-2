@@ -128,8 +128,10 @@ const unsigned short int gridSpace = 50;
 
 //prototypes
 void timeStep();
-void input();
 void drawBuffer();
+
+void input();
+
 void debug();
 void gravitate();
 void drawGrid();
