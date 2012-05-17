@@ -10,7 +10,7 @@ Started on 23/03/2012
 This program provides a realistic space flight simulation
 The player's ship is called the "Hab"
 Forces are as realistic as possible
-Each pixel at camera.actualZoom() = 0 level is equivalent the distance light travels in a vacumn in 1/299,792,458th of a second (one metre)
+Each pixel at camera.actualzoomLevel() = 0 level is equivalent the distance light travels in a vacumn in 1/299,792,458th of a second (one metre)
 See changelog.txt for changelog past 31/03/2012
 
 *******************/
@@ -105,7 +105,7 @@ const unsigned short int screenWidth = 1280;  //my computer's resolution
 const unsigned short int screenHeight = 980;  //my computer's resolution
 //const unsigned short int screenHeight = 830;    //school resolution
 
-/*const int zoomMagnitude = 3;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
+/*const int zoomMagnitude = 3;  //when zooming out, actual zoom level = camera.zoomLevel ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.05; //rate at which cameras zoom out
 const unsigned short int maxZoom = 30;  //the smaller this is, the further you can zoom in
 >>>>>>> 303d7b31551601a273243cfe312ef018f4fe2d71
@@ -164,7 +164,7 @@ public:
 	long double x;
 	long double y;
 
-	long double zoom;
+	long double zoomLevel;
 	long double actualZoom();
 
 	struct entity *target;
@@ -173,20 +173,15 @@ public:
 	void shift();
 	void autoZoom();
 
+	void zoom (short int direction);
+	void panX (short int direction);
+	void panY (short int direction);
+
 	viewpoint (const int _zoomMagnitude, const float _zoomStep, const unsigned short int _maxZoom, const double _minZoom, const unsigned short int _panSpeed) :
 		zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), minZoom (_minZoom), panSpeed (_panSpeed)
 	{}
 >>>>>>> 303d7b31551601a273243cfe312ef018f4fe2d71
 };
-
-/*viewpoint::viewpoint (int _zoomMagnitude, float _zoomStep, unsigned short int _maxZoom, double _minZoom, unsigned short int _panSpeed) {
-
-	zoomMagnitude = _zoomMagnitude;
-	zoomStep = _zoomStep;
-	maxZoom = _maxZoom;
-	minZoom = _minZoom;
-	panSpeed = _panSpeed;
-}*/
 
 struct display {
 
@@ -223,6 +218,16 @@ struct entity { //stores data about any physical entity, such as mass and radius
 	unsigned int fillColour;
 };
 
+
+struct solarBody : entity {   //stores information about an astronomical body, in addition to information already stored by an entity
+
+	unsigned int atmosphereHeight;
+	unsigned int atmosphereDrag;
+	unsigned int atmosphereColour;
+
+	void draw();
+};
+
 struct ship : entity {  //stores information about a pilotable ship, in addition to information already stored by an entity
 
 	void fireEngine();
@@ -238,16 +243,8 @@ struct habitat : ship {
 	void draw();
 };
 
-struct solarBody : entity {   //stores information about an astronomical body, in addition to information already stored by an entity
-
-	unsigned int atmosphereHeight;
-	unsigned int atmosphereDrag;
-	unsigned int atmosphereColour;
-
-	void draw();
-};
-
-viewpoint camera (3, 0.05, 30, 2, 1e-10);   //constructor initializes consts in the order they are declared (i.e. zoomMagnitude, zoomStep, etc.)
+viewpoint camera (18, 0.01, 30, 1e-10, 10);   //constructor initializes consts in the order they are declared, which is...
+//zoomMagnitude, zoomStep, maxZoom, minZoom, panSpeed
 
 display HUD;
 vector <ship*> craft;
@@ -577,7 +574,7 @@ int main () {
 	craft[HAB]->turnRate = 0;
 	craft[HAB]->engineRadius = 8;
 
-	camera.zoom = 0;
+	camera.zoomLevel = 0;
 	camera.x = craft[HAB]->x - (SCREEN_W / 4);
 	camera.y = craft[HAB]->y - (SCREEN_H / 4);
 >>>>>>> 303d7b31551601a273243cfe312ef018f4fe2d71
@@ -686,24 +683,22 @@ void input () {
 		craft[HAB]->engine = 100;
 
 	if (key[KEY_LEFT])
-		camera.x -= panSpeed * (maxZoom - fabs (camera.zoom) );
+		camera.panX (-1);
 
 	if (key[KEY_RIGHT])
-		camera.x += panSpeed * (maxZoom - fabs (camera.zoom) );
+		camera.panX (1);
 
 	if (key[KEY_UP])
-		camera.y -= panSpeed * (maxZoom - fabs (camera.zoom) );
+		camera.panY (-1);
 
 	if (key[KEY_DOWN])
-		camera.y += panSpeed * (maxZoom - fabs (camera.zoom) );
+		camera.panY (1);
 
-	if (key[KEY_PLUS_PAD]) {
-		if (camera.actualZoom() < maxZoom)
-			camera.zoom += zoomStep;
-	}
+	if (key[KEY_PLUS_PAD])
+		camera.zoom (1);
 
 	if (key[KEY_MINUS_PAD])
-		camera.zoom -= zoomStep;
+		camera.zoom (-1);
 
 	if (key[KEY_TAB])
 		camera.track = !camera.track;
@@ -794,6 +789,7 @@ long int entity::b() { //on-screen y position of entity
 void entity::draw() {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
     circlefill (buffer, //draws the center 'engine'
                 a() + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
@@ -813,6 +809,9 @@ void entity::draw() {
 =======
 	circlefill (buffer, a(), b(), radius * camera.zoom, fillColour); //draws the entity to the buffer
 >>>>>>> 303d7b31551601a273243cfe312ef018f4fe2d71
+=======
+	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the entity to the buffer
+>>>>>>> 3ea610a51199a88bcb0e294b76e2f36285e09815
 }
 
 void solarBody::draw() {
@@ -893,9 +892,24 @@ void display::drawHUD () {
 
 }
 
+void viewpoint::zoom (short int direction) {
+
+	zoomLevel += zoomStep * direction;
+}
+
 long double viewpoint::actualZoom() {
 
-	return (pow (zoomMagnitude, zoom) + minZoom);  //to avoid divide by zero errors
+	return (pow (zoomMagnitude, zoomLevel) + minZoom);
+}
+
+void viewpoint::panX (short int direction) {
+
+	x += panSpeed / pow (actualZoom(), panSpeed) * direction;
+}
+
+void viewpoint::panY (short int direction) {
+
+	y += panSpeed / (actualZoom() * actualZoom() ) * direction;
 }
 
 void viewpoint::shift() {
