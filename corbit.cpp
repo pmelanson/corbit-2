@@ -146,9 +146,9 @@ public:
 	void shift();
 	void autoZoom();
 
-    void zoom (unsigned short int direction);
-    void panX (unsigned short int direction);
-    void panY (unsigned short int direction);
+	void zoom (short int direction);
+	void panX (short int direction);
+	void panY (short int direction);
 
 	viewpoint (const int _zoomMagnitude, const float _zoomStep, const unsigned short int _maxZoom, const double _minZoom, const unsigned short int _panSpeed) :
 		zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), minZoom (_minZoom), panSpeed (_panSpeed)
@@ -190,6 +190,16 @@ struct entity { //stores data about any physical entity, such as mass and radius
 	unsigned int fillColour;
 };
 
+
+struct solarBody : entity {   //stores information about an astronomical body, in addition to information already stored by an entity
+
+	unsigned int atmosphereHeight;
+	unsigned int atmosphereDrag;
+	unsigned int atmosphereColour;
+
+	void draw();
+};
+
 struct ship : entity {  //stores information about a pilotable ship, in addition to information already stored by an entity
 
 	void fireEngine();
@@ -205,16 +215,7 @@ struct habitat : ship {
 	void draw();
 };
 
-struct solarBody : entity {   //stores information about an astronomical body, in addition to information already stored by an entity
-
-	unsigned int atmosphereHeight;
-	unsigned int atmosphereDrag;
-	unsigned int atmosphereColour;
-
-	void draw();
-};
-
-viewpoint camera (0.05, 0.01, 30, 1e-10, 2);   //constructor initializes consts in the order they are declared, which is...
+viewpoint camera (18, 0.01, 30, 1e-10, 10);   //constructor initializes consts in the order they are declared, which is...
 //zoomMagnitude, zoomStep, maxZoom, minZoom, panSpeed
 
 display HUD;
@@ -508,7 +509,7 @@ void input () {
 		camera.panY (1);
 
 	if (key[KEY_PLUS_PAD])
-        camera.zoom (1);
+		camera.zoom (1);
 
 	if (key[KEY_MINUS_PAD])
 		camera.zoom (-1);
@@ -670,9 +671,9 @@ void display::drawHUD () {
 
 }
 
-void viewpoint::zoom (unsigned short int direction) {
+void viewpoint::zoom (short int direction) {
 
-    zoomLevel += zoomStep * direction;
+	zoomLevel += zoomStep * direction;
 }
 
 long double viewpoint::actualZoom() {
@@ -680,14 +681,14 @@ long double viewpoint::actualZoom() {
 	return (pow (zoomMagnitude, zoomLevel) + minZoom);
 }
 
-void viewpoint::panX (unsigned short int direction) {
+void viewpoint::panX (short int direction) {
 
-    x += (panSpeed / actualZoom() * actualZoom() ) * direction;
+	x += panSpeed / pow (actualZoom(), panSpeed) * direction;
 }
 
-void viewpoint::panY (unsigned short int direction) {
+void viewpoint::panY (short int direction) {
 
-    y += panSpeed / (actualZoom() * actualZoom() ) * direction;
+	y += panSpeed / (actualZoom() * actualZoom() ) * direction;
 }
 
 void viewpoint::shift() {
