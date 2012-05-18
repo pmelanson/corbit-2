@@ -1,13 +1,13 @@
 /*******************
 
- .d8888b.                   888      d8b 888    
-d88P  Y88b                  888      Y8P 888    
-888    888                  888          888    
-888         .d88b.  888d888 88888b.  888 888888 
-888        d88""88b 888P"   888 "88b 888 888    
-888    888 888  888 888     888  888 888 888    
-Y88b  d88P Y88..88P 888     888 d88P 888 Y88b.  
- "Y8888P"   "Y88P"  888     88888P"  888  "Y888 
+ .d8888b.                   888      d8b 888
+d88P  Y88b                  888      Y8P 888
+888    888                  888          888
+888         .d88b.  888d888 88888b.  888 888888
+888        d88""88b 888P"   888 "88b 888 888
+888    888 888  888 888     888  888 888 888
+Y88b  d88P Y88..88P 888     888 d88P 888 Y88b.
+ "Y8888P"   "Y88P"  888     88888P"  888  "Y888
 
 Designed by Patrick Melanson
 
@@ -167,7 +167,14 @@ struct display {
 	struct entity *target;
 	struct entity *reference;
 
+    const short unsigned int gridSpace;
+
 	void drawHUD();
+	void drawGrid();
+
+	display (const short unsigned int _gridSpace) :
+        gridSpace (_gridSpace)
+    {}
 };
 
 struct entity { //stores data about any physical entity, such as mass and radius, acceleration, velocity, and angle from right
@@ -188,13 +195,14 @@ struct entity { //stores data about any physical entity, such as mass and radius
 	long double accX (long double radians, long double acc); //the entity's acceleration (m/s/s) along the x axis
 	long double accY (long double radians, long double acc); //''
 	long double Vx, Vy;   //the entity's speed (m/s) along each axis
+	long double gravity(const int _x, const int _y, const int _mass);
 
 	void turn ();   //turns the entity
 	long double turnRate; //rate at which the entity turns
 	double degrees();  //normal degrees (360 in a circle) at which the entity is rotated from facing right
 
 	virtual void draw();    //draws entity
-	unsigned int fillColour;
+	unsigned int fillColor;
 };
 
 
@@ -202,7 +210,7 @@ struct solarBody : entity {   //stores information about an astronomical body, i
 
 	unsigned short int atmosphereHeight;
 	unsigned short int atmosphereDrag;
-	unsigned int atmosphereColour;
+	unsigned int atmosphereColor;
 
 	void draw();
 };
@@ -211,7 +219,7 @@ struct ship : entity {  //stores information about a pilotable ship, in addition
 
 	void fireEngine();
 	float engine;
-	unsigned int engineColour;
+	unsigned int engineColor;
 	unsigned short int engineRadius;
 
 	virtual void draw();
@@ -225,7 +233,9 @@ struct habitat : ship {
 viewpoint camera (18, 0.01, 30, 1e-10, 10);   //constructor initializes consts in the order they are declared, which is...
 //zoomMagnitude, zoomStep, maxZoom, minZoom, panSpeed
 
-display HUD;
+display HUD (18);    //constructor initializes consts in the order they are declared, which is...
+//gridColor, gridSpace
+
 vector <ship*> craft;
 vector <solarBody*> body;
 
@@ -262,8 +272,8 @@ int main () {
 		(*rock)->Vy = 0;
 		(*rock)->radius = 100;
 		(*rock)->mass = 6000;
-		(*rock)->fillColour = makecol (255, 69, 0);
-		(*rock)->atmosphereColour = makecol (240, 69, 110);
+		(*rock)->fillColor = makecol (255, 69, 0);
+		(*rock)->atmosphereColor = makecol (240, 69, 110);
 		(*rock)->atmosphereHeight = 5;
 		(*rock)->x = 1000;
 		(*rock)->y = 0;
@@ -277,8 +287,8 @@ int main () {
 	body[SUN]->Vy = 0;
 	body[SUN]->mass = 3.301e20;
 	body[SUN]->radius = 1.392e9;
-	body[SUN]->fillColour = makecol (169, 169, 169);
-	body[SUN]->atmosphereColour = makecol (169, 169, 169);
+	body[SUN]->fillColor = makecol (169, 169, 169);
+	body[SUN]->atmosphereColor = makecol (169, 169, 169);
 	body[SUN]->atmosphereHeight = 7;*/
 
 	body[MERCURY]->name = "Mercury";
@@ -288,8 +298,8 @@ int main () {
 	body[MERCURY]->Vy = -47.87e3;
 	body[MERCURY]->mass = 3.301e20;
 	body[MERCURY]->radius = 2.4397e6;
-	body[MERCURY]->fillColour = makecol (169, 169, 169);
-	body[MERCURY]->atmosphereColour = makecol (169, 169, 169);
+	body[MERCURY]->fillColor = makecol (169, 169, 169);
+	body[MERCURY]->atmosphereColor = makecol (169, 169, 169);
 	body[MERCURY]->atmosphereHeight = 7;
 
 	body[VENUS]->name = "Venus";
@@ -299,8 +309,8 @@ int main () {
 	body[VENUS]->Vy = -35.02e3;
 	body[VENUS]->mass = 4.869e24;
 	body[VENUS]->radius = 6.0518e6;
-	body[VENUS]->fillColour = makecol (250, 235, 215);
-	body[VENUS]->atmosphereColour = makecol (250, 235, 215);
+	body[VENUS]->fillColor = makecol (250, 235, 215);
+	body[VENUS]->atmosphereColor = makecol (250, 235, 215);
 	body[VENUS]->atmosphereHeight = 7;
 
 	body[EARTH]->name = "Earth";
@@ -310,8 +320,8 @@ int main () {
 	body[EARTH]->Vy = -29.78e3;
 	body[EARTH]->mass = 5.978e24;
 	body[EARTH]->radius = pow (5.0, 8) * 6 * 2.71828182845904523536028747135266249775724709369995;    //[within actual variation]
-	body[EARTH]->fillColour = makecol (34, 139, 34);
-	body[EARTH]->atmosphereColour = makecol (65, 105, 225);
+	body[EARTH]->fillColor = makecol (34, 139, 34);
+	body[EARTH]->atmosphereColor = makecol (65, 105, 225);
 	body[EARTH]->atmosphereHeight = 7;
 
 	body[MARS]->name = "Mars";
@@ -321,8 +331,8 @@ int main () {
 	body[MARS]->Vy = -24.077e3;
 	body[MARS]->mass = 6.420e23;
 	body[MARS]->radius = 3.3962e6;
-	body[MARS]->fillColour = makecol (255, 164, 96);
-	body[MARS]->atmosphereColour = makecol (255, 164, 96);
+	body[MARS]->fillColor = makecol (255, 164, 96);
+	body[MARS]->atmosphereColor = makecol (255, 164, 96);
 	body[MARS]->atmosphereHeight = 7;
 
 	body[JUPITER]->name = "Jupiter";
@@ -332,8 +342,8 @@ int main () {
 	body[JUPITER]->Vy = -13.07e3;
 	body[JUPITER]->mass = 1.899e27;
 	body[JUPITER]->radius = 7.1492e7;
-	body[JUPITER]->fillColour = makecol (240, 184, 135);
-	body[JUPITER]->atmosphereColour = makecol (240, 184, 135);
+	body[JUPITER]->fillColor = makecol (240, 184, 135);
+	body[JUPITER]->atmosphereColor = makecol (240, 184, 135);
 	body[JUPITER]->atmosphereHeight = 7;
 
 	body[SATURN]->name = "Saturn";
@@ -343,8 +353,8 @@ int main () {
 	body[SATURN]->Vy = -9.69e3;
 	body[SATURN]->mass = 5.685e26;
 	body[SATURN]->radius = 6.0268e7;
-	body[SATURN]->fillColour = makecol (240, 230, 140);
-	body[SATURN]->atmosphereColour = makecol (240, 230, 140);
+	body[SATURN]->fillColor = makecol (240, 230, 140);
+	body[SATURN]->atmosphereColor = makecol (240, 230, 140);
 	body[SATURN]->atmosphereHeight = 7;
 
 	body[URANUS]->name = "Uranus";
@@ -354,8 +364,8 @@ int main () {
 	body[URANUS]->Vy = -6.81e3;
 	body[URANUS]->mass = 8.686e25;
 	body[URANUS]->radius = 2.5559e7;
-	body[URANUS]->fillColour = makecol (176, 224, 230);
-	body[URANUS]->atmosphereColour = makecol (176, 224, 230);
+	body[URANUS]->fillColor = makecol (176, 224, 230);
+	body[URANUS]->atmosphereColor = makecol (176, 224, 230);
 	body[URANUS]->atmosphereHeight = 7;
 
 	body[NEPTUNE]->name = "Neptune";
@@ -365,8 +375,8 @@ int main () {
 	body[NEPTUNE]->Vy = -5.43e3;
 	body[NEPTUNE]->mass = 1.025e26;
 	body[NEPTUNE]->radius = 2.4764e7;
-	body[NEPTUNE]->fillColour = makecol (30, 144, 255);
-	body[NEPTUNE]->atmosphereColour = makecol (30, 144, 255);
+	body[NEPTUNE]->fillColor = makecol (30, 144, 255);
+	body[NEPTUNE]->atmosphereColor = makecol (30, 144, 255);
 	body[NEPTUNE]->atmosphereHeight = 10;
 
 	body[PLUTO]->name = "Pluto";
@@ -376,16 +386,16 @@ int main () {
 	body[PLUTO]->Vy = -4.666e3;
 	body[PLUTO]->mass = 5.0e23;
 	body[PLUTO]->radius = 1.153e6;
-	body[PLUTO]->fillColour = makecol (222, 184, 135);
-	body[PLUTO]->atmosphereColour = makecol (256, 235, 215);
+	body[PLUTO]->fillColor = makecol (222, 184, 135);
+	body[PLUTO]->atmosphereColor = makecol (256, 235, 215);
 	body[PLUTO]->atmosphereHeight = 7;
 
 
 	craft.push_back ( new habitat() );
 
 	craft[HAB]->name = "Habitat";
-	craft[HAB]->fillColour = makecol (211, 211, 211);
-	craft[HAB]->engineColour = makecol (139, 0, 0);
+	craft[HAB]->fillColor = makecol (211, 211, 211);
+	craft[HAB]->engineColor = makecol (139, 0, 0);
 	craft[HAB]->radius = 30;
 	craft[HAB]->Vx = 0;
 	craft[HAB]->Vy = 0;
@@ -431,7 +441,7 @@ int main () {
 			timer--;
 		}
 
-		drawGrid();
+		HUD.drawGrid();
 
 		for (rock = body.begin(); rock != body.end(); ++rock)
 			(*rock)->draw();
@@ -586,7 +596,13 @@ long double entity::accY (long double radians, long double acc) {
 
 long int entity::distance (long double targetX, long double targetY) { //finds distance from entity to target
 
-	return (sqrtf ( ( (targetX - x) * (targetX - x) ) + ( (targetY - y) * (targetY - y) ) ) ); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
+	return (sqrtf ( ((targetX - x) * (targetX - x)) + ((targetY - y) * (targetY - y)) )); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
+}
+
+long double entity::gravity(const int _x, const int _y, const int _mass) {
+
+	return (G * mass * _mass / ((x - _x) * (x - _x) + (y - _y) * (y - _y)) );    //G * mass1 * mass2 / r^2
+
 }
 
 long int entity::a() { //on-screen x position of entity
@@ -601,14 +617,14 @@ long int entity::b() { //on-screen y position of entity
 
 void entity::draw() {
 
-	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the entity to the buffer
+	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the entity to the buffer
 }
 
 void solarBody::draw() {
 
-	circlefill (buffer, a(), b(), camera.actualZoom() * (radius + atmosphereHeight), atmosphereColour);   //draws the atmosphere to the buffer
+	circlefill (buffer, a(), b(), camera.actualZoom() * (radius + atmosphereHeight), atmosphereColor);   //draws the atmosphere to the buffer
 
-	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColour); //draws the entity to the buffer
+	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the entity to the buffer
 
 	textprintf_ex (buffer, font, a(), b(), makecol (255, 255, 255), -1, "poop" );
 }
@@ -618,11 +634,11 @@ void ship::draw() {
 	float A = a();  //so that the program doesn't have to calculate a and b every time
 	float B = b();
 
-	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
+	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColor); //draws the picture to the buffer
 	line (buffer, A, B, //draws the 'engine'
 		  A + radius * cos (turnRadians) * camera.actualZoom(),
 		  B + radius * sin (turnRadians) * camera.actualZoom(),
-		  engineColour);
+		  engineColor);
 }
 
 void habitat::draw() {
@@ -631,44 +647,31 @@ void habitat::draw() {
 	float B = b();
 
 
-	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
+	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColor); //draws the picture to the buffer
 	circlefill (buffer, //draws the center 'engine'
 				A + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
 				B + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
 				engineRadius * camera.actualZoom(),
-				engineColour);
+				engineColor);
 	circlefill (buffer, //draws the left 'engine'
 				A + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
 				B + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
 				engineRadius * camera.actualZoom(),
-				engineColour);
+				engineColor);
 	circlefill (buffer, //draws the right 'engine'
 				A + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
 				B + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
 				engineRadius * camera.actualZoom(),
-				engineColour);
+				engineColor);
 }
 
-void drawGrid () {  //draws a grid to the screen, later on I will be making gravity distort it
+void display::drawGrid () {  //draws a grid to the screen, later on I will be making gravity distort it
 
-	unsigned short int n;
+	unsigned short int x, y;
 
-	for (n = 0; n < SCREEN_W; n++)
-		line (buffer,
-			  n * gridSpace,
-			  0,
-			  n * gridSpace,
-			  SCREEN_H,
-			  makecol (100, 100, 100)
-			 );
-
-	for (n = 0; n < SCREEN_H; n++)
-		line (buffer,
-			  0,
-			  n * gridSpace,
-			  SCREEN_W, n * gridSpace,
-			  makecol (100, 100, 100)
-			 );
+    for (x = 0; x < SCREEN_W; x += gridSpace)
+        for (y = 0; y < SCREEN_H; y += gridSpace)
+            putpixel (buffer, x, y, makecol (255, 255, 255));
 }
 
 void display::drawHUD () {
@@ -712,9 +715,9 @@ void viewpoint::autoZoom() {
 
 void detectCollision () {
 
-	long double stepDistance;
-
-	vector <entity*>::iterator collider, collided;
+//	long double stepDistance;
+//
+//	vector <entity*>::iterator collider, collided;
 
 
 //	for (collider = craft.begin(); collider != craft.end(); ++collider)
@@ -806,6 +809,14 @@ void detectCollision () {
 }
 
 void gravitate () { //calculates gravitational forces, and accelerates, between two entities
+
+
+
+
+
+
+
+
 //
 //	long double theta, gravity; //theta being the angle at which the object is accelerated, gravity being the rate at which it is accelerated
 //	//looping pointers, for looping
