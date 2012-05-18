@@ -167,14 +167,14 @@ struct display {
 	struct entity *target;
 	struct entity *reference;
 
-    const short unsigned int gridSpace;
+	const short unsigned int gridSpace;
 
 	void drawHUD();
 	void drawGrid();
 
 	display (const short unsigned int _gridSpace) :
-        gridSpace (_gridSpace)
-    {}
+		gridSpace (_gridSpace)
+	{}
 };
 
 struct entity { //stores data about any physical entity, such as mass and radius, acceleration, velocity, and angle from right
@@ -669,9 +669,9 @@ void display::drawGrid () {  //draws a grid to the screen, later on I will be ma
 
 	unsigned short int x, y;
 
-    for (x = 0; x < SCREEN_W; x += gridSpace)
-        for (y = 0; y < SCREEN_H; y += gridSpace)
-            putpixel (buffer, x, y, makecol (255, 255, 255));
+	for (x = 0; x < SCREEN_W; x += gridSpace)
+		for (y = 0; y < SCREEN_H; y += gridSpace)
+			putpixel (buffer, x, y, makecol (255, 255, 255));
 }
 
 void display::drawHUD () {
