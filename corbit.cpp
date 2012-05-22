@@ -93,7 +93,6 @@ Isn't that an awesome license? I like it.
 #include "version.h"
 #include <iostream>
 #include <fstream>
-#include <boost/iterator/zip_iterator.hpp>
 using namespace std;
 
 //globals
@@ -123,7 +122,7 @@ void debug();
 void gravitate();
 void drawGrid();
 void detectCollision();
-void drawHUD();
+void iterate (void transform() );
 
 //beginning of class declarations
 class viewpoint {
@@ -249,14 +248,13 @@ display HUD (   18);    //constructor initializes consts in the order they are d
 vector <ship*> craft;
 vector <solarBody*> body;
 
-pair <vector <ship*>, vector<solarBody*> > entity (craft, body);
-
 
 int main () {
 
 	//looping variable initialization
 	unsigned short int n;
-	boost::make_zip_iterator (pair <vector <ship*>, vector<solarBody*> > entity (craft, body));
+	vector <ship*>::iterator craft;
+	vector <solarBody*>::iterator rock;
 
 	//allegro initializations
 	allegro_init();
@@ -271,42 +269,47 @@ int main () {
 
 	//file initialization
 	ifstream datafile;
+	datafile.open ("entities.txt");
 
 	//data initializations
-	/*if (datafile.peek != '#')
-		switch (datafile.getline) {
-			case "solarBody" :
-	//				datafile.getline
-				break;
-			case "craft" :
-	//				dosomething;
-				break;
-		default case :
-				break;
-		}*/
+	char input[256];
+	string entityName;
+	unsigned short int R, G, B;
+	datafile.getline (input, 256);
+
+    if (input == "solarBody"){
+        datafile >> entityName
+        for (rock = body.begin(); rock != body.end(); ++rock)
+            if ( (*rock)->name == entityName)
+                datafile >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy
+                 >> (*rock)->mass >> (*rock)->radius >> R >> G >> B;
+                (*rock)->fillColor = makecol (R, G, B);
+                (*rock)->radius *= 2;
+    }
+
 
 //	for (n = 0; n < BODYMAX; n++)
-//		entity.second.push_back ( new solarBody() );
+//		body.push_back ( new solarBody() );
 
 	//radii are in meters, and are equatorial radii
-	/*entity.second[SUN]->name = "Sun";
-	entity.second[SUN]->x = 0 * AU;
-	entity.second[SUN]->y = 0;
-	entity.second[SUN]->Vx = 0;
-	entity.second[SUN]->Vy = 0;
-	entity.second[SUN]->mass = 3.301e20;
-	entity.second[SUN]->radius = 1.392e9;
-	entity.second[SUN]->fillColor = makecol (169, 169, 169);
-	entity.second[SUN]->atmosphereColor = makecol (169, 169, 169);
-	entity.second[SUN]->atmosphereHeight = 7;*/
+	/*body[SUN]->name = "Sun";
+	body[SUN]->x = 0 * AU;
+	body[SUN]->y = 0;
+	body[SUN]->Vx = 0;
+	body[SUN]->Vy = 0;
+	body[SUN]->mass = 3.301e20;
+	body[SUN]->radius = 1.392e9;
+	body[SUN]->fillColor = makecol (169, 169, 169);
+	body[SUN]->atmosphereColor = makecol (169, 169, 169);
+	body[SUN]->atmosphereHeight = 7;*/
 
 	camera.zoomLevel = 0;
 	camera.x = 0;
 	camera.y = 0;
 
-//	camera.target = entity.first[HAB];
-	camera.target = entity.second[EARTH];
-	camera.reference = entity.second[EARTH];
+//	camera.target = craft[HAB];
+	camera.target = body[EARTH];
+	camera.reference = body[EARTH];
 
 	///PROGRAM STARTS HERE///
 	while (!key[KEY_ESC]) {
@@ -317,11 +320,11 @@ int main () {
 
 //            gravitate();
 //            detectCollision();
-			/*
-			for (rock = entity.second.begin(); rock != entity.second.end(); ++rock)
+
+			for (rock = body.begin(); rock != body.end(); ++rock)
 				(*rock)->move();
 
-			for (spaceship = entity.first.begin(); spaceship != entity.first.end(); ++spaceship) {
+			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
 				(*spaceship)->turn();
 				(*spaceship)->fireEngine();
 				(*spaceship)->move();
@@ -334,18 +337,18 @@ int main () {
 				camera.shift();
 
 			timer--;
-			*/
+
 		}
 
 		HUD.drawGrid();
-		/*
-				for (rock = entity.second.begin(); rock != entity.second.end(); ++rock)
-					(*rock)->draw();
 
-				for (spaceship = entity.first.begin(); spaceship != entity.first.end(); ++spaceship) {
-					(*spaceship)->draw();
-				}
-		*/
+		for (rock = body.begin(); rock != body.end(); ++rock)
+			(*rock)->draw();
+
+		for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
+			(*spaceship)->draw();
+		}
+
 		debug();
 
 		drawBuffer();
@@ -356,17 +359,17 @@ int main () {
 	destroy_bitmap (buffer);
 	release_screen();
 
-	/*
-	for (rock = entity.second.begin(); rock != entity.second.end(); ++rock)
+
+	for (rock = body.begin(); rock != body.end(); ++rock)
 		delete *rock;
 
-	entity.second.clear();
+	body.clear();
 
-	for (spaceship = entity.first.begin(); spaceship != entity.first.end(); ++spaceship)
+	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
 		delete *spaceship;
 
-	entity.first.clear();
-	*/
+	craft.clear();
+
 
 	return (0);
 }
@@ -390,26 +393,26 @@ void drawBuffer () {
 void input () {
 
 	if (key[KEY_A])
-		entity.first[HAB]->turnRate -= 0.1 * PI / 180;
+		craft[HAB]->turnRate -= 0.1 * PI / 180;
 
 	if (key[KEY_D])
-		entity.first[HAB]->turnRate += 0.1 * PI / 180;
+		craft[HAB]->turnRate += 0.1 * PI / 180;
 
 	if (key[KEY_W])
-		entity.first[HAB]->engine ++;
+		craft[HAB]->engine ++;
 
 	if (key[KEY_S])
-		entity.first[HAB]->engine --;
+		craft[HAB]->engine --;
 
 	if (key[KEY_BACKSPACE]) {
 		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
-			entity.first[HAB]->turnRate = 0;
+			craft[HAB]->turnRate = 0;
 		else
-			entity.first[HAB]->engine = 0;
+			craft[HAB]->engine = 0;
 	}
 
 	if (key[KEY_ENTER])
-		entity.first[HAB]->engine = 100;
+		craft[HAB]->engine = 100;
 
 	if (key[KEY_LEFT])
 		camera.panX (-1);
@@ -435,23 +438,23 @@ void input () {
 
 void debug() {
 
-	textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: hab.x: %Lf", entity.first[HAB]->x);
-	textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: hab.y = %Lf", entity.first[HAB]->y );
-	textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: hab a: %Li", entity.first[HAB]->a() );
-	textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: hab b: %Li", entity.first[HAB]->b() );
-	textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %Lf", entity.first[HAB]->Vx);
-	textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vy: %Lf", entity.first[HAB]->Vy);
-	textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Venus.a: %Li", entity.second[VENUS]->a() );
-	textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Venus.b: %Li", entity.second[VENUS]->b() );
-	textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: Earth.a: %Li", entity.second[EARTH]->a() );
-	textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Earth.b: %Li", entity.second[EARTH]->b() );
-	textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: Venus.x: %Lf", entity.second[VENUS]->x);
-	textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: Venus.y: %Lf", entity.second[VENUS]->y);
-	textprintf_ex (buffer, font, 0, 120, makecol (255, 255, 255), -1, "DEBUG: arc tan: %Lf", atan2f (entity.first[HAB]->x - entity.second[EARTH]->x, entity.first[HAB]->y - entity.second[EARTH]->y) + PI * 0.5 );
+	textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: hab.x: %Lf", craft[HAB]->x);
+	textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: hab.y = %Lf", craft[HAB]->y );
+	textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: hab a: %Li", craft[HAB]->a() );
+	textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: hab b: %Li", craft[HAB]->b() );
+	textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %Lf", craft[HAB]->Vx);
+	textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vy: %Lf", craft[HAB]->Vy);
+	textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Venus.a: %Li", body[VENUS]->a() );
+	textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Venus.b: %Li", body[VENUS]->b() );
+	textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: Earth.a: %Li", body[EARTH]->a() );
+	textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Earth.b: %Li", body[EARTH]->b() );
+	textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: Venus.x: %Lf", body[VENUS]->x);
+	textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: Venus.y: %Lf", body[VENUS]->y);
+	textprintf_ex (buffer, font, 0, 120, makecol (255, 255, 255), -1, "DEBUG: arc tan: %Lf", atan2f (craft[HAB]->x - body[EARTH]->x, craft[HAB]->y - body[EARTH]->y) + PI * 0.5 );
 	textprintf_ex (buffer, font, 0, 130, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %Lf", camera.actualZoom() );
 	textprintf_ex (buffer, font, 0, 140, makecol (255, 255, 255), -1, "DEBUG: camera X: %Li", camera.x);
 	textprintf_ex (buffer, font, 0, 150, makecol (255, 255, 255), -1, "DEBUG: camera Y: %Li", camera.y);
-	textprintf_ex (buffer, font, 0, 160, makecol (255, 255, 255), -1, "DEBUG: hab engine: %f", entity.first[HAB]->engine );
+	textprintf_ex (buffer, font, 0, 160, makecol (255, 255, 255), -1, "DEBUG: hab engine: %f", craft[HAB]->engine );
 }
 
 void physical::move() {
@@ -618,7 +621,7 @@ void detectCollision () {
 //	vector <physical*>::iterator collider, collided;
 
 
-//	for (collider = entity.first.begin(); collider != entity.first.end(); ++collider)
+//	for (collider = craft.begin(); collider != craft.end(); ++collider)
 //
 //		stepDistance = (*collider)->distance ( (*collided)->x + (*collided)->Vx, (*collided)->y + (*collided)->Vy)
 //		               + ( (*collider)->Vx + (*collider)->Vy)
@@ -647,9 +650,9 @@ void detectCollision () {
 //		}
 //	}
 
-//	for (vector<ship*>::iterator spaceship = entity.first.begin(); spaceship != entity.first.end(); ++spaceship) {
+//	for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
 //
-//		for (vector<solarBody*>::iterator rock = entity.second.begin(); rock != entity.second.end(); ++rock) {
+//		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
 //
 //			stepDistance = (*spaceship)->distance ( (*rock)->x + (*rock)->Vx, (*rock)->y + (*rock)->Vy) + ( (*spaceship)->Vx + (*spaceship)->Vy) - ( (*spaceship)->radius + (*rock)->radius); //the distance the objects will be at the next move
 //
@@ -666,7 +669,7 @@ void detectCollision () {
 
 //		}
 //
-//		for (vector<ship*>::iterator flyer = spaceship + 1; flyer != entity.first.end(); ++flyer) {
+//		for (vector<ship*>::iterator flyer = spaceship + 1; flyer != craft.end(); ++flyer) {
 //
 //			stepDistance = (*spaceship)->distance ( (*flyer)->x + (*flyer)->Vx, (*flyer)->y + (*flyer)->Vy) + ( (*spaceship)->Vx + (*spaceship)->Vy) - ( (*spaceship)->radius + (*flyer)->radius); //the distance the objects will be at the next move
 //
@@ -685,9 +688,9 @@ void detectCollision () {
 //
 //	}
 
-	/*for (vector<solarBody*>::iterator rock = entity.second.begin(); rock != entity.second.end(); ++rock) {
+	/*for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
 
-		for (vector<solarBody*>::iterator otherRock = rock; otherRock != entity.second.end(); ++otherRock) {
+		for (vector<solarBody*>::iterator otherRock = rock; otherRock != body.end(); ++otherRock) {
 
 			stepDistance = (*rock)->distance ( (*otherRock)->x + (*otherRock)->Vx, (*otherRock)->y + (*otherRock)->Vy) + ( (*rock)->Vx + (*rock)->Vy) - ( (*rock)->radius + (*otherRock)->radius); //the distance the objects will be at the next move
 
@@ -719,9 +722,9 @@ void gravitate () { //calculates gravitational forces, and accelerates, between 
 //	long double theta, gravity; //theta being the angle at which the object is accelerated, gravity being the rate at which it is accelerated
 //	//looping pointers, for looping
 //
-//	for (vector<ship*>::iterator spaceship = entity.first.begin(); spaceship != entity.first.end(); ++spaceship) {
+//	for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
 //
-//		for (vector<solarBody*>::iterator rock = entity.second.begin(); rock != entity.second.end(); ++rock) {
+//		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
 //			theta = atan2l ( (*spaceship)->x - (*rock)->x, (*spaceship)->y - (*rock)->y) + PI * 0.5;
 //			gravity =
 //			    G *
@@ -735,9 +738,9 @@ void gravitate () { //calculates gravitational forces, and accelerates, between 
 //			(*rock)->accY (theta, -gravity);
 //		}
 //
-//		for (vector<solarBody*>::iterator rock = entity.second.begin(); rock != entity.second.end(); ++rock) {
+//		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
 //
-//			for (vector<solarBody*>::iterator otherRock = entity.second.begin(); otherRock != entity.second.end(); ++otherRock) {
+//			for (vector<solarBody*>::iterator otherRock = body.begin(); otherRock != body.end(); ++otherRock) {
 //
 //				if (rock == otherRock) {
 //
