@@ -256,7 +256,7 @@ int main () {
 
 	//looping variable initialization
 	unsigned short int n;
-	boost::make_zip_iterator (pair <vector <ship*>, vector<solarBody*> > entity (craft, body));
+	boost::make_zip_iterator (entity);
 
 	//allegro initializations
 	allegro_init();
