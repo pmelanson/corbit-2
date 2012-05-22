@@ -1,0 +1,140 @@
+#format goes like this
+#[container]	(solarBody)	puts this entity in the solarBody vector
+#[name]		(Earth)		specifies which item in the vector the following values apply to
+#[x]		(500)		location on x axis, wherein origin is at sun
+#[y]		(320)		location on y axis, with negative values being above origin, that's how the computer does it. Deal with it.
+#[Vx]		(124)		velocity along x axis
+#[Vy]		(431)		velocity along y axis, like before, positive values indicate descension
+#[mass]		(1.426e7)	mass, in kg
+#[diameter]	(5.8325e8)	radius (note: not diameter, because all stats are for radii, though it converts to diameter when being read into the program), in meters
+#[fillColor]	(255, 255, 255)	fill color, in RGB values
+#
+##SOLARBODY-ONLY VALUES
+#[atmspherClr]	(255, 255, 255)	atmosphere color, in RGB values
+#[atmspherHght]	(32)		height atmosphere extends beyond solar body's surface
+#
+##CRAFT-ONLY VALUES
+#[engineColor]	(255, 255, 255)	engine color, in RGB values
+#[engineRadius]	(10)		engine radius, in meters
+#
+#
+
+solarBody
+Mercury
+0.466697
+0
+0
+-47.87e3
+3.301e20
+2.4397e6
+169, 169, 169
+169, 169, 169
+7
+
+solarBody
+Venus
+0.72823128
+0
+0
+-35.02e3
+4.869e24
+6.0518e6
+250, 235, 215
+250, 235, 215
+7
+
+solarBody
+Earth
+1.01671388
+0
+0
+-29.78e3
+5.978e24
+6.3781e6
+34, 139, 34
+65, 105, 225
+7
+
+solarBody
+Mars
+1.665861
+0
+0
+-24.077e3
+6.420e23
+3.3962e6
+255, 164, 96
+255, 164, 96
+7
+
+solarBody
+Jupiter
+5.458104
+0
+0
+-13.07e3
+1.899e27
+7.1492e7
+240, 184, 135
+240, 184, 135
+7
+
+solarBody
+Saturn
+10.11595804
+0
+0
+-9.69e3
+5.685e26
+6.0268e7
+240, 230, 140
+240, 230, 140
+7
+
+solarBody
+Uranus
+20.08330526
+0
+0
+-6.81e3
+8.686e25
+2.5559e7
+176, 224, 230
+176, 224, 230
+7
+
+solarBody
+Neptune
+30.44125206
+0
+0
+-5.43e3
+1.025e26
+2.4764e7
+30, 144, 255
+30, 144, 255
+10
+
+solarBody
+Pluto
+48.871
+0
+0
+-4.666e3
+5.0e23
+1.153e6
+222, 184, 135
+256, 235, 215
+7
+
+craft
+Habitat
+0
+0
+0
+0
+5.0e3
+30
+211, 211, 211
+139, 0, 0
+8
