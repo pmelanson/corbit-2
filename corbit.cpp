@@ -93,6 +93,7 @@ Isn't that an awesome license? I like it.
 #include "version.h"
 #include <iostream>
 #include <fstream>
+#include <string.h>
 using namespace std;
 
 //globals
@@ -151,7 +152,7 @@ public:
 	void panY (short int direction);
 
 	viewpoint (const int _zoomMagnitude, const float _zoomStep, const unsigned short int _maxZoom, const double _minZoom, const unsigned short int _panSpeed) :
-		x (0), y (0), zoomLevel (1), track (true), zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), minZoom (_minZoom), panSpeed (_panSpeed)
+		zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), minZoom (_minZoom), panSpeed (_panSpeed), x (0), y (0), zoomLevel (1), track (true)
 	{}
 };
 
@@ -252,8 +253,8 @@ vector <solarBody*> body;
 int main () {
 
 	//looping variable initialization
-	unsigned short int n;
-	vector <ship*>::iterator craft;
+	unsigned short int n = 0;
+	vector <ship*>::iterator spaceship;
 	vector <solarBody*>::iterator rock;
 
 	//allegro initializations
@@ -270,26 +271,89 @@ int main () {
 	//file initialization
 	ifstream datafile;
 	datafile.open ("entities.txt");
+	if (datafile.is_open())
+		cout << "datafile open\n";
+	if (datafile.good())
+		cout << "datafile good\n";
+	cout << datafile.peek() << endl;
 
 	//data initializations
-	char input[256];
+	for (n = 0; n < BODYMAX; n++)
+		body.push_back (new solarBody("Blank Body", 1337, 1337, 0, 0, 1337, 1337, makecol (50, 50, 50), makecol (100, 100, 100), 20) );
+
+	body[SUN]->name = "Sun";
+	body[MERCURY]->name = "Mercury";
+	body[VENUS]->name = "Venus";
+	body[EARTH]->name = "Earth";
+	body[MARS]->name = "Mars";
+	body[JUPITER]->name = "Jupiter";
+	body[SATURN]->name = "Saturn";
+	body[URANUS]->name = "Uranus";
+	body[NEPTUNE]->name = "Neptune";
+	body[PLUTO]->name = "Pluto";
+
+	craft.push_back (new habitat("Blank Hab", -1337, -1337, 0, 0, 1337, 1337, makecol (50, 50, 50), 0, makecol (100, 100, 100), 20) );
+
+	craft[HAB]->name = "Habitat";
+
+	string container;
 	string entityName;
-	unsigned short int R, G, B;
-	datafile.getline (input, 256);
+	unsigned short int R1 = 0, R2 = 0, G1 = 0, G2 = 0, B1 = 0, B2 = 0;
 
-    if (input == "solarBody"){
-        datafile >> entityName
-        for (rock = body.begin(); rock != body.end(); ++rock)
-            if ( (*rock)->name == entityName)
-                datafile >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy
-                 >> (*rock)->mass >> (*rock)->radius >> R >> G >> B;
-                (*rock)->fillColor = makecol (R, G, B);
-                (*rock)->radius *= 2;
-    }
+	unsigned short int i = 0;
 
+	n = 1;
 
-//	for (n = 0; n < BODYMAX; n++)
-//		body.push_back ( new solarBody() );
+	while (datafile.good()) {
+
+		cout << endl;
+		cout << "pos: " << datafile.tellg() << endl;
+
+		datafile.ignore (1024, '!');
+		datafile >> container;
+		cout << container << endl;
+
+		if (container == "solarBody") {
+			datafile >> entityName;
+			cout << entityName << endl;
+			for (rock = body.begin(); rock != body.end(); ++rock) {
+				cout << "searching...\n";
+				if ((*rock)->name == entityName) {
+					cout << "found!\n";
+					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy
+					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
+					cout << R1 << "," << G1 << "," << B1 << endl;
+					cout << (*rock)->x;
+					(*rock)->fillColor = makecol (R1, G1, B1);
+					(*rock)->atmosphereColor = makecol (R2, G2, B2);
+					(*rock)->radius *= 2;
+					(*rock)->x *= AU;
+					(*rock)->y *= AU;
+					break;
+				}
+			}
+		}
+
+		/*if (container == "craft") {
+			datafile >> entityName;
+			cout << entityName << endl;
+			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
+				cout << "searching...\n";
+				if ( (*spaceship)->name == entityName) {
+					cout << "found!\n";
+					datafile >> skipws >> (*spaceship)->x >> (*spaceship)->y >> (*spaceship)->Vx >> (*spaceship)->Vy
+					>> (*spaceship)->mass >> (*spaceship)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*spaceship)->engineRadius;
+//					cout << R1 << "," << G1 << "," << B1 << endl;
+					(*spaceship)->fillColor = makecol (R1, G1, B1);
+					(*spaceship)->engineColor = makecol (R2, G2, B2);
+					(*spaceship)->radius *= 2;
+					(*spaceship)->x *= AU;
+					(*spaceship)->y *= AU;
+				}
+			}
+		}*/
+		n++;
+	}
 
 	//radii are in meters, and are equatorial radii
 	/*body[SUN]->name = "Sun";
@@ -302,10 +366,6 @@ int main () {
 	body[SUN]->fillColor = makecol (169, 169, 169);
 	body[SUN]->atmosphereColor = makecol (169, 169, 169);
 	body[SUN]->atmosphereHeight = 7;*/
-
-	camera.zoomLevel = 0;
-	camera.x = 0;
-	camera.y = 0;
 
 //	camera.target = craft[HAB];
 	camera.target = body[EARTH];
@@ -331,7 +391,7 @@ int main () {
 
 			}
 
-			//            camera.autoZoom();
+			camera.autoZoom();
 
 			if (camera.track == true)
 				camera.shift();
@@ -362,12 +422,10 @@ int main () {
 
 	for (rock = body.begin(); rock != body.end(); ++rock)
 		delete *rock;
-
 	body.clear();
 
 	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
 		delete *spaceship;
-
 	craft.clear();
 
 
@@ -532,36 +590,29 @@ void solarBody::draw() {
 
 void ship::draw() {
 
-	float A = a();  //so that the program doesn't have to calculate a and b every time
-	float B = b();
-
-	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColor); //draws the picture to the buffer
-	line (buffer, A, B, //draws the 'engine'
-		  A + radius * cos (turnRadians) * camera.actualZoom(),
-		  B + radius * sin (turnRadians) * camera.actualZoom(),
+	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the picture to the buffer
+	line (buffer, a(), b(), //draws the 'engine'
+		  a() + radius * cos (turnRadians) * camera.actualZoom(),
+		  b() + radius * sin (turnRadians) * camera.actualZoom(),
 		  engineColor);
 }
 
 void habitat::draw() {
 
-	float A = a();  //so that the program doesn't have to calculate a and b every time
-	float B = b();
-
-
-	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColor); //draws the picture to the buffer
+	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the picture to the buffer
 	circlefill (buffer, //draws the center 'engine'
-				A + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
-				B + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
+				a() + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
+				b() + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
 				engineRadius * camera.actualZoom(),
 				engineColor);
 	circlefill (buffer, //draws the left 'engine'
-				A + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
-				B + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
+				a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
+				b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
 				engineRadius * camera.actualZoom(),
 				engineColor);
 	circlefill (buffer, //draws the right 'engine'
-				A + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-				B + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+				a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+				b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
 				engineRadius * camera.actualZoom(),
 				engineColor);
 }
@@ -604,8 +655,8 @@ void viewpoint::panY (short int direction) {
 
 void viewpoint::shift() {
 
-	x = target->x + SCREEN_H / 2;
-	y = target->y + SCREEN_W / 2;
+//	x = target->x + SCREEN_H / 2;
+//	y = target->y + SCREEN_W / 2;
 }
 
 void viewpoint::autoZoom() {
