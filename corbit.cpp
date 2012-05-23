@@ -97,10 +97,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-const unsigned short int screenWidth = 1280;  //my computer's resolution
-//const unsigned short int screenWidth = 1144;    //school resolution
-const unsigned short int screenHeight = 980;  //my computer's resolution
-//const unsigned short int screenHeight = 830;    //school resolution
+//const unsigned short int screenWidth = 1280;  //my computer's resolution
+const unsigned short int screenWidth = 1144;    //school resolution
+//const unsigned short int screenHeight = 980;  //my computer's resolution
+const unsigned short int screenHeight = 830;    //school resolution
 
 BITMAP *buffer = NULL;
 volatile int timer = 0;
@@ -300,12 +300,21 @@ int main () {
 	string entityName;
 	unsigned short int R1 = 0, R2 = 0, G1 = 0, G2 = 0, B1 = 0, B2 = 0;
 
+<<<<<<< HEAD
+=======
+	unsigned short int i = 0;
+
+>>>>>>> c76a1b7d74d227d22d07951cf96c5e122fe70341
 	n = 0;
 
-	while (datafile.good()) {
+    do {
 
 		cout << endl;
+<<<<<<< HEAD
 		datafile.ignore (4096, '!');
+=======
+		datafile.ignore (1024, '!');
+>>>>>>> c76a1b7d74d227d22d07951cf96c5e122fe70341
 		datafile >> container;
 		cout << container << endl;
 
@@ -316,12 +325,12 @@ int main () {
 				cout << "searching...\n";
 				if ((*rock)->name == entityName) {
 					cout << "found!\n";
-					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy
-					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
-					cout << R1 << "," << G1 << "," << B1 << endl;
-					cout << (*rock)->x;
-					(*rock)->fillColor = makecol (R1, G1, B1);
-					(*rock)->atmosphereColor = makecol (R2, G2, B2);
+					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy;
+//					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
+//					cout << R1 << "," << G1 << "," << B1 << endl;
+//					cout << (*rock)->x;
+//					(*rock)->fillColor = makecol (R1, G1, B1);
+//					(*rock)->atmosphereColor = makecol (R2, G2, B2);
 					(*rock)->radius *= 2;
 					(*rock)->x *= AU;
 					(*rock)->y *= AU;
@@ -348,8 +357,12 @@ int main () {
 				}
 			}
 		}
+<<<<<<< HEAD
 		n++;*/
 	}
+=======
+	} while (datafile.good());
+>>>>>>> c76a1b7d74d227d22d07951cf96c5e122fe70341
 
 	camera.target = body[EARTH];
 	camera.reference = body[EARTH];
