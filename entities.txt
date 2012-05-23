@@ -1,25 +1,17 @@
-#format goes like this
-#[container]	(solarBody)	puts this entity in the solarBody vector
-#[name]		(Earth)		specifies which item in the vector the following values apply to
-#[x]		(500)		location on x axis, wherein origin is at sun
-#[y]		(320)		location on y axis, with negative values being above origin, that's how the computer does it. Deal with it.
-#[Vx]		(124)		velocity along x axis
-#[Vy]		(431)		velocity along y axis, like before, positive values indicate descension
-#[mass]		(1.426e7)	mass, in kg
-#[diameter]	(5.8325e8)	radius (note: not diameter, because all stats are for radii, though it converts to diameter when being read into the program), in meters
-#[fillColor]	(255, 255, 255)	fill color, in RGB values
-#
-##SOLARBODY-ONLY VALUES
-#[atmspherClr]	(255, 255, 255)	atmosphere color, in RGB values
-#[atmspherHght]	(32)		height atmosphere extends beyond solar body's surface
-#
-##CRAFT-ONLY VALUES
-#[engineColor]	(255, 255, 255)	engine color, in RGB values
-#[engineRadius]	(10)		engine radius, in meters
-#
-#
 
-solarBody
+!solarBody
+Sun
+0
+0
+0
+0
+3.301e20
+1.392e9
+169 169 169
+169 169 169
+7
+
+!solarBody
 Mercury
 0.466697
 0
@@ -27,11 +19,11 @@ Mercury
 -47.87e3
 3.301e20
 2.4397e6
-169, 169, 169
-169, 169, 169
+169 169 169
+169 169 169
 7
 
-solarBody
+!solarBody
 Venus
 0.72823128
 0
@@ -43,7 +35,7 @@ Venus
 250, 235, 215
 7
 
-solarBody
+!solarBody
 Earth
 1.01671388
 0
@@ -55,7 +47,7 @@ Earth
 65, 105, 225
 7
 
-solarBody
+!solarBody
 Mars
 1.665861
 0
@@ -67,7 +59,7 @@ Mars
 255, 164, 96
 7
 
-solarBody
+!solarBody
 Jupiter
 5.458104
 0
@@ -79,7 +71,7 @@ Jupiter
 240, 184, 135
 7
 
-solarBody
+!solarBody
 Saturn
 10.11595804
 0
@@ -91,7 +83,7 @@ Saturn
 240, 230, 140
 7
 
-solarBody
+!solarBody
 Uranus
 20.08330526
 0
@@ -103,7 +95,7 @@ Uranus
 176, 224, 230
 7
 
-solarBody
+!solarBody
 Neptune
 30.44125206
 0
@@ -115,7 +107,7 @@ Neptune
 30, 144, 255
 10
 
-solarBody
+!solarBody
 Pluto
 48.871
 0
@@ -127,7 +119,7 @@ Pluto
 256, 235, 215
 7
 
-craft
+!craft
 Habitat
 0
 0
@@ -138,3 +130,24 @@ Habitat
 211, 211, 211
 139, 0, 0
 8
+
+format goes like this
+[container]	(solarBody)	puts this entity in the solarBody vector
+[name]		(Earth)		specifies which item in the vector the following values apply to
+[x]		(500)		location on x axis, wherein origin is at sun
+[y]		(320)		location on y axis, with negative values being above origin, that's how the computer does it. Deal with it.
+[Vx]		(124)		velocity along x axis
+[Vy]		(431)		velocity along y axis, like before, positive values indicate descension (i.e. the higher Vx and Vy are, the faster you are going to the bottom right)
+[mass]		(1.426e7)	mass, in kg
+[diameter]	(5.8325e8)	radius (note: not diameter, because all stats are for radii, though it converts to diameter when being read into the program), in meters
+[fillColor]	(255, 255, 255)	fill color, in RGB values
+
+#SOLARBODY-ONLY VALUES
+[atmspherClr]	(255, 255, 255)	atmosphere color, in RGB values
+[atmspherHght]	(32)		height atmosphere extends beyond solar body's surface
+
+#CRAFT-ONLY VALUES
+[engineColor]	(255, 255, 255)	engine color, in RGB values
+[engineRadius]	(10)		engine radius, in meters
+
+also, if you put an exclamation mark before something, that is a symbol for Corbit to start reading data, so don't do it unless you want to (obviously)
