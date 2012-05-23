@@ -97,10 +97,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-const unsigned short int screenWidth = 1280;  //my computer's resolution
-//const unsigned short int screenWidth = 1144;    //school resolution
-const unsigned short int screenHeight = 980;  //my computer's resolution
-//const unsigned short int screenHeight = 830;    //school resolution
+//const unsigned short int screenWidth = 1280;  //my computer's resolution
+const unsigned short int screenWidth = 1144;    //school resolution
+//const unsigned short int screenHeight = 980;  //my computer's resolution
+const unsigned short int screenHeight = 830;    //school resolution
 
 BITMAP *buffer = NULL;
 volatile int timer = 0;
@@ -302,13 +302,11 @@ int main () {
 
 	unsigned short int i = 0;
 
-	n = 1;
+	n = 0;
 
-	while (datafile.good()) {
+    do {
 
 		cout << endl;
-		cout << "pos: " << datafile.tellg() << endl;
-
 		datafile.ignore (1024, '!');
 		datafile >> container;
 		cout << container << endl;
@@ -320,12 +318,12 @@ int main () {
 				cout << "searching...\n";
 				if ((*rock)->name == entityName) {
 					cout << "found!\n";
-					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy
-					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
-					cout << R1 << "," << G1 << "," << B1 << endl;
-					cout << (*rock)->x;
-					(*rock)->fillColor = makecol (R1, G1, B1);
-					(*rock)->atmosphereColor = makecol (R2, G2, B2);
+					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy;
+//					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
+//					cout << R1 << "," << G1 << "," << B1 << endl;
+//					cout << (*rock)->x;
+//					(*rock)->fillColor = makecol (R1, G1, B1);
+//					(*rock)->atmosphereColor = makecol (R2, G2, B2);
 					(*rock)->radius *= 2;
 					(*rock)->x *= AU;
 					(*rock)->y *= AU;
@@ -334,7 +332,7 @@ int main () {
 			}
 		}
 
-		/*if (container == "craft") {
+		if (container == "craft") {
 			datafile >> entityName;
 			cout << entityName << endl;
 			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
@@ -351,9 +349,8 @@ int main () {
 					(*spaceship)->y *= AU;
 				}
 			}
-		}*/
-		n++;
-	}
+		}
+	} while (datafile.good());
 
 	//radii are in meters, and are equatorial radii
 	/*body[SUN]->name = "Sun";
