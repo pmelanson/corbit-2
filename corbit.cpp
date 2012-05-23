@@ -270,7 +270,7 @@ int main () {
 
 	//file initialization
 	ifstream datafile;
-	datafile.open ("entities.txt");
+	datafile.open ("entities.txt", ios_base::binary);
 	if (datafile.is_open())
 		cout << "datafile open\n";
 	if (datafile.good())
@@ -281,16 +281,16 @@ int main () {
 	for (n = 0; n < BODYMAX; n++)
 		body.push_back (new solarBody("Blank Body", 1337, 1337, 0, 0, 1337, 1337, makecol (50, 50, 50), makecol (100, 100, 100), 20) );
 
-	body[SUN]->name = "Sun";
-	body[MERCURY]->name = "Mercury";
-	body[VENUS]->name = "Venus";
-	body[EARTH]->name = "Earth";
-	body[MARS]->name = "Mars";
-	body[JUPITER]->name = "Jupiter";
-	body[SATURN]->name = "Saturn";
-	body[URANUS]->name = "Uranus";
-	body[NEPTUNE]->name = "Neptune";
-	body[PLUTO]->name = "Pluto";
+    body[SUN]->name = "Sun";
+    body[MERCURY]->name = "Mercury";
+    body[VENUS]->name = "Venus";
+    body[EARTH]->name = "Earth";
+    body[MARS]->name = "Mars";
+    body[JUPITER]->name = "Jupiter";
+    body[SATURN]->name = "Saturn";
+    body[URANUS]->name = "Uranus";
+    body[NEPTUNE]->name = "Neptune";
+    body[PLUTO]->name = "Pluto";
 
 	craft.push_back (new habitat("Blank Hab", -1337, -1337, 0, 0, 1337, 1337, makecol (50, 50, 50), 0, makecol (100, 100, 100), 20) );
 
@@ -300,20 +300,16 @@ int main () {
 	string entityName;
 	unsigned short int R1 = 0, R2 = 0, G1 = 0, G2 = 0, B1 = 0, B2 = 0;
 
-	unsigned short int i = 0;
-
-	n = 1;
+	n = 0;
 
 	while (datafile.good()) {
 
 		cout << endl;
-		cout << "pos: " << datafile.tellg() << endl;
-
-		datafile.ignore (1024, '!');
+		datafile.ignore (4096, '!');
 		datafile >> container;
 		cout << container << endl;
 
-		if (container == "solarBody") {
+		/*if (container == "solarBody") {
 			datafile >> entityName;
 			cout << entityName << endl;
 			for (rock = body.begin(); rock != body.end(); ++rock) {
@@ -334,16 +330,16 @@ int main () {
 			}
 		}
 
-		/*if (container == "craft") {
+		if (container == "craft") {
 			datafile >> entityName;
 			cout << entityName << endl;
 			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
 				cout << "searching...\n";
 				if ( (*spaceship)->name == entityName) {
 					cout << "found!\n";
-					datafile >> skipws >> (*spaceship)->x >> (*spaceship)->y >> (*spaceship)->Vx >> (*spaceship)->Vy
+					datafile >> (*spaceship)->x >> (*spaceship)->y >> (*spaceship)->Vx >> (*spaceship)->Vy
 					>> (*spaceship)->mass >> (*spaceship)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*spaceship)->engineRadius;
-//					cout << R1 << "," << G1 << "," << B1 << endl;
+					cout << R1 << "," << G1 << "," << B1 << endl;
 					(*spaceship)->fillColor = makecol (R1, G1, B1);
 					(*spaceship)->engineColor = makecol (R2, G2, B2);
 					(*spaceship)->radius *= 2;
@@ -351,23 +347,10 @@ int main () {
 					(*spaceship)->y *= AU;
 				}
 			}
-		}*/
-		n++;
+		}
+		n++;*/
 	}
 
-	//radii are in meters, and are equatorial radii
-	/*body[SUN]->name = "Sun";
-	body[SUN]->x = 0 * AU;
-	body[SUN]->y = 0;
-	body[SUN]->Vx = 0;
-	body[SUN]->Vy = 0;
-	body[SUN]->mass = 3.301e20;
-	body[SUN]->radius = 1.392e9;
-	body[SUN]->fillColor = makecol (169, 169, 169);
-	body[SUN]->atmosphereColor = makecol (169, 169, 169);
-	body[SUN]->atmosphereHeight = 7;*/
-
-//	camera.target = craft[HAB];
 	camera.target = body[EARTH];
 	camera.reference = body[EARTH];
 
@@ -378,8 +361,8 @@ int main () {
 
 			input();
 
-//            gravitate();
-//            detectCollision();
+            gravitate();
+            detectCollision();
 
 			for (rock = body.begin(); rock != body.end(); ++rock)
 				(*rock)->move();
@@ -391,7 +374,7 @@ int main () {
 
 			}
 
-			camera.autoZoom();
+			            camera.autoZoom();
 
 			if (camera.track == true)
 				camera.shift();
@@ -415,7 +398,7 @@ int main () {
 
 	}
 
-	//end of program
+	///end of program///
 	destroy_bitmap (buffer);
 	release_screen();
 
