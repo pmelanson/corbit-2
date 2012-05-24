@@ -93,14 +93,15 @@ Isn't that an awesome license? I like it.
 #include "version.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string.h>
 using namespace std;
 
 //globals
-//const unsigned short int screenWidth = 1280;  //my computer's resolution
-const unsigned short int screenWidth = 1144;    //school resolution
-//const unsigned short int screenHeight = 980;  //my computer's resolution
-const unsigned short int screenHeight = 830;    //school resolution
+const unsigned short int screenWidth = 1280;  //my computer's resolution
+//const unsigned short int screenWidth = 1144;    //school resolution
+const unsigned short int screenHeight = 980;  //my computer's resolution
+//const unsigned short int screenHeight = 830;    //school resolution
 
 BITMAP *buffer = NULL;
 volatile int timer = 0;
@@ -175,8 +176,8 @@ struct physical { //stores data about any physical physical, such as mass and ra
 
 	string name;    //I love C++ over C so much for this
 
-	long int mass;
-	unsigned int radius;   //mass of physical, to be used in calculation F=ma, and radius of physical
+	double mass;
+	double radius;   //mass of physical, to be used in calculation F=ma, and radius of physical
 	long double x, y; //the center of the physical
 	long int a();
 	long int b();
@@ -240,7 +241,7 @@ struct habitat : ship {
 	{}
 };
 
-viewpoint camera (  18,             0.01,       30,     1e-10,  10);   //constructor initializes consts in the order they are declared, which is...
+viewpoint camera (  18,             0.01,       30,     1e-12,  10);   //constructor initializes consts in the order they are declared, which is...
 //                  zoomMagnitude   zoomStep    maxZoom minZoom panSpeed
 
 display HUD (   18);    //constructor initializes consts in the order they are declared, which is...
@@ -270,7 +271,7 @@ int main () {
 
 	//file initialization
 	ifstream datafile;
-	datafile.open ("entities.txt", ios_base::binary);
+	datafile.open ("entities.txt");
 	if (datafile.is_open())
 		cout << "datafile open\n";
 	if (datafile.good())
@@ -278,77 +279,133 @@ int main () {
 	cout << datafile.peek() << endl;
 
 	//data initializations
-	for (n = 0; n < BODYMAX; n++)
-		body.push_back (new solarBody("Blank Body", 1337, 1337, 0, 0, 1337, 1337, makecol (50, 50, 50), makecol (100, 100, 100), 20) );
-
-    body[SUN]->name = "Sun";
-    body[MERCURY]->name = "Mercury";
-    body[VENUS]->name = "Venus";
-    body[EARTH]->name = "Earth";
-    body[MARS]->name = "Mars";
-    body[JUPITER]->name = "Jupiter";
-    body[SATURN]->name = "Saturn";
-    body[URANUS]->name = "Uranus";
-    body[NEPTUNE]->name = "Neptune";
-    body[PLUTO]->name = "Pluto";
-
-	craft.push_back (new habitat("Blank Hab", -1337, -1337, 0, 0, 1337, 1337, makecol (50, 50, 50), 0, makecol (100, 100, 100), 20) );
-
-	craft[HAB]->name = "Habitat";
-
-	string container;
-	string entityName;
+	string line;
 	unsigned short int R1 = 0, R2 = 0, G1 = 0, G2 = 0, B1 = 0, B2 = 0;
 
-<<<<<<< HEAD
-=======
-	unsigned short int i = 0;
+	datafile.ignore (4096, '!');
 
->>>>>>> c76a1b7d74d227d22d07951cf96c5e122fe70341
-	n = 0;
+	istringstream iss (line);
 
-    do {
+	while (getline (datafile, line)) { //each loop through this reads in an entity
 
 		cout << endl;
-<<<<<<< HEAD
-		datafile.ignore (4096, '!');
-=======
-		datafile.ignore (1024, '!');
->>>>>>> c76a1b7d74d227d22d07951cf96c5e122fe70341
-		datafile >> container;
-		cout << container << endl;
+		cout << endl << line;
 
-		/*if (container == "solarBody") {
+		if (line == "solarBody") {
+
+			getline (datafile, line); // was able to read a line
+
+			for (rock = body.begin(); rock != body.end(); ++rock) {
+				cout << "searching...\n";
+				if ((*rock)->name == line)
+					cout << " " << (*rock)->name;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double x = 0;
+
+				if (iss >> x) // was able to parse the number
+					(*rock)->x = x * AU;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double y = 0;
+
+				if (iss >> y) // was able to parse the number
+					(*rock)->y = y * AU;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double Vx = 0;
+
+				if (iss >> Vx) // was able to parse the number
+					(*rock)->Vx = Vx;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double Vy = 0;
+
+				if (iss >> Vy) // was able to parse the number
+					(*rock)->Vy = Vy;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double mass = 0;
+
+				if (iss >> mass) // was able to parse the number
+					(*rock)->mass = mass;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double radius = 0;
+
+				if (iss >> radius) // was able to parse the number
+					(*rock)->radius = radius * 2;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				unsigned short int R = 0, G = 0, B = 0;
+
+				if (iss >> R >> G >> B) // was able to parse the number
+					(*rock)->fillColor = makecol (R, G, B);
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				unsigned short int R = 0, G = 0, B = 0;
+
+				if (iss >> R >> G >> B) // was able to parse the number
+					(*rock)->atmosphereColor = makecol (R, G, B);
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double atmosphereColor = 0;
+
+				if (iss >> atmosphereColor) // was able to parse the number
+					(*rock)->atmosphereColor = atmosphereColor;
+			}
+
+			break;
+		}
+		/*if (line == "solarBody") {
 			datafile >> entityName;
 			cout << entityName << endl;
 			for (rock = body.begin(); rock != body.end(); ++rock) {
 				cout << "searching...\n";
 				if ((*rock)->name == entityName) {
 					cout << "found!\n";
-					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy;
-//					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
-//					cout << R1 << "," << G1 << "," << B1 << endl;
-//					cout << (*rock)->x;
-//					(*rock)->fillColor = makecol (R1, G1, B1);
-//					(*rock)->atmosphereColor = makecol (R2, G2, B2);
+		//					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy
+		//					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
+					cout << R1 << "," << G1 << "," << B1 << endl;
+					(*rock)->fillColor = makecol (R1, G1, B1);
+					(*rock)->atmosphereColor = makecol (R2, G2, B2);
 					(*rock)->radius *= 2;
 					(*rock)->x *= AU;
 					(*rock)->y *= AU;
 					break;
 				}
 			}
-		}
+		}*/
 
-		if (container == "craft") {
+		/*if (line == "craft") {
 			datafile >> entityName;
 			cout << entityName << endl;
 			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
 				cout << "searching...\n";
 				if ( (*spaceship)->name == entityName) {
 					cout << "found!\n";
-					datafile >> (*spaceship)->x >> (*spaceship)->y >> (*spaceship)->Vx >> (*spaceship)->Vy
+					datafile >> skipws >> (*spaceship)->x >> (*spaceship)->y >> (*spaceship)->Vx >> (*spaceship)->Vy
 					>> (*spaceship)->mass >> (*spaceship)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*spaceship)->engineRadius;
 					cout << R1 << "," << G1 << "," << B1 << endl;
+					cout << R2 << "," << G2 << "," << B2 << endl;
 					(*spaceship)->fillColor = makecol (R1, G1, B1);
 					(*spaceship)->engineColor = makecol (R2, G2, B2);
 					(*spaceship)->radius *= 2;
@@ -356,14 +413,14 @@ int main () {
 					(*spaceship)->y *= AU;
 				}
 			}
-		}
-<<<<<<< HEAD
-		n++;*/
-	}
-=======
-	} while (datafile.good());
->>>>>>> c76a1b7d74d227d22d07951cf96c5e122fe70341
+		}*/
 
+		datafile.ignore (1024, '!');
+	}
+
+	//radii are in meters, and are equatorial radii
+
+//	camera.target = craft[HAB];
 	camera.target = body[EARTH];
 	camera.reference = body[EARTH];
 
@@ -374,8 +431,8 @@ int main () {
 
 			input();
 
-            gravitate();
-            detectCollision();
+//            gravitate();
+//            detectCollision();
 
 			for (rock = body.begin(); rock != body.end(); ++rock)
 				(*rock)->move();
@@ -387,7 +444,7 @@ int main () {
 
 			}
 
-			            camera.autoZoom();
+			camera.autoZoom();
 
 			if (camera.track == true)
 				camera.shift();
@@ -411,17 +468,17 @@ int main () {
 
 	}
 
-	///end of program///
+	//end of program
 	destroy_bitmap (buffer);
 	release_screen();
 
 
 	for (rock = body.begin(); rock != body.end(); ++rock)
-		delete *rock;
+		delete * rock;
 	body.clear();
 
 	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
-		delete *spaceship;
+		delete * spaceship;
 	craft.clear();
 
 
