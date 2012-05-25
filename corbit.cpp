@@ -93,6 +93,7 @@ Isn't that an awesome license? I like it.
 #include "version.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string.h>
 using namespace std;
 
@@ -175,8 +176,8 @@ struct physical { //stores data about any physical physical, such as mass and ra
 
 	string name;    //I love C++ over C so much for this
 
-	long int mass;
-	unsigned int radius;   //mass of physical, to be used in calculation F=ma, and radius of physical
+	double mass;
+	double radius;   //mass of physical, to be used in calculation F=ma, and radius of physical
 	long double x, y; //the center of the physical
 	long int a();
 	long int b();
@@ -184,7 +185,6 @@ struct physical { //stores data about any physical physical, such as mass and ra
 	long int distance (long double x, long double y);
 	void move();   //moves physical
 
-	long double radians;    //the degree at which the physical is velocitying [sic] from the right, in radians
 	long double accX (long double radians, long double acc); //the physical's acceleration (m/s/s) along the x axis
 	long double accY (long double radians, long double acc); //''
 	long double Vx, Vy;   //the physical's speed (m/s) along each axis
@@ -192,7 +192,6 @@ struct physical { //stores data about any physical physical, such as mass and ra
 
 	void turn();   //turns the physical
 	long double turnRate; //rate at which the physical turns
-	double degrees();  //normal degrees (360 in a circle) at which the physical is rotated from facing right
 
 	virtual void draw();    //draws physical
 	unsigned int fillColor;
@@ -225,9 +224,9 @@ struct ship : physical {  //stores information about a pilotable ship, in additi
 
 	virtual void draw();
 
-	ship (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, float _engine, unsigned int _engineColor, unsigned short int _engineRadius) :
+	ship (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
 		physical (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
-		engine (_engine), engineColor (_engineColor), engineRadius (_engineRadius)
+		engine (0), engineColor (_engineColor), engineRadius (_engineRadius)
 	{}
 };
 
@@ -235,8 +234,8 @@ struct habitat : ship {
 
 	void draw();
 
-	habitat (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, float _engine, unsigned int _engineColor, unsigned short int _engineRadius) :
-		ship (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, _engine, _engineColor, _engineRadius)
+	habitat (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
+		ship (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, _engineColor, _engineRadius)
 	{}
 };
 
@@ -278,105 +277,159 @@ int main () {
 	cout << datafile.peek() << endl;
 
 	//data initializations
-	for (n = 0; n < BODYMAX; n++)
-		body.push_back (new solarBody("Blank Body", 1337, 1337, 0, 0, 1337, 1337, makecol (50, 50, 50), makecol (100, 100, 100), 20) );
-
-	body[SUN]->name = "Sun";
-	body[MERCURY]->name = "Mercury";
-	body[VENUS]->name = "Venus";
-	body[EARTH]->name = "Earth";
-	body[MARS]->name = "Mars";
-	body[JUPITER]->name = "Jupiter";
-	body[SATURN]->name = "Saturn";
-	body[URANUS]->name = "Uranus";
-	body[NEPTUNE]->name = "Neptune";
-	body[PLUTO]->name = "Pluto";
-
-	craft.push_back (new habitat("Blank Hab", -1337, -1337, 0, 0, 1337, 1337, makecol (50, 50, 50), 0, makecol (100, 100, 100), 20) );
-
-	craft[HAB]->name = "Habitat";
-
-	string container;
-	string entityName;
+	string line;
 	unsigned short int R1 = 0, R2 = 0, G1 = 0, G2 = 0, B1 = 0, B2 = 0;
 
-	unsigned short int i = 0;
+	datafile.ignore (4096, '!');
+	istringstream iss (line);
 
-	n = 0;
+	while (getline (datafile, line)) { //each loop through this reads in an entity
 
-    do {
+		string container = "";
+		string name = "";
+		long double x = 0;
+		long double y = 0;
+		long double Vx = 0;
+		long double Vy = 0;
+		long double mass = 0;
+		long double radius = 0;
+		unsigned short int R = 12, G = 12, B = 12;
+		unsigned short int R2 = 13, G2 = 13, B2 = 13;
+		unsigned int fillColor;
+		unsigned int specialColor;
+		long double specialRadius = 0;
 
 		cout << endl;
-		datafile.ignore (1024, '!');
-		datafile >> container;
-		cout << container << endl;
+		cout << endl << line;
+		istringstream iss (line);
+		iss >> container;
+
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+
+			if (iss >> name); // was able to parse the data
+			cout << " " << name;
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+
+			if (iss >> x) // was able to parse the number
+				x *= AU;
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+
+			if (iss >> y) // was able to parse the number
+				y *= AU;
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+
+			if (iss >> Vx); // was able to parse the number
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+
+			if (iss >> Vy); // was able to parse the number
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+
+			if (iss >> mass); // was able to parse the number
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+
+			if (iss >> radius) // was able to parse the number
+				radius *= 2;
+		}
+
+		if (getline (datafile, line)) {
+			istringstream iss (line);
+
+			if (iss >> R) {
+				iss.ignore (2, ',');
+				if (iss >> G) {
+					iss.ignore (2, ',');
+					if (iss >> B)
+						specialColor = makecol (R, G, B);
+				}
+			}
+		}
+
+		if (getline (datafile, line)) {
+			istringstream iss (line);
+
+			if (iss >> R2) {
+				iss.ignore (2, ',');
+				if (iss >> G2) {
+					iss.ignore (2, ',');
+					if (iss >> B2)
+						specialColor = makecol (R2, G2, B2);
+				}
+			}
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+
+			if (iss >> specialRadius); // was able to parse the number
+		}
 
 		if (container == "solarBody") {
-			datafile >> entityName;
-			cout << entityName << endl;
-			for (rock = body.begin(); rock != body.end(); ++rock) {
-				cout << "searching...\n";
-				if ((*rock)->name == entityName) {
-					cout << "found!\n";
-					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy;
-//					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
-//					cout << R1 << "," << G1 << "," << B1 << endl;
-//					cout << (*rock)->x;
-//					(*rock)->fillColor = makecol (R1, G1, B1);
-//					(*rock)->atmosphereColor = makecol (R2, G2, B2);
-					(*rock)->radius *= 2;
-					(*rock)->x *= AU;
-					(*rock)->y *= AU;
-					break;
-				}
-			}
+			body.push_back (new solarBody (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
+
+			cout << "\nBody initialized, with data of\nx = " << x << endl;
+			cout << "y = " << y << endl;
+			cout << "Vx = " << Vx << endl;
+			cout << "Vy = " << Vy << endl;
+			cout << "mass = " << mass << endl;
+			cout << "radius = " << radius << endl;
+			cout << "fillColor = " << R << ", " << G << ", " << B << ", " << endl;;
+			cout << "atmosphereColor = " << R2 << ", " << G2 << ", " << B2 << ", " << endl;
+			cout << "atmosphereHeight = " << specialRadius << endl;
 		}
 
-		if (container == "craft") {
-			datafile >> entityName;
-			cout << entityName << endl;
-			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-				cout << "searching...\n";
-				if ( (*spaceship)->name == entityName) {
-					cout << "found!\n";
-					datafile >> skipws >> (*spaceship)->x >> (*spaceship)->y >> (*spaceship)->Vx >> (*spaceship)->Vy
-					>> (*spaceship)->mass >> (*spaceship)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*spaceship)->engineRadius;
-//					cout << R1 << "," << G1 << "," << B1 << endl;
-					(*spaceship)->fillColor = makecol (R1, G1, B1);
-					(*spaceship)->engineColor = makecol (R2, G2, B2);
-					(*spaceship)->radius *= 2;
-					(*spaceship)->x *= AU;
-					(*spaceship)->y *= AU;
-				}
+		if (container == "ship")
+			if (name == "Habitat") {
+				craft.push_back (new habitat (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
+				cout << "\nHabitat initialized, with data of\nx = " << x << endl;
+				cout << "y = " << y << endl;
+				cout << "Vx = " << Vx << endl;
+				cout << "Vy = " << Vy << endl;
+				cout << "mass = " << mass << endl;
+				cout << "radius = " << radius << endl;
+				cout << "fillColor = " << R << ", " << G << ", " << B << ", " << endl;
+				cout << "engine = " << 0 << endl;
+				cout << "engineColor = " << R2 << ", " << G2 << ", " << B2 << ", " << endl;
+				cout << "engineRadius = " << specialRadius << endl;
 			}
-		}
-	} while (datafile.good());
 
-	//radii are in meters, and are equatorial radii
-	/*body[SUN]->name = "Sun";
-	body[SUN]->x = 0 * AU;
-	body[SUN]->y = 0;
-	body[SUN]->Vx = 0;
-	body[SUN]->Vy = 0;
-	body[SUN]->mass = 3.301e20;
-	body[SUN]->radius = 1.392e9;
-	body[SUN]->fillColor = makecol (169, 169, 169);
-	body[SUN]->atmosphereColor = makecol (169, 169, 169);
-	body[SUN]->atmosphereHeight = 7;*/
+		datafile.ignore (4096, '!');
+	}
 
-//	camera.target = craft[HAB];
-	camera.target = body[EARTH];
+//radii are in meters, and are equatorial radii
+
+	camera.target = craft[HAB];
+//	camera.target = body[EARTH];
 	camera.reference = body[EARTH];
 
-	///PROGRAM STARTS HERE///
+///PROGRAM STARTS HERE///
 	while (!key[KEY_ESC]) {
 
 		while (timer > 0) {
 
 			input();
 
-//            gravitate();
-//            detectCollision();
+			gravitate();
+			detectCollision();
 
 			for (rock = body.begin(); rock != body.end(); ++rock)
 				(*rock)->move();
@@ -385,6 +438,7 @@ int main () {
 				(*spaceship)->turn();
 				(*spaceship)->fireEngine();
 				(*spaceship)->move();
+
 
 			}
 
@@ -412,21 +466,21 @@ int main () {
 
 	}
 
-	//end of program
+//end of program
 	destroy_bitmap (buffer);
 	release_screen();
 
 
 	for (rock = body.begin(); rock != body.end(); ++rock)
-		delete *rock;
+		delete * rock;
 	body.clear();
 
 	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
-		delete *spaceship;
+		delete * spaceship;
 	craft.clear();
 
 
-	return (0);
+	return 0;
 }
 END_OF_MAIN();
 
@@ -524,11 +578,6 @@ void ship::fireEngine() {
 	accY (turnRadians, engine);
 }
 
-double physical::degrees() {
-
-	return (radians * 180 / PI);
-}
-
 void physical::turn () {
 
 	turnRadians += turnRate;
@@ -598,8 +647,8 @@ void habitat::draw() {
 
 	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the picture to the buffer
 	circlefill (buffer, //draws the center 'engine'
-				a() + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
-				b() + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
+                a() + radius * cos (turnRadians - (PI) ) * camera.actualZoom(),
+				b() + radius * sin (turnRadians - (PI) ) * camera.actualZoom(),
 				engineRadius * camera.actualZoom(),
 				engineColor);
 	circlefill (buffer, //draws the left 'engine'
@@ -647,13 +696,13 @@ void viewpoint::panX (short int direction) {
 
 void viewpoint::panY (short int direction) {
 
-	y += panSpeed / (actualZoom() * actualZoom() ) * direction;
+	y += panSpeed / actualZoom() * actualZoom() * direction;
 }
 
 void viewpoint::shift() {
 
-//	x = target->x + SCREEN_H / 2;
-//	y = target->y + SCREEN_W / 2;
+	x = target->x;
+	y = target->y;
 }
 
 void viewpoint::autoZoom() {
@@ -811,4 +860,22 @@ void gravitate () { //calculates gravitational forces, and accelerates, between 
 //
 //
 //	}
+}
+
+void iterate (void transform() ) {
+
+    vector <ship*>::iterator spaceship, _spaceship;
+	vector <solarBody*>::iterator rock, _rock;
+
+    for (spaceship = craft.begin; spaceship != craft.end; ++spaceship){
+        for (_spaceship = craft.begin; _spaceship != craft.end; ++_spaceship)
+
+
+
+
+
+    }
+
+
+
 }
