@@ -98,10 +98,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-//const unsigned short int screenWidth = 1280;  //my computer's resolution
-const unsigned short int screenWidth = 1144;    //school resolution
-//const unsigned short int screenHeight = 980;  //my computer's resolution
-const unsigned short int screenHeight = 830;    //school resolution
+const unsigned short int screenWidth = 1280;  //my computer's resolution
+//const unsigned short int screenWidth = 1144;    //school resolution
+const unsigned short int screenHeight = 980;  //my computer's resolution
+//const unsigned short int screenHeight = 830;    //school resolution
 
 BITMAP *buffer = NULL;
 volatile int timer = 0;
@@ -239,7 +239,7 @@ struct habitat : ship {
 	{}
 };
 
-viewpoint camera (  18,             0.01,       30,     1e-10,  10);   //constructor initializes consts in the order they are declared, which is...
+viewpoint camera (  18,             0.01,       30,     1e-12,  10);   //constructor initializes consts in the order they are declared, which is...
 //                  zoomMagnitude   zoomStep    maxZoom minZoom panSpeed
 
 display HUD (   18);    //constructor initializes consts in the order they are declared, which is...
@@ -281,6 +281,7 @@ int main () {
 	unsigned short int R1 = 0, R2 = 0, G1 = 0, G2 = 0, B1 = 0, B2 = 0;
 
 	datafile.ignore (4096, '!');
+<<<<<<< HEAD
 	istringstream iss (line);
 
 	while (getline (datafile, line)) { //each loop through this reads in an entity
@@ -360,10 +361,121 @@ int main () {
 					iss.ignore (2, ',');
 					if (iss >> B)
 						specialColor = makecol (R, G, B);
+=======
+
+	istringstream iss (line);
+
+	while (getline (datafile, line)) { //each loop through this reads in an entity
+
+		cout << endl;
+		cout << endl << line;
+
+		if (line == "solarBody") {
+
+			getline (datafile, line); // was able to read a line
+
+			for (rock = body.begin(); rock != body.end(); ++rock) {
+				cout << "searching...\n";
+				if ((*rock)->name == line)
+					cout << " " << (*rock)->name;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double x = 0;
+
+				if (iss >> x) // was able to parse the number
+					(*rock)->x = x * AU;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double y = 0;
+
+				if (iss >> y) // was able to parse the number
+					(*rock)->y = y * AU;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double Vx = 0;
+
+				if (iss >> Vx) // was able to parse the number
+					(*rock)->Vx = Vx;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double Vy = 0;
+
+				if (iss >> Vy) // was able to parse the number
+					(*rock)->Vy = Vy;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double mass = 0;
+
+				if (iss >> mass) // was able to parse the number
+					(*rock)->mass = mass;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double radius = 0;
+
+				if (iss >> radius) // was able to parse the number
+					(*rock)->radius = radius * 2;
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				unsigned short int R = 0, G = 0, B = 0;
+
+				if (iss >> R >> G >> B) // was able to parse the number
+					(*rock)->fillColor = makecol (R, G, B);
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				unsigned short int R = 0, G = 0, B = 0;
+
+				if (iss >> R >> G >> B) // was able to parse the number
+					(*rock)->atmosphereColor = makecol (R, G, B);
+			}
+
+			if (getline (datafile, line)) { // was able to read a line
+				istringstream iss (line);
+				long double atmosphereColor = 0;
+
+				if (iss >> atmosphereColor) // was able to parse the number
+					(*rock)->atmosphereColor = atmosphereColor;
+			}
+
+			break;
+		}
+		/*if (line == "solarBody") {
+			datafile >> entityName;
+			cout << entityName << endl;
+			for (rock = body.begin(); rock != body.end(); ++rock) {
+				cout << "searching...\n";
+				if ((*rock)->name == entityName) {
+					cout << "found!\n";
+		//					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy
+		//					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
+					cout << R1 << "," << G1 << "," << B1 << endl;
+					(*rock)->fillColor = makecol (R1, G1, B1);
+					(*rock)->atmosphereColor = makecol (R2, G2, B2);
+					(*rock)->radius *= 2;
+					(*rock)->x *= AU;
+					(*rock)->y *= AU;
+					break;
+>>>>>>> bc8edd9948071fbad3d135ec75a1df790b0ad5cc
 				}
 			}
-		}
+		}*/
 
+<<<<<<< HEAD
 		if (getline (datafile, line)) {
 			istringstream iss (line);
 
@@ -419,6 +531,35 @@ int main () {
 
 	camera.target = craft[HAB];
 //	camera.target = body[EARTH];
+=======
+		/*if (line == "craft") {
+			datafile >> entityName;
+			cout << entityName << endl;
+			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
+				cout << "searching...\n";
+				if ( (*spaceship)->name == entityName) {
+					cout << "found!\n";
+					datafile >> skipws >> (*spaceship)->x >> (*spaceship)->y >> (*spaceship)->Vx >> (*spaceship)->Vy
+					>> (*spaceship)->mass >> (*spaceship)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*spaceship)->engineRadius;
+					cout << R1 << "," << G1 << "," << B1 << endl;
+					cout << R2 << "," << G2 << "," << B2 << endl;
+					(*spaceship)->fillColor = makecol (R1, G1, B1);
+					(*spaceship)->engineColor = makecol (R2, G2, B2);
+					(*spaceship)->radius *= 2;
+					(*spaceship)->x *= AU;
+					(*spaceship)->y *= AU;
+				}
+			}
+		}*/
+
+		datafile.ignore (1024, '!');
+	}
+
+	//radii are in meters, and are equatorial radii
+
+//	camera.target = craft[HAB];
+	camera.target = body[EARTH];
+>>>>>>> bc8edd9948071fbad3d135ec75a1df790b0ad5cc
 	camera.reference = body[EARTH];
 
 ///PROGRAM STARTS HERE///
