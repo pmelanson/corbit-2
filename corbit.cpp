@@ -125,6 +125,10 @@ void gravitate();
 void drawGrid();
 void detectCollision();
 void iterate (void transform() );
+void dataRead (double &var, ifstream &datafile);
+void dataRead (long double &var, ifstream &datafile);
+void dataRead (unsigned int &var, ifstream &datafile);
+void dataRead (string &var, ifstream &datafile);
 
 //beginning of class declarations
 class viewpoint {
@@ -276,144 +280,97 @@ int main () {
 		cout << "datafile open\n";
 	if (datafile.good())
 		cout << "datafile good\n";
-	cout << datafile.peek() << endl;
 
 	//data initializations
 	string line;
-	unsigned short int R1 = 0, R2 = 0, G1 = 0, G2 = 0, B1 = 0, B2 = 0;
+	unsigned short int R = 0, G = 0, B = 0;
 
 	datafile.ignore (4096, '!');
-
-	istringstream iss (line);
 
 	while (getline (datafile, line)) { //each loop through this reads in an entity
 
 		cout << endl;
 		cout << endl << line;
 
-		if (line == "solarBody") {
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			long double x = 0;
 
-			getline (datafile, line); // was able to read a line
-
-			for (rock = body.begin(); rock != body.end(); ++rock) {
-				cout << "searching...\n";
-				if ((*rock)->name == line)
-					cout << " " << (*rock)->name;
-			}
-
-			if (getline (datafile, line)) { // was able to read a line
-				istringstream iss (line);
-				long double x = 0;
-
-				if (iss >> x) // was able to parse the number
-					(*rock)->x = x * AU;
-			}
-
-			if (getline (datafile, line)) { // was able to read a line
-				istringstream iss (line);
-				long double y = 0;
-
-				if (iss >> y) // was able to parse the number
-					(*rock)->y = y * AU;
-			}
-
-			if (getline (datafile, line)) { // was able to read a line
-				istringstream iss (line);
-				long double Vx = 0;
-
-				if (iss >> Vx) // was able to parse the number
-					(*rock)->Vx = Vx;
-			}
-
-			if (getline (datafile, line)) { // was able to read a line
-				istringstream iss (line);
-				long double Vy = 0;
-
-				if (iss >> Vy) // was able to parse the number
-					(*rock)->Vy = Vy;
-			}
-
-			if (getline (datafile, line)) { // was able to read a line
-				istringstream iss (line);
-				long double mass = 0;
-
-				if (iss >> mass) // was able to parse the number
-					(*rock)->mass = mass;
-			}
-
-			if (getline (datafile, line)) { // was able to read a line
-				istringstream iss (line);
-				long double radius = 0;
-
-				if (iss >> radius) // was able to parse the number
-					(*rock)->radius = radius * 2;
-			}
-
-			if (getline (datafile, line)) { // was able to read a line
-				istringstream iss (line);
-				unsigned short int R = 0, G = 0, B = 0;
-
-				if (iss >> R >> G >> B) // was able to parse the number
-					(*rock)->fillColor = makecol (R, G, B);
-			}
-
-			if (getline (datafile, line)) { // was able to read a line
-				istringstream iss (line);
-				unsigned short int R = 0, G = 0, B = 0;
-
-				if (iss >> R >> G >> B) // was able to parse the number
-					(*rock)->atmosphereColor = makecol (R, G, B);
-			}
-
-			if (getline (datafile, line)) { // was able to read a line
-				istringstream iss (line);
-				long double atmosphereColor = 0;
-
-				if (iss >> atmosphereColor) // was able to parse the number
-					(*rock)->atmosphereColor = atmosphereColor;
-			}
-
-			break;
+			if (iss >> x) // was able to parse the number
+				(*rock)->x = x * AU;
 		}
-		/*if (line == "solarBody") {
-			datafile >> entityName;
-			cout << entityName << endl;
-			for (rock = body.begin(); rock != body.end(); ++rock) {
-				cout << "searching...\n";
-				if ((*rock)->name == entityName) {
-					cout << "found!\n";
-		//					datafile >> skipws >> (*rock)->x >> (*rock)->y >> (*rock)->Vx >> (*rock)->Vy
-		//					>> (*rock)->mass >> (*rock)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*rock)->atmosphereHeight;
-					cout << R1 << "," << G1 << "," << B1 << endl;
-					(*rock)->fillColor = makecol (R1, G1, B1);
-					(*rock)->atmosphereColor = makecol (R2, G2, B2);
-					(*rock)->radius *= 2;
-					(*rock)->x *= AU;
-					(*rock)->y *= AU;
-					break;
-				}
-			}
-		}*/
 
-		/*if (line == "craft") {
-			datafile >> entityName;
-			cout << entityName << endl;
-			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-				cout << "searching...\n";
-				if ( (*spaceship)->name == entityName) {
-					cout << "found!\n";
-					datafile >> skipws >> (*spaceship)->x >> (*spaceship)->y >> (*spaceship)->Vx >> (*spaceship)->Vy
-					>> (*spaceship)->mass >> (*spaceship)->radius >> R1 >> G1 >> B1 >> R2 >> G2 >> B2 >> (*spaceship)->engineRadius;
-					cout << R1 << "," << G1 << "," << B1 << endl;
-					cout << R2 << "," << G2 << "," << B2 << endl;
-					(*spaceship)->fillColor = makecol (R1, G1, B1);
-					(*spaceship)->engineColor = makecol (R2, G2, B2);
-					(*spaceship)->radius *= 2;
-					(*spaceship)->x *= AU;
-					(*spaceship)->y *= AU;
-				}
-			}
-		}*/
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			long double y = 0;
+
+			if (iss >> y) // was able to parse the number
+				(*rock)->y = y * AU;
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			long double Vx = 0;
+
+			if (iss >> Vx) // was able to parse the number
+				(*rock)->Vx = Vx;
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			long double Vy = 0;
+
+			if (iss >> Vy) // was able to parse the number
+				(*rock)->Vy = Vy;
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			long double mass = 0;
+
+			if (iss >> mass) // was able to parse the number
+				(*rock)->mass = mass;
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			long double radius = 0;
+
+			if (iss >> radius) // was able to parse the number
+				(*rock)->radius = radius * 2;
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			unsigned short int R = 0, G = 0, B = 0;
+
+			if (iss >> R >> G >> B) // was able to parse the number
+				(*rock)->fillColor = makecol (R, G, B);
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			unsigned short int R = 0, G = 0, B = 0;
+
+			if (iss >> R >> G >> B) // was able to parse the number
+				(*rock)->atmosphereColor = makecol (R, G, B);
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			long double specialColor = 0;
+
+			if (iss >> specialColor) // was able to parse the number
+				(*rock)->atmosphereColor = specialColor;
+		}
+
+		if (getline (datafile, line)) { // was able to read a line
+			istringstream iss (line);
+			long double specialRadius = 0;
+
+			if (iss >> specialRadius) // was able to parse the number
+				(*rock)->atmosphereHeight = specialRadius;
+		}
 
 		datafile.ignore (1024, '!');
 	}
@@ -545,6 +502,12 @@ void input () {
 
 	if (key[KEY_TAB])
 		camera.track = !camera.track;
+
+    if (key[KEY_OPENBRACE])
+        cout << "open brace!\n";
+
+    if (key[KEY_CLOSEBRACE])
+        cout << "close brace!\n";
 }
 
 void debug() {
@@ -681,7 +644,7 @@ void display::drawGrid () {  //draws a grid to the screen, later on I will be ma
 
 void display::drawHUD () {
 
-//will fill this in later
+    const vBoxY = 0, vectorBoxY = vBoxY + 100, thetaBoxY = vectorBoxY + 100, refBoxY = thetaBoxY + 200; //where the top of each section will be drawn. vBox = velocity, vectorBox = vectors, thetaBox = angles, refBox = references, targets, navmodes
 
 
 }
