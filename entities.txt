@@ -25,7 +25,7 @@ also x 3, the order you put entities in doesn't matter, but if you put them in, 
 
 !solarBody
 Sun
-0
+1
 0
 0
 0
@@ -143,7 +143,7 @@ Pluto
 169 169 169
 7
 
-!craft
+!ship
 Habitat
 0
 0
@@ -152,5 +152,31 @@ Habitat
 5.0e3
 30
 211, 211, 211
+<<<<<<< HEAD
+139, 1, 2
+8
+
+format goes like this
+[container]	(solarBody)	puts this entity in the solarBody vector
+[name]		(Earth)		specifies which item in the vector the following values apply to
+[x]		(500)		location on x axis, wherein origin is at sun
+[y]		(320)		location on y axis, with negative values being above origin, that's how the computer does it. Deal with it.
+[Vx]		(124)		velocity along x axis
+[Vy]		(431)		velocity along y axis, like before, positive values indicate descension (i.e. the higher Vx and Vy are, the faster you are going to the bottom right)
+[mass]		(1.426e7)	mass, in kg
+[diameter]	(5.8325e8)	radius (note: not diameter, because all stats are for radii, though it converts to diameter when being read into the program), in meters
+[fillColor]	(255, 255, 255)	fill color, in RGB values
+
+#SOLARBODY-ONLY VALUES
+[atmspherClr]	(255, 255, 255)	atmosphere color, in RGB values
+[atmspherHght]	(32)		height atmosphere extends beyond solar body's surface
+
+#CRAFT-ONLY VALUES
+[engineColor]	(255, 255, 255)	engine color, in RGB values
+[engineRadius]	(10)		engine radius, in meters
+
+also, if you put an exclamation mark before something, that is a symbol for Corbit to start reading data, so don't do it unless you want to (obviously)
+=======
 139, 0, 0
 8
+>>>>>>> bc8edd9948071fbad3d135ec75a1df790b0ad5cc
