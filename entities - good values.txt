@@ -141,7 +141,7 @@ Pluto
 256, 235, 215
 7
 
-!craft
+!ship
 Habitat
 0
 0

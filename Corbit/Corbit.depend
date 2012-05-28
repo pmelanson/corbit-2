@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1338170099 source:c:\users\melanson\corbit\corbit.cpp
+1338139985 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
@@ -9,5 +9,5 @@
 	<sstream>
 	<string.h>
 
-1338165393 c:\users\melanson\corbit\version.h
+1338140588 c:\users\melanson\corbit\version.h
 
