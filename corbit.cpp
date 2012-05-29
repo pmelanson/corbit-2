@@ -98,10 +98,17 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
+<<<<<<< HEAD
 //const unsigned short int screenWidth = 1280;    //my computer's resolution
 const unsigned short int screenWidth = 1144;    //school resolution
 //const unsigned short int screenHeight = 980;    //my computer's resolution
 const unsigned short int screenHeight = 830;    //school resolution
+=======
+const unsigned short int screenWidth = 1280;    //my computer's resolution
+//const unsigned short int screenWidth = 1144;    //school resolution
+const unsigned short int screenHeight = 980;    //my computer's resolution
+//const unsigned short int screenHeight = 830;    //school resolution
+>>>>>>> b5cb9bd94248f2b566df5745d7f1d373349e0623
 
 BITMAP *buffer = NULL;
 volatile unsigned short int timer = 0;
@@ -240,7 +247,11 @@ struct habitat : ship {
 	{}
 };
 
+<<<<<<< HEAD
 viewpoint camera (  22,             0.01,       0.5,    1e-11, 10,         0);   //constructor initializes consts in the order they are declared, which is...
+=======
+viewpoint camera (  22,             0.01,       0.5,    0.8e-10, 10,         0);   //constructor initializes consts in the order they are declared, which is...
+>>>>>>> b5cb9bd94248f2b566df5745d7f1d373349e0623
 //                  zoomMagnitude   zoomStep    maxZoom minZoom panSpeed    zoomLevel
 
 display HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
@@ -428,10 +439,13 @@ int main () {
 		datafile.ignore (4096, '!');
 	}
 
+<<<<<<< HEAD
 	datafile.close();
 
 	craft[HAB]->x = body[EARTH]->x + body[EARTH]->radius + 10000;
 
+=======
+>>>>>>> b5cb9bd94248f2b566df5745d7f1d373349e0623
 	camera.target = craft[HAB];
 //	camera.target = body[EARTH];
 	camera.reference = body[EARTH];
@@ -592,9 +606,12 @@ void input () {
 
     if (key[KEY_9])
         camera.target = body[PLUTO];
+<<<<<<< HEAD
 
     if (key[KEY_0])
         camera.target = craft[HAB];
+=======
+>>>>>>> b5cb9bd94248f2b566df5745d7f1d373349e0623
 }
 
 void changeFrameRate(short unsigned int step) {
@@ -688,7 +705,7 @@ void solarBody::draw() {
 
 	circlefill (buffer, a(), b(), camera.actualZoom() * (radius + atmosphereHeight), atmosphereColor);   //draws the atmosphere to the buffer
 
-	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the physical to the buffer
+//	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the physical to the buffer
 
 	textprintf_ex (buffer, font, a(), b(), makecol (255, 255, 255), -1, "%s", name.c_str() );
 }
@@ -756,7 +773,11 @@ void display::drawGrid () {  //draws a grid to the screen, later on I will be ma
 
 void display::drawHUD () {
 
+<<<<<<< HEAD
 	/*rectfill (buffer, 0, 0, 300, 35 * lineSpace, 0);
+=======
+	rectfill (buffer, 0, 0, 300, 35 * lineSpace, 0);
+>>>>>>> b5cb9bd94248f2b566df5745d7f1d373349e0623
 	rect (buffer, -1, -1, 300, 35 * lineSpace, makecol (255, 255, 255));
 
 	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbiting Velocity:"), textprintf_ex (buffer, font, 220, 1 * lineSpace, makecol (200, 200, 200), -1, "1337");
@@ -816,12 +837,18 @@ void display::drawHUD () {
 //	line (buffer, 100, 22 * lineSpace, (atan2l (craft[HAB]->Vy, craft[HAB]->Vx)) + (100), (atan2l (craft[HAB]->Vy, craft[HAB]->Vx)) + (22 * lineSpace), makecol (255, 255, 255));
 //	line (buffer, 100, 22 * lineSpace, 100 + craft[HAB]->radius * tan (craft[HAB]->Vy / craft[HAB]->Vx), 22 * lineSpace + craft[HAB]->radius * tan (craft[HAB]->Vy / craft[HAB]->Vx), makecol (255, 255, 255));
 //	line (buffer, 100, 22 * lineSpace, 100 + craft[HAB]->radius * cos (hyp), 22 * lineSpace + craft[HAB]->radius * sin (hyp), makecol (255, 255, 255));
+<<<<<<< HEAD
     line (buffer, 100, 22 * lineSpace, craft[HAB]->Vy / craft[HAB]->Vx + 22 * lineSpace, craft[HAB]->Vy / craft[HAB]->Vx + 22 * lineSpace, makecol(255, 0, 0));
+=======
+>>>>>>> b5cb9bd94248f2b566df5745d7f1d373349e0623
 
 	textprintf_ex (buffer, font, lineSpace, 30 * lineSpace, makecol (200, 200, 200), -1, "Center:"), textprintf_ex (buffer, font, 220, 30 * lineSpace, makecol (200, 200, 200), -1, "%s", camera.target->name.c_str());
 	textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Target:"), textprintf_ex (buffer, font, 220, 31 * lineSpace, makecol (200, 200, 200), -1, "%s", target->name.c_str());
 	textprintf_ex (buffer, font, lineSpace, 32 * lineSpace, makecol (200, 200, 200), -1, "Reference:"), textprintf_ex (buffer, font, 220, 32 * lineSpace, makecol (200, 200, 200), -1, "%s", reference->name.c_str());
+<<<<<<< HEAD
 	*/
+=======
+>>>>>>> b5cb9bd94248f2b566df5745d7f1d373349e0623
 }
 
 void viewpoint::zoom (short int direction) {
@@ -1054,6 +1081,10 @@ void iterate (void transform() ) {
 //
 //
 //    }
+<<<<<<< HEAD
+=======
+
+>>>>>>> b5cb9bd94248f2b566df5745d7f1d373349e0623
 
 
 */

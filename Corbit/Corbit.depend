@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1338139985 source:c:\users\melanson\corbit\corbit.cpp
+	<allegro.h>
+	<math.h>
+	<vector>
+	"version.h"
+	<iostream>
+	<fstream>
+	<sstream>
+	<string.h>
+
+1338140588 c:\users\melanson\corbit\version.h
+
