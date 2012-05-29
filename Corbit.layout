@@ -2,13 +2,9 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="corbit.cpp" open="1" top="1" tabpos="0">
-<<<<<<< HEAD
-		<Cursor position="9481" topLine="217" />
+		<Cursor position="15734" topLine="412" />
 	</File>
 	<File name="version.h" open="0" top="0" tabpos="0">
 		<Cursor position="37" topLine="0" />
-=======
-		<Cursor position="10402" topLine="237" />
->>>>>>> b5cb9bd94248f2b566df5745d7f1d373349e0623
 	</File>
 </CodeBlocks_layout_file>
