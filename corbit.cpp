@@ -270,7 +270,7 @@ int main () {
 
 	//file initialization
 	ifstream datafile;
-	datafile.open ("entities.txt");
+	datafile.open ("entities.txt", ios::in);
 	if (datafile.is_open())
 		cout << "datafile open\n";
 	if (datafile.good())
@@ -278,26 +278,15 @@ int main () {
 
 	//data initializations
 	string line;
-	unsigned short int R1 = 0, R2 = 0, G1 = 0, G2 = 0, B1 = 0, B2 = 0;
+	unsigned short int R = 10, G = 11, B = 12, R2 = 20, G2 = 21, B2 = 22;
+	string container = "None", name = "Default";
+    long double x = 1337, y = 1337, Vx = 1, Vy = 1, mass = 1337, radius = 1337, specialRadius = 42;
+    unsigned int fillColor = makecol (100, 100, 100), specialColor = makecol (100, 100, 100);
 
 	datafile.ignore (4096, '!');
 	istringstream iss (line);
 
 	while (getline (datafile, line)) { //each loop through this reads in an entity
-
-		string container = "";
-		string name = "";
-		long double x = 0;
-		long double y = 0;
-		long double Vx = 0;
-		long double Vy = 0;
-		long double mass = 0;
-		long double radius = 0;
-		unsigned short int R = 12, G = 12, B = 12;
-		unsigned short int R2 = 13, G2 = 13, B2 = 13;
-		unsigned int fillColor;
-		unsigned int specialColor;
-		long double specialRadius = 0;
 
 		cout << endl;
 		cout << endl << line;
@@ -391,34 +380,55 @@ int main () {
 		if (container == "solarBody") {
 			body.push_back (new solarBody (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
 
-			cout << "\nBody initialized, with data of\nx = " << x << endl;
-			cout << "y = " << y << endl;
-			cout << "Vx = " << Vx << endl;
-			cout << "Vy = " << Vy << endl;
-			cout << "mass = " << mass << endl;
-			cout << "radius = " << radius << endl;
-			cout << "fillColor = " << R << ", " << G << ", " << B << ", " << endl;;
-			cout << "atmosphereColor = " << R2 << ", " << G2 << ", " << B2 << ", " << endl;
-			cout << "atmosphereHeight = " << specialRadius << endl;
-		}
+			craft.push_back (new habitat (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
+				cout << endl << name << " initialized, with data of" << endl;
+				cout << "x = " << x << endl
+				<< "y = " << y << endl
+				<< "Vx = " << Vx << endl
+				<< "Vy = " << Vy << endl
+				<< "mass = " << mass << endl
+				<< "radius = " << radius << endl
+				<< "fillColor = " << R << ", " << G << ", " << B << ", " << endl
+				<< "atmosphereDrag = " << 0 << endl
+				<< "atmosphereColor = " << R2 << ", " << G2 << ", " << B2 << ", " << endl
+				<< "atmosphereHeight = " << specialRadius << endl;
+            }
 
-		if (container == "ship")
+		else if (container == "ship")
 			if (name == "Habitat") {
 				craft.push_back (new habitat (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
-				cout << "\nHabitat initialized, with data of\nx = " << x << endl;
-				cout << "y = " << y << endl;
-				cout << "Vx = " << Vx << endl;
-				cout << "Vy = " << Vy << endl;
-				cout << "mass = " << mass << endl;
-				cout << "radius = " << radius << endl;
-				cout << "fillColor = " << R << ", " << G << ", " << B << ", " << endl;
-				cout << "engine = " << 0 << endl;
-				cout << "engineColor = " << R2 << ", " << G2 << ", " << B2 << ", " << endl;
-				cout << "engineRadius = " << specialRadius << endl;
+				cout << endl << name << " initialized, with data of" << endl;
+				cout << "x = " << x << endl
+				<< "y = " << y << endl
+				<< "Vx = " << Vx << endl
+				<< "Vy = " << Vy << endl
+				<< "mass = " << mass << endl
+				<< "radius = " << radius << endl
+				<< "fillColor = " << R << ", " << G << ", " << B << ", " << endl
+				<< "engine = " << 0 << endl
+				<< "engineColor = " << R2 << ", " << G2 << ", " << B2 << ", " << endl
+				<< "engineRadius = " << specialRadius << endl;
 			}
+
+        else if (container == "None") {
+            craft.push_back (new habitat (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
+				cout << endl << name << " initialized, with data of" << endl;
+				cout << "x = " << x << endl
+				<< "y = " << y << endl
+				<< "Vx = " << Vx << endl
+				<< "Vy = " << Vy << endl
+				<< "mass = " << mass << endl
+				<< "radius = " << radius << endl
+				<< "fillColor = " << R << ", " << G << ", " << B << ", " << endl
+				<< "special = " << 0 << endl
+				<< "specialColor = " << R2 << ", " << G2 << ", " << B2 << ", " << endl
+				<< "specialRadius = " << specialRadius << endl;
+        }
 
 		datafile.ignore (4096, '!');
 	}
+
+	datafile.close();
 
 	craft[HAB]->x = body[EARTH]->x + body[EARTH]->radius + 10000;
 
@@ -453,7 +463,6 @@ int main () {
 				camera.shift();
 
 			timer--;
-
 		}
 
 		HUD.drawGrid();
@@ -477,6 +486,7 @@ int main () {
 	destroy_bitmap (buffer);
 	release_screen();
 
+    datafile.close();
 
 	for (rock = body.begin(); rock != body.end(); ++rock)
 		delete *rock;
@@ -485,7 +495,6 @@ int main () {
 	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
 		delete *spaceship;
 	craft.clear();
-
 
 	return 0;
 }
@@ -747,7 +756,7 @@ void display::drawGrid () {  //draws a grid to the screen, later on I will be ma
 
 void display::drawHUD () {
 
-	rectfill (buffer, 0, 0, 300, 35 * lineSpace, 0);
+	/*rectfill (buffer, 0, 0, 300, 35 * lineSpace, 0);
 	rect (buffer, -1, -1, 300, 35 * lineSpace, makecol (255, 255, 255));
 
 	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbiting Velocity:"), textprintf_ex (buffer, font, 220, 1 * lineSpace, makecol (200, 200, 200), -1, "1337");
@@ -812,6 +821,7 @@ void display::drawHUD () {
 	textprintf_ex (buffer, font, lineSpace, 30 * lineSpace, makecol (200, 200, 200), -1, "Center:"), textprintf_ex (buffer, font, 220, 30 * lineSpace, makecol (200, 200, 200), -1, "%s", camera.target->name.c_str());
 	textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Target:"), textprintf_ex (buffer, font, 220, 31 * lineSpace, makecol (200, 200, 200), -1, "%s", target->name.c_str());
 	textprintf_ex (buffer, font, lineSpace, 32 * lineSpace, makecol (200, 200, 200), -1, "Reference:"), textprintf_ex (buffer, font, 220, 32 * lineSpace, makecol (200, 200, 200), -1, "%s", reference->name.c_str());
+	*/
 }
 
 void viewpoint::zoom (short int direction) {

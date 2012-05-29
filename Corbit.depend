@@ -29,7 +29,7 @@
 	<memory>
 	"version.h"
 
-1337099131 d:\zoosmell\corbit\version.h
+1338308232 d:\zoosmell\corbit\version.h
 
 1337828238 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
@@ -41,7 +41,7 @@
 	<sstream>
 	<string.h>
 
-1338230342 source:d:\zoosmell\corbit\corbit.cpp
+1338309974 source:d:\zoosmell\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
