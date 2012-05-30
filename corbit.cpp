@@ -98,10 +98,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-//const unsigned short int screenWidth = 1280;    //my computer's resolution
-const unsigned short int screenWidth = 1144;    //school resolution
-//const unsigned short int screenHeight = 980;    //my computer's resolution
-const unsigned short int screenHeight = 830;    //school resolution
+const unsigned short int screenWidth = 1280;    //my computer's resolution
+//const unsigned short int screenWidth = 1144;    //school resolution
+const unsigned short int screenHeight = 980;    //my computer's resolution
+//const unsigned short int screenHeight = 830;    //school resolution
 
 BITMAP *buffer = NULL;
 volatile unsigned short int timer = 0;
@@ -183,13 +183,14 @@ struct physical { //stores data about any physical physical, such as mass and ra
 	long int a();
 	long int b();
 	float turnRadians;
-	long int distance (long double x, long double y);
+	long double distance (long double x, long double y);
 	void move();   //moves physical
 
+	long double acc;    //total acceleration, no calculations are actually performed on this, just for printing purposes
 	long double accX (long double radians, long double acc); //the physical's acceleration (m/s/s) along the x axis
 	long double accY (long double radians, long double acc); //''
 	long double Vx, Vy;   //the physical's speed (m/s) along each axis
-	long double gravity(const int _x, const int _y, const int _mass);
+	long double gravity(long double _x, long double _y, long double _mass);
 
 	void turn();   //turns the physical
 	long double turnRate; //rate at which the physical turns
@@ -265,7 +266,7 @@ int main () {
 	LOCK_VARIABLE (timer);
 	LOCK_FUNCTION (timestep);
 //	install_int_ex (nextFrame, BPS_TO_TIMER (120) );
-    changeFrameRate (0);
+	changeFrameRate (0);
 	buffer = create_bitmap (SCREEN_W, SCREEN_H);
 
 	//file initialization
@@ -423,13 +424,15 @@ int main () {
 	camera.target = craft[HAB];
 //	camera.target = body[EARTH];
 	camera.reference = body[EARTH];
-    HUD.target = body[EARTH];
-    HUD.reference = body[MARS];
+	HUD.target = body[EARTH];
+	HUD.reference = body[MARS];
 
 ///PROGRAM STARTS HERE///
 	while (!key[KEY_ESC]) {
 
 		while (timer > 0) {
+
+			craft[HAB]->acc = 0;
 
 			input();
 
@@ -468,13 +471,11 @@ int main () {
 		debug();
 
 		drawBuffer();
-
 	}
 
 //end of program
 	destroy_bitmap (buffer);
 	release_screen();
-
 
 	for (rock = body.begin(); rock != body.end(); ++rock)
 		delete *rock;
@@ -483,7 +484,6 @@ int main () {
 	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
 		delete *spaceship;
 	craft.clear();
-
 
 	return 0;
 }
@@ -555,37 +555,85 @@ void input () {
 	if (key[KEY_TAB])
 		camera.track = !camera.track;
 
-    if (key[KEY_1])
-        camera.target = body[MERCURY];
+	if (key[KEY_1])
+		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+			HUD.target = body[MERCURY];
+		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+			HUD.reference = body[MERCURY];
+		else
+			camera.target = body[MERCURY];
 
-    if (key[KEY_2])
-        camera.target = body[VENUS];
+	if (key[KEY_2])
+		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+			HUD.target = body[VENUS];
+		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+			HUD.reference = body[VENUS];
+		else
+			camera.target = body[VENUS];
 
-    if (key[KEY_3])
-        camera.target = body[EARTH];
+	if (key[KEY_3])
+		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+			HUD.target = body[EARTH];
+		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+			HUD.reference = body[EARTH];
+		else
+			camera.target = body[EARTH];
 
-    if (key[KEY_4])
-        camera.target = body[MARS];
+	if (key[KEY_4])
+		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+			HUD.target = body[MARS];
+		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+			HUD.reference = body[MARS];
+		else
+			camera.target = body[MARS];
 
-    if (key[KEY_5])
-        camera.target = body[JUPITER];
+	if (key[KEY_5])
+		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+			HUD.target = body[JUPITER];
+		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+			HUD.reference = body[JUPITER];
+		else
+			camera.target = body[JUPITER];
 
-    if (key[KEY_6])
-        camera.target = body[SATURN];
+	if (key[KEY_6])
+		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+			HUD.target = body[SATURN];
+		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+			HUD.reference = body[SATURN];
+		else
+			camera.target = body[SATURN];
 
-    if (key[KEY_7])
-        camera.target = body[NEPTUNE];
+	if (key[KEY_7])
+		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+			HUD.target = body[URANUS];
+		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+			HUD.reference = body[URANUS];
+		else
+			camera.target = body[URANUS];
 
-    if (key[KEY_8])
-        camera.target = body[URANUS];
+	if (key[KEY_8])
+		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+			HUD.target = body[NEPTUNE];
+		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+			HUD.reference = body[NEPTUNE];
+		else
+			camera.target = body[NEPTUNE];
 
-    if (key[KEY_9])
-        camera.target = body[PLUTO];
+	if (key[KEY_9])
+		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+			HUD.target = body[PLUTO];
+		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+			HUD.reference = body[PLUTO];
+		else
+			camera.target = body[PLUTO];
+
+	if (key[KEY_0])
+        camera.target = craft[HAB];
 }
 
 void changeFrameRate(short unsigned int step) {
 
-    frameRate += step;
+	frameRate += step;
 	install_int_ex (nextFrame, BPS_TO_TIMER (frameRate + 1) );
 }
 
@@ -619,8 +667,8 @@ void physical::move() {
 
 void ship::fireEngine() {
 
-	accX (turnRadians, engine);
-	accY (turnRadians, engine);
+	acc += accX (turnRadians, engine);
+	acc += accY (turnRadians, engine);
 }
 
 void physical::turn () {
@@ -636,23 +684,24 @@ void physical::turn () {
 
 long double physical::accX (long double radians, long double acc) {
 
-	Vx += cos (radians) * acc / mass;
+	Vx += (cos (radians) * acc) / mass;
+	return (cos (radians) * acc);
 }
 
 long double physical::accY (long double radians, long double acc) {
 
-	Vy += sin (radians) * acc / mass;
+	Vy += (sin (radians) * acc) / mass;
+	return (sin (radians) * acc);
 }
 
-long int physical::distance (long double targetX, long double targetY) { //finds distance from physical to target
+long double physical::distance (const long double _x, const long double _y) { //finds distance from physical to target
 
-	return (sqrtf ( ((targetX - x) * (targetX - x)) + ((targetY - y) * (targetY - y)) )); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
+	return (sqrtf( ((x - _x) * (x - _x)) + ((y - _y) * (y - _y)) )); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
 
-long double physical::gravity(const int _x, const int _y, const int _mass) {
+long double physical::gravity(long double _x, long double _y, long double _mass) {
 
-	return (G * mass * _mass / ((x - _x) * (x - _x) + (y - _y) * (y - _y)) );    //G * mass1 * mass2 / r^2
-
+	return (G * mass * _mass / distance (_x, _y) );    //G * mass1 * mass2 / r^2
 }
 
 long int physical::a() { //on-screen x position of physical
@@ -683,9 +732,9 @@ void ship::draw() {
 
 	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the picture to the buffer
 	line (buffer, a(), b(), //draws the 'engine'
-		  a() + radius * cos (turnRadians) * camera.actualZoom(),
-		  b() + radius * sin (turnRadians) * camera.actualZoom(),
-		  engineColor);
+	      a() + radius * cos (turnRadians) * camera.actualZoom(),
+	      b() + radius * sin (turnRadians) * camera.actualZoom(),
+	      engineColor);
 }
 
 void habitat::draw() {
@@ -695,39 +744,39 @@ void habitat::draw() {
 	if (engine == 0) {
 
 		circlefill (buffer, //draws the center 'engine'
-					a() + (radius - engineRadius) * cos (turnRadians - (PI) ) * camera.actualZoom(),
-					b() + (radius - engineRadius) * sin (turnRadians - (PI) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            a() + (radius - engineRadius) * cos (turnRadians - (PI) ) * camera.actualZoom(),
+		            b() + (radius - engineRadius) * sin (turnRadians - (PI) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer, //draws the left 'engine'
-					a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
-					b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
+		            b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer, //draws the right 'engine'
-					a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-					b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+		            b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 	}
 
 	else {
 
 		circlefill (buffer, //draws the center 'engine'
-					a() + (radius - engineRadius) * cos (turnRadians - (PI) ) * camera.actualZoom(),
-					b() + (radius - engineRadius) * sin (turnRadians - (PI) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					engineColor);
+		            a() + (radius - engineRadius) * cos (turnRadians - (PI) ) * camera.actualZoom(),
+		            b() + (radius - engineRadius) * sin (turnRadians - (PI) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            engineColor);
 		circlefill (buffer, //draws the left 'engine'
-					a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
-					b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					engineColor);
+		            a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
+		            b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            engineColor);
 		circlefill (buffer, //draws the right 'engine'
-					a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-					b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					engineColor);
+		            a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+		            b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            engineColor);
 	}
 }
 
@@ -742,22 +791,24 @@ void display::drawGrid () {  //draws a grid to the screen, later on I will be ma
 
 void display::drawHUD () {
 
-    float thetaV = atan2f (-craft[HAB]->Vy, craft[HAB]->Vx);
-    float thetaTarg = atan2f (target->Vy - craft[HAB]->Vy, target->Vx - craft[HAB]->Vx) - PI / 2;
+	float thetaV = atan2f (-craft[HAB]->Vy, craft[HAB]->Vx);
+	float thetaTarg = atan2f (-(craft[HAB]->Vy - target->Vy), craft[HAB]->Vx - target->Vx);
 
 	rectfill (buffer, 0, 0, 300, 35 * lineSpace, 0);
 	rect (buffer, -1, -1, 300, 35 * lineSpace, makecol (255, 255, 255));
 
-	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbiting Velocity:"), textprintf_ex (buffer, font, 220, 1 * lineSpace, makecol (200, 200, 200), -1, "1337");
-	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Habitat/Target V diff:"), textprintf_ex (buffer, font, 220, 2 * lineSpace, makecol (200, 200, 200), -1, "%Lf", (fabs (craft[HAB]->Vx) + fabs (craft[HAB]->Vy)) - (fabs (body[EARTH]->Vx) + fabs (body[EARTH]->Vy)) );
+	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbiting Velocity:"), textprintf_ex (buffer, font, 200, 1 * lineSpace, makecol (200, 200, 200), -1, "1337");
+	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Habitat/Target V diff:"), textprintf_ex (buffer, font, 200, 2 * lineSpace, makecol (200, 200, 200), -1, "%-10.7Lg",
+	        (craft[HAB]->Vx + craft[HAB]->Vy) - (target->Vx + target->Vy));
 	textprintf_ex (buffer, font, lineSpace, 3 * lineSpace, makecol (200, 200, 200), -1, "Centrifugal Velocity:");
 	textprintf_ex (buffer, font, lineSpace, 4 * lineSpace, makecol (200, 200, 200), -1, "Tangential Velocity:");
 	textprintf_ex (buffer, font, lineSpace, 6 * lineSpace, makecol (200, 200, 200), -1, "Fuel:");
-	textprintf_ex (buffer, font, lineSpace, 7 * lineSpace, makecol (200, 200, 200), -1, "Engines:"), textprintf_ex (buffer, font, 220, 7 * lineSpace, makecol (200, 200, 200), -1, "%.1f", craft[HAB]->engine);
-	textprintf_ex (buffer, font, lineSpace, 8 * lineSpace, makecol (200, 200, 200), -1, "Acceleration:");
-	textprintf_ex (buffer, font, lineSpace, 10 * lineSpace, makecol (200, 200, 200), -1, "Distance/Altitude:");
+	textprintf_ex (buffer, font, lineSpace, 7 * lineSpace, makecol (200, 200, 200), -1, "Engines:"), textprintf_ex (buffer, font, 200, 7 * lineSpace, makecol (200, 200, 200), -1, "%-10.1f", craft[HAB]->engine);
+	textprintf_ex (buffer, font, lineSpace, 8 * lineSpace, makecol (200, 200, 200), -1, "Acceleration:"), textprintf_ex (buffer, font, 200, 8 * lineSpace, makecol (200, 200, 200), -1, "%-10.5Lg", craft[HAB]->acc);
+	textprintf_ex (buffer, font, lineSpace, 10 * lineSpace, makecol (200, 200, 200), -1, "Distance/Altitude:"), textprintf_ex (buffer, font, 200, 10 * lineSpace, makecol (200, 200, 200), -1, "%-10.5Lg", craft[HAB]->distance (target->x, target->y));
 	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Pitch Angle:");
-	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acceleration:"), textprintf_ex (buffer, font, 220, 12 * lineSpace, makecol (200, 200, 200), -1, "%.1Lf", craft[HAB]->distance (target->x, target->y) / (2 * craft[HAB]->distance (target->x, target->y) - target->radius) * cos (thetaV - thetaTarg));
+	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acceleration:"), textprintf_ex (buffer, font, 200, 12 * lineSpace, makecol (200, 200, 200), -1, "%-10.5Lg",
+	        craft[HAB]->distance (target->x, target->y) / (2 * craft[HAB]->distance (target->x, target->y) - target->radius) * cos (thetaV - thetaTarg));
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Periapsis:");
 	textprintf_ex (buffer, font, lineSpace, 14 * lineSpace, makecol (200, 200, 200), -1, "Apoapsis:");
 
@@ -766,47 +817,47 @@ void display::drawHUD () {
 	if (craft[HAB]->engine == 0) {
 
 		circlefill (buffer, //draws the center 'engine'
-					140 + (craft[HAB]->radius - craft[HAB]->engineRadius) * cos (craft[HAB]->turnRadians - PI ),
-					22 * lineSpace + (craft[HAB]->radius - craft[HAB]->engineRadius) * sin (craft[HAB]->turnRadians - PI ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            140 + (craft[HAB]->radius - craft[HAB]->engineRadius) * cos (craft[HAB]->turnRadians - PI ),
+		            22 * lineSpace + (craft[HAB]->radius - craft[HAB]->engineRadius) * sin (craft[HAB]->turnRadians - PI ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer, //draws the left 'engine'
-					140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * .75) ),
-					22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * .75) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * .75) ),
+		            22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * .75) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer, //draws the right 'engine'
-					140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * 1.25) ),
-					22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * 1.25) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * 1.25) ),
+		            22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * 1.25) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 	}
 
 	else {
 
 		circlefill (buffer, //draws the center 'engine'
-					140 + (craft[HAB]->radius - craft[HAB]->engineRadius) * cos (craft[HAB]->turnRadians - (PI) ),
-					22 * lineSpace + (craft[HAB]->radius - craft[HAB]->engineRadius) * sin (craft[HAB]->turnRadians - (PI) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->engineColor);
+		            140 + (craft[HAB]->radius - craft[HAB]->engineRadius) * cos (craft[HAB]->turnRadians - (PI) ),
+		            22 * lineSpace + (craft[HAB]->radius - craft[HAB]->engineRadius) * sin (craft[HAB]->turnRadians - (PI) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->engineColor);
 		circlefill (buffer, //draws the left 'engine'
-					140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * .75) ),
-					22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * .75) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->engineColor);
+		            140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * .75) ),
+		            22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * .75) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->engineColor);
 		circlefill (buffer, //draws the right 'engine'
-					140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * 1.25) ),
-					22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * 1.25) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->engineColor);
+		            140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * 1.25) ),
+		            22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * 1.25) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->engineColor);
 	}
 
 	line (buffer, 140, 22 * lineSpace, (140) + (craft[HAB]->radius * 1.2) * cos (thetaV), (22 * lineSpace) + (craft[HAB]->radius * 1.2) * sin (thetaV), makecol (255, 0, 0));
-	textprintf_ex (buffer, font, (140) + (craft[HAB]->radius * 1.5) * cos (thetaTarg), (22 * lineSpace) + (craft[HAB]->radius * 1.5) * sin (thetaTarg), makecol (255, 255, 255), -1, "%s", target->name.c_str());
+	textprintf_ex (buffer, font, (140) + (craft[HAB]->radius * 2) * cos (thetaTarg), (22 * lineSpace) + (craft[HAB]->radius * 2) * sin (thetaTarg), makecol (255, 255, 255), -1, "%s", target->name.c_str());
 
-	textprintf_ex (buffer, font, lineSpace, 30 * lineSpace, makecol (200, 200, 200), -1, "Center:"), textprintf_ex (buffer, font, 220, 30 * lineSpace, makecol (200, 200, 200), -1, "%s", camera.target->name.c_str());
-	textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Target:"), textprintf_ex (buffer, font, 220, 31 * lineSpace, makecol (200, 200, 200), -1, "%s", target->name.c_str());
-	textprintf_ex (buffer, font, lineSpace, 32 * lineSpace, makecol (200, 200, 200), -1, "Reference:"), textprintf_ex (buffer, font, 220, 32 * lineSpace, makecol (200, 200, 200), -1, "%s", reference->name.c_str());
+	textprintf_ex (buffer, font, lineSpace, 30 * lineSpace, makecol (200, 200, 200), -1, "Center:"), textprintf_ex (buffer, font, 200, 30 * lineSpace, makecol (200, 200, 200), -1, "%s", camera.target->name.c_str());
+	textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Target:"), textprintf_ex (buffer, font, 200, 31 * lineSpace, makecol (200, 200, 200), -1, "%s", target->name.c_str());
+	textprintf_ex (buffer, font, lineSpace, 32 * lineSpace, makecol (200, 200, 200), -1, "Reference:"), textprintf_ex (buffer, font, 200, 32 * lineSpace, makecol (200, 200, 200), -1, "%s", reference->name.c_str());
 }
 
 void viewpoint::zoom (short int direction) {

@@ -1,4 +1,7 @@
-format goes like this
+format goes like this (all entity datasets are preceded by an exclamation mark, before [containter]
+
+data		example		comments
+
 [container]	(solarBody)	puts this entity in the solarBody vector
 [name]		(Earth)		specifies which item in the vector the following values apply to
 [x]		(500)		location on x axis, wherein origin is at sun
@@ -6,7 +9,7 @@ format goes like this
 [Vx]		(124)		velocity along x axis
 [Vy]		(431)		velocity along y axis, like before, positive values indicate descension (i.e. the higher Vx and Vy are, the faster you are going to the bottom right)
 [mass]		(1.426e7)	mass, in kg
-[diameter]	(5.8325e8)	radius (note: not diameter, because all stats are for radii, though it converts to diameter when being read into the program), in meters
+[radius]	(5.8325e8)	radius (note: not diameter, because all stats are for radii, though it converts to diameter when being read into the program), in meters
 [fillColor]	(255, 255, 255)	fill color, in RGB values
 
 #SOLARBODY-ONLY VALUES
@@ -17,39 +20,36 @@ format goes like this
 [engineColor]	(255, 255, 255)	engine color, in RGB values
 [engineRadius]	(10)		engine radius, in meters
 
-also, if you put an exclamation mark before something, that is a symbol for Corbit to start reading data, so don't do it unless you want to (obviously)
-
-
 
 !solarBody
 Sun
 0
 0
-0
-0
-3.301e20
-1.392e9
-169 169 169
-169 169 169
+1
+1
+1.9891e30
+6.955e8
+255, 140, 0
+255, 185, 0
 7
 
 !solarBody
 Mercury
 0.466697
 0
-0
+1
 -47.87e3
-3.301e20
 2.4397e6
-169 169 169
-169 169 169
-7
+2.4397e6
+169, 169, 169
+169, 169, 169
+1
 
 !solarBody
 Venus
 0.72823128
 0
-0
+1
 -35.02e3
 4.869e24
 6.0518e6
@@ -61,7 +61,7 @@ Venus
 Earth
 1.01671388
 0
-0
+1
 -29.78e3
 5.978e24
 6.3781e6
@@ -73,7 +73,7 @@ Earth
 Mars
 1.665861
 0
-0
+1
 -24.077e3
 6.420e23
 3.3962e6
@@ -85,7 +85,7 @@ Mars
 Jupiter
 5.458104
 0
-0
+1
 -13.07e3
 1.899e27
 7.1492e7
@@ -97,7 +97,7 @@ Jupiter
 Saturn
 10.11595804
 0
-0
+1
 -9.69e3
 5.685e26
 6.0268e7
@@ -109,7 +109,7 @@ Saturn
 Uranus
 20.08330526
 0
-0
+1
 -6.81e3
 8.686e25
 2.5559e7
@@ -121,7 +121,7 @@ Uranus
 Neptune
 30.44125206
 0
-0
+1
 -5.43e3
 1.025e26
 2.4764e7
@@ -133,7 +133,7 @@ Neptune
 Pluto
 48.871
 0
-0
+1
 -4.666e3
 5.0e23
 1.153e6
@@ -143,12 +143,14 @@ Pluto
 
 !ship
 Habitat
+1.11671388
 0
-0
-0
-0
+1
+50
 5.0e3
 30
-211, 211, 211
-139, 0, 0
-8
+220, 220, 220
+180, 0, 0
+13
+
+-29.78e3
