@@ -1,3 +1,10 @@
+29 May 2012
+   Corbit Beta v1.0.22:
+
+     Change log:
+        -Added: Velocity vector
+        -Added: Target location
+
 13 May 2012
    Corbit Alpha v1.0128.19:
 
