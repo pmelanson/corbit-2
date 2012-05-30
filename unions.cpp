@@ -315,7 +315,7 @@ display_t HUD ( 18);    //constructor initializes consts in the order they are d
 
 int main () {
 
-	union entity_t {
+	union {
 
 		struct physical_t { //stores data about any physical physical, such as mass and radius, acceleration, velocity, and angle from right
 
@@ -340,24 +340,15 @@ int main () {
 
 			virtual void draw();    //draws physical
 			unsigned int fillColor;
-
-//			physical_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor) :
-//				name (_name), x (_x), y (_y), Vx (_Vx), Vy (_Vy), mass (_mass), radius (_radius), fillColor (_fillColor)
-//			{}
 		};
 
 		struct solarBody_t : physical_t {   //stores information about an astronomical body, in addition to information already stored by an physical
 
-			unsigned short int atmosphereDrag;
+			float atmosphereDrag;
 			unsigned int atmosphereColor;
 			unsigned short int atmosphereHeight;
 
 			void draw();
-
-//			solarBody_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _atmosphereColor, unsigned short int _atmosphereHeight) :
-//				physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
-//				atmosphereColor (_atmosphereColor), atmosphereHeight (_atmosphereHeight)
-//			{}
 		};
 
 		struct ship_t : physical_t {  //stores information about a pilotable ship, in addition to information already stored by an physical
@@ -368,29 +359,17 @@ int main () {
 			unsigned short int engineRadius;
 
 			virtual void draw();
-
-//			ship_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
-//				physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
-//				engine (0), engineColor (_engineColor), engineRadius (_engineRadius)
-//			{}
 		};
 
 		struct habitat_t : ship_t {
 
 			void draw();
-
-//			habitat_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
-//				ship_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, _engineColor, _engineRadius)
-//			{}
 		};
 	};
-	entity_t.physical_t pooooop;
 
-    entity_t pooper;
 
-    pooper.physical.mass = 5;
 
-	vector < auto_ptr<entity_t> > entity;
+
 //    entity_t entity[20];
 
 	//looping variable initialization
