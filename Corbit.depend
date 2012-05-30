@@ -15,6 +15,7 @@
 
 1334164120 d:\zoosmell\hax\summative\version.h
 
+<<<<<<< HEAD
 1335234198 source:c:\users\melanson\corbit\trying again.cpp
 	<allegro.h>
 	<math.h>
@@ -64,4 +65,13 @@
 	<fstream>
 	<sstream>
 	<string.h>
+=======
+1335031850 source:c:\users\melanson\corbit\trying again.cpp
+	<allegro.h>
+	<math.h>
+	<vector>
+	"version.h"
+
+1335031281 c:\users\melanson\corbit\version.h
+>>>>>>> e2bffd3155be8612fda7974f18c76ed3fac9d52b
 
