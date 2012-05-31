@@ -15,7 +15,7 @@ Started on 23/03/2012
 
 
 This program provides a realistic space flight simulation
-The player's ship is called the "Hab"
+The player's ship_t is called the "Hab"
 Forces are as realistic as possible
 Each pixel at camera.actualzoomLevel() = 0 level is equivalent the distance light travels in a vacumn in 1/299,792,458th of a second (one metre)
 See changelog.txt for changelog past 31/03/2012
@@ -98,10 +98,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-//const unsigned short int screenWidth = 1280;    //my computer's resolution
-const unsigned short int screenWidth = 1144;    //school resolution
-//const unsigned short int screenHeight = 980;    //my computer's resolution
-const unsigned short int screenHeight = 830;    //school resolution
+const unsigned short int screenWidth = 1280;    //my computer's resolution
+//const unsigned short int screenWidth = 1144;    //school resolution
+const unsigned short int screenHeight = 980;    //my computer's resolution
+//const unsigned short int screenHeight = 830;    //school resolution
 
 BITMAP *buffer = NULL;
 volatile unsigned short int timer = 0, cycle = 0;
@@ -111,18 +111,19 @@ const long double PI = 3.1415926535897932384626433832795028841971693993751058209
 const long double G = 6.673e-11;
 const long double AU = 1495978707e2;
 
-enum playerShips {HAB, CRAFTMAX};
-enum solarSystem {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, BODYMAX};
+enum craft_enum {HAB, CRAFTMAX};
+enum body_enum {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, BODYMAX};
+enum navMode_enum {MAN, APP_TARG, DEPART_REF, CCW, CW, NAVMAX};
 
 
 //prototypes
 void nextFrame(), nextCycle();
 void input(), drawBuffer(), debug(), drawGrid();
 void detectCollision(), gravitate();
-void changeFrameRate(short unsigned int step);
+void changeFrameRate(short int step);
 
 //beginning of class declarations
-class viewpoint {
+class viewpoint_t {
 
 	const int zoomMagnitude;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 	const float zoomStep; //rate at which cameras zoom out
@@ -137,8 +138,8 @@ public:
 	long double zoomLevel;
 	long double actualZoom();
 
-	struct physical *target;
-	struct physical *reference;
+	struct physical_t *target;
+	struct physical_t *reference;
 	bool track;
 	void shift();
 	void autoZoom();
@@ -147,15 +148,15 @@ public:
 	void panX (short int direction);
 	void panY (short int direction);
 
-	viewpoint (const int _zoomMagnitude, const float _zoomStep, const float _maxZoom, const double _minZoom, const unsigned short int _panSpeed, const long double _zoomLevel) :
+	viewpoint_t (const int _zoomMagnitude, const float _zoomStep, const float _maxZoom, const double _minZoom, const unsigned short int _panSpeed, const long double _zoomLevel) :
 		zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), minZoom (_minZoom), panSpeed (_panSpeed), x (0), y (0), zoomLevel (_zoomLevel), track (true)
 	{}
 };
 
-struct display {
+struct display_t {
 
-	struct physical *target;
-	struct physical *reference;
+	struct physical_t *target;
+	struct physical_t *reference;
 
 	const short unsigned int gridSpace;
 
@@ -164,12 +165,12 @@ struct display {
 
 	const unsigned short int lineSpace;
 
-	display (const short unsigned int _gridSpace, const unsigned short int _lineSpace) :
+	display_t (const short unsigned int _gridSpace, const unsigned short int _lineSpace) :
 		gridSpace (_gridSpace), lineSpace (_lineSpace)
 	{}
 };
 
-struct physical { //stores data about any physical physical, such as mass and radius, acceleration, velocity, and angle from right
+struct physical_t { //stores data about any physical physical, such as mass and radius, acceleration, velocity, and angle from right
 
 	string name;    //I love C++ over C so much for this
 
@@ -194,12 +195,12 @@ struct physical { //stores data about any physical physical, such as mass and ra
 	virtual void draw();    //draws physical
 	const unsigned int fillColor;
 
-	physical (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor) :
-		name (_name), x (_x), y (_y), Vx (_Vx), Vy (_Vy), mass (_mass), radius (_radius), fillColor (_fillColor)
+	physical_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor) :
+		name (_name), x (_x), y (_y), Vx (_Vx), Vy (_Vy), mass (_mass), radius (_radius), fillColor (_fillColor), turnRate (0), turnRadians (0)
 	{}
 };
 
-struct solarBody : physical {   //stores information about an astronomical body, in addition to information already stored by an physical
+struct solarBody_t : physical_t {   //stores information about an astronomical body, in addition to information already stored by an physical
 
 	const unsigned short int atmosphereDrag;
 	const unsigned int atmosphereColor;
@@ -207,13 +208,13 @@ struct solarBody : physical {   //stores information about an astronomical body,
 
 	void draw();
 
-	solarBody (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _atmosphereColor, unsigned short int _atmosphereHeight) :
-		physical (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
+	solarBody_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _atmosphereColor, unsigned short int _atmosphereHeight) :
+		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
 		atmosphereColor (_atmosphereColor), atmosphereHeight (_atmosphereHeight), atmosphereDrag (42)
 	{}
 };
 
-struct ship : physical {  //stores information about a pilotable ship, in addition to information already stored by an physical
+struct ship_t : physical_t {  //stores information about a pilotable ship, in addition to information already stored by an physical
 
 	void fireEngine();
 	float engine;
@@ -225,42 +226,53 @@ struct ship : physical {  //stores information about a pilotable ship, in additi
 	long double accX (long double radians, long double acc); //the physical's acceleration (m/s/s) along the x axis
 	long double accY (long double radians, long double acc); //''
 
+	struct autopilot_t {
+
+		navMode_enum navmode;       //enum for which navmode to use, e.g. MAN, CCW
+		string descriptor[NAVMAX];   //string describing the current nav mode
+
+		autopilot_t () :
+			navmode (MAN)
+		{}
+	} autopilot;
+
 	virtual void draw();
 
-	ship (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
-		physical (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
-		engine (0), engineColor (_engineColor), engineRadius (_engineRadius)
+	ship_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
+		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
+		engineColor (_engineColor), engineRadius (_engineRadius), engine (0), fuel (1e6), burnRate (10)
 	{}
 };
 
-struct habitat : ship {
+struct habitat_t : ship_t {
 
 	void draw();
 
-	habitat (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
-		ship (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, _engineColor, _engineRadius)
+	habitat_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
+		ship_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, _engineColor, _engineRadius)
 	{}
 };
 
-viewpoint camera (  22,             0.01,       0.5,    0.8e-10, 10,         0);   //constructor initializes consts in the order they are declared, which is...
+viewpoint_t camera (  22,             0.01,       0.5,    0.8e-10, 10,         0);   //constructor initializes consts in the order they are declared, which is...
 //                  zoomMagnitude   zoomStep    maxZoom minZoom panSpeed    zoomLevel
 
-display HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
+display_t HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
 //              gridSpace   lineSpace
 
-vector <ship*> craft;
-vector <solarBody*> body;
+vector <ship_t*> craft;
+vector <solarBody_t*> body;
 
 
 int main () {
 
 	//looping variable initialization
-	vector <ship*>::iterator spaceship;
-	vector <solarBody*>::iterator rock;
+	vector <ship_t*>::iterator spaceship;
+	vector <solarBody_t*>::iterator rock;
 
 	//allegro initializations
 	allegro_init();
 	install_keyboard();
+	set_keyboard_rate(0, 0);
 	set_color_depth (desktop_color_depth() );
 	set_gfx_mode (GFX_AUTODETECT_WINDOWED, screenWidth, screenHeight, 0, 0);
 
@@ -278,29 +290,19 @@ int main () {
 		cout << "datafile good\n";
 
 	//data initializations
-	string line;
-	unsigned short int R1 = 0, R2 = 0, G1 = 0, G2 = 0, B1 = 0, B2 = 0;
+	string line = "";
 
 	datafile.ignore (4096, '!');
-	istringstream iss (line);
 
 	while (getline (datafile, line)) { //each loop through this reads in an entity
 
-		string container = "";
-		string name = "";
-		long double x = 0;
-		long double y = 0;
-		long double Vx = 0;
-		long double Vy = 0;
-		long double mass = 0;
-		long double radius = 0;
-		unsigned short int R = 12, G = 12, B = 12;
-		unsigned short int R2 = 13, G2 = 13, B2 = 13;
-		unsigned int fillColor;
-		unsigned int specialColor;
-		long double specialRadius = 0;
+		string container = "", name = "";
+		long double x = 1337, y = 1337, Vx = 0, Vy = 0;
+		long double mass = 1337, radius = 1337, specialRadius = 413;
+		unsigned short int R = 10, G = 11, B = 12;
+		unsigned short int R2 = 20, G2 = 21, B2 = 22;
+		unsigned int fillColor = 50, specialColor = 50;
 
-		cout << endl;
 		cout << endl << line;
 		istringstream iss (line);
 		iss >> container;
@@ -311,7 +313,7 @@ int main () {
 
 			if (iss >> name); // was able to parse the data
 			if (name == "")
-                name = "Blank";
+				name = "Blank";
 			cout << " " << name;
 		}
 
@@ -347,7 +349,7 @@ int main () {
 			if (iss >> mass); // was able to parse the number
 
 			if (mass <= 0)
-                mass = 1337;
+				mass = 1337;
 		}
 
 		if (getline (datafile, line)) { // was able to read a line
@@ -356,8 +358,8 @@ int main () {
 			if (iss >> radius) // was able to parse the number
 				radius *= 2;
 
-            if (radius <= 0)
-                radius = 1337;
+			if (radius <= 0)
+				radius = 1337;
 		}
 
 		if (getline (datafile, line)) {
@@ -392,11 +394,11 @@ int main () {
 			if (iss >> specialRadius); // was able to parse the number
 
 			if (specialRadius <= 0)
-                specialRadius = 1337;
+				specialRadius = 1337;
 		}
 
 		if (container == "solarBody") {
-			body.push_back (new solarBody (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
+			body.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
 
 			cout << "\nBody initialized, with data of\nx = " << x << endl;
 			cout << "y = " << y << endl;
@@ -411,7 +413,7 @@ int main () {
 
 		if (container == "ship")
 			if (name == "Habitat") {
-				craft.push_back (new habitat (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
+				craft.push_back (new habitat_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
 				cout << "\nHabitat initialized, with data of\nx = " << x << endl;
 				cout << "y = " << y << endl;
 				cout << "Vx = " << Vx << endl;
@@ -427,8 +429,13 @@ int main () {
 		datafile.ignore (4096, '!');
 	}
 
-	craft[HAB]->fuel = 2e7;
-	craft[HAB]->burnRate = 25;
+	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
+		(*spaceship)->autopilot.descriptor[MAN] = "Manual";
+		(*spaceship)->autopilot.descriptor[APP_TARG] = "App Targ";
+		(*spaceship)->autopilot.descriptor[DEPART_REF] = "Depart Ref";
+		(*spaceship)->autopilot.descriptor[CCW] = "CCW Prograde";
+		(*spaceship)->autopilot.descriptor[CW] = "CW Retrograde";
+	}
 
 	camera.target = craft[HAB];
 //	camera.target = body[EARTH];
@@ -515,22 +522,33 @@ void drawBuffer () {
 
 void input () {
 
-	if (key[KEY_A])
-		craft[HAB]->turnRate -= 0.1 * PI / 180;
+	if (key[KEY_A] && craft[HAB]->turnRate < 0.05)
+		craft[HAB]->turnRate -= 0.005 * PI / 180;
 
-	if (key[KEY_D])
-		craft[HAB]->turnRate += 0.1 * PI / 180;
+	if (key[KEY_D] && craft[HAB]->turnRate < 0.05)
+		craft[HAB]->turnRate += 0.005 * PI / 180;
 
 	if (key[KEY_W])
-		craft[HAB]->engine ++;
+		if (key_shifts & KB_SHIFT_FLAG)
+			craft[HAB]->engine += 0.5;
+		else
+			craft[HAB]->engine += 0.1;
 
 	if (key[KEY_S])
-		craft[HAB]->engine --;
+		if (key_shifts & KB_SHIFT_FLAG)
+			craft[HAB]->engine -= 0.5;
+		else
+			craft[HAB]->engine -= 0.1;
 
 	if (key[KEY_BACKSPACE]) {
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
-			craft[HAB]->turnRate = 0;
-		else
+		if (key_shifts & KB_SHIFT_FLAG) {   //all those if statements there just slow the turnRate gradually
+			if (fabs (craft[HAB]->turnRate) < 0.005 * PI / 180)
+				craft[HAB]->turnRate = 0;
+			else if (craft[HAB]->turnRate > 0)
+				craft[HAB]->turnRate -= 0.005 * PI / 180;
+			else
+				craft[HAB]->turnRate += 0.005 * PI / 180;
+		} else
 			craft[HAB]->engine = 0;
 	}
 
@@ -550,89 +568,104 @@ void input () {
 		camera.panY (1);
 
 	if (key[KEY_PLUS_PAD])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			changeFrameRate (1);
 		else
 			camera.zoom (1);
 
 	if (key[KEY_MINUS_PAD])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			changeFrameRate (-1);
 		else
 			camera.zoom (-1);
 
-	if (key[KEY_TAB])
-		camera.track = !camera.track;
-
 	if (key[KEY_1])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = body[MERCURY];
-		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+		else if (key_shifts & KB_CTRL_FLAG)
 			HUD.reference = body[MERCURY];
-		else
-			camera.target = body[MERCURY];
+		else if (key_shifts & KB_ALT_FLAG)
+			craft[HAB]->autopilot.navmode = MAN;
+			else
+	camera.target = body[MERCURY];
 
 	if (key[KEY_2])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = body[VENUS];
-		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+		else if (key_shifts & KB_CTRL_FLAG)
 			HUD.reference = body[VENUS];
+		else if (key_shifts & KB_ALT_FLAG)
+			craft[HAB]->autopilot.navmode = APP_TARG;
 		else
 			camera.target = body[VENUS];
 
 	if (key[KEY_3])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = body[EARTH];
-		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+		else if (key_shifts & KB_CTRL_FLAG)
 			HUD.reference = body[EARTH];
+		else if (key_shifts & KB_ALT_FLAG)
+			craft[HAB]->autopilot.navmode = DEPART_REF;
 		else
 			camera.target = body[EARTH];
 
 	if (key[KEY_4])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = body[MARS];
-		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+		else if (key_shifts & KB_CTRL_FLAG)
 			HUD.reference = body[MARS];
+		else if (key_shifts & KB_ALT_FLAG)
+			craft[HAB]->autopilot.navmode = CCW;
 		else
 			camera.target = body[MARS];
 
 	if (key[KEY_5])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = body[JUPITER];
-		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+		else if (key_shifts & KB_CTRL_FLAG)
 			HUD.reference = body[JUPITER];
+		else if (key_shifts & KB_ALT_FLAG)
+			craft[HAB]->autopilot.navmode = CW;
 		else
 			camera.target = body[JUPITER];
 
 	if (key[KEY_6])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = body[SATURN];
-		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+		else if (key_shifts & KB_CTRL_FLAG)
 			HUD.reference = body[SATURN];
+		else if (key_shifts & KB_ALT_FLAG)
+			craft[HAB]->autopilot.navmode = MAN;
 		else
 			camera.target = body[SATURN];
 
 	if (key[KEY_7])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = body[URANUS];
-		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+		else if (key_shifts & KB_CTRL_FLAG)
 			HUD.reference = body[URANUS];
+		else if (key_shifts & KB_ALT_FLAG)
+			craft[HAB]->autopilot.navmode = MAN;
 		else
 			camera.target = body[URANUS];
 
 	if (key[KEY_8])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = body[NEPTUNE];
-		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+		else if (key_shifts & KB_CTRL_FLAG)
 			HUD.reference = body[NEPTUNE];
+		else if (key_shifts & KB_ALT_FLAG)
+			craft[HAB]->autopilot.navmode = MAN;
 		else
 			camera.target = body[NEPTUNE];
 
 	if (key[KEY_9])
-		if (key[KEY_LSHIFT] || key[KEY_RSHIFT])
+		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = body[PLUTO];
-		else if (key[KEY_LCONTROL] || key[KEY_RCONTROL])
+		else if (key_shifts & KB_CTRL_FLAG)
 			HUD.reference = body[PLUTO];
+		else if (key_shifts & KB_ALT_FLAG)
+			craft[HAB]->autopilot.navmode = MAN;
 		else
 			camera.target = body[PLUTO];
 
@@ -640,7 +673,7 @@ void input () {
 		camera.target = craft[HAB];
 }
 
-void changeFrameRate(short unsigned int step) {
+void changeFrameRate(short int step) {
 
 	frameRate += step;
 	install_int_ex (nextFrame, BPS_TO_TIMER (frameRate + 1) );
@@ -666,15 +699,16 @@ void debug() {
 	textprintf_ex (buffer, font, SCREEN_W - spacing, 130, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %Lf", camera.actualZoom() );
 	textprintf_ex (buffer, font, SCREEN_W - spacing, 140, makecol (255, 255, 255), -1, "DEBUG: camera X: %Li", camera.x);
 	textprintf_ex (buffer, font, SCREEN_W - spacing, 150, makecol (255, 255, 255), -1, "DEBUG: camera Y: %Li", camera.y);
+	textprintf_ex (buffer, font, SCREEN_W - spacing, 160, makecol (255, 255, 255), -1, "DEBUG: turnRate: %Lf", craft[HAB]->turnRate);
 }
 
-void physical::move() {
+void physical_t::move() {
 
 	x += Vx;
 	y += Vy;
 }
 
-void ship::fireEngine() {
+void ship_t::fireEngine() {
 
 	if (fuel > 0) {
 		acc += accX (turnRadians, (engine * 1000000) / frameRate );
@@ -683,7 +717,7 @@ void ship::fireEngine() {
 	}
 }
 
-void physical::turn () {
+void physical_t::turn () {
 
 	turnRadians += turnRate;
 
@@ -694,56 +728,56 @@ void physical::turn () {
 		turnRadians -= 2 * PI;
 }
 
-long double ship::accX (long double radians, long double acc) {
+long double ship_t::accX (long double radians, long double acc) {
 
 	Vx += ( (cos (radians) * acc) / (mass + fuel) ) / frameRate;
 	return (( (sin (radians) * acc) / (mass + fuel) ) / frameRate);
 }
 
-long double ship::accY (long double radians, long double acc) {
+long double ship_t::accY (long double radians, long double acc) {
 
 	Vy += ( (sin (radians) * acc) / (mass + fuel) ) / frameRate;
 	return (( (sin (radians) * acc) / (mass + fuel) ) / frameRate);
 }
 
-long double physical::accX (long double radians, long double acc) {
+long double physical_t::accX (long double radians, long double acc) {
 
 	Vx += ( (cos (radians) * acc) / mass ) / frameRate;
 	return (( (cos (radians) * acc) / mass ) / frameRate);
 }
 
-long double physical::accY (long double radians, long double acc) {
+long double physical_t::accY (long double radians, long double acc) {
 
 	Vy += ( (sin (radians) * acc) / mass ) / frameRate;
 	return (( (sin (radians) * acc) / mass ) / frameRate);
 }
 
-long double physical::distance (const long double _x, const long double _y) { //finds distance from physical to target
+long double physical_t::distance (const long double _x, const long double _y) { //finds distance from physical to target
 
 	return (sqrtf( ((x - _x) * (x - _x)) + ((y - _y) * (y - _y)) )); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
 
-long double physical::gravity(long double _x, long double _y, long double _mass) {
+long double physical_t::gravity(long double _x, long double _y, long double _mass) {
 
 	return (G * mass * _mass / distance (_x, _y) );    //G * mass1 * mass2 / r^2
 }
 
-long int physical::a() { //on-screen x position of physical
+long int physical_t::a() { //on-screen x position of physical
 
 	return ( (x - camera.x) * camera.actualZoom() + SCREEN_W / 2);
 }
 
-long int physical::b() { //on-screen y position of physical
+long int physical_t::b() { //on-screen y position of physical
 
 	return ( (y - camera.y) * camera.actualZoom() + SCREEN_H / 2);
 }
 
-void physical::draw() {
+void physical_t::draw() {
 
 	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the physical to the buffer
 }
 
-void solarBody::draw() {
+void solarBody_t::draw() {
 
 	circlefill (buffer, a(), b(), camera.actualZoom() * (radius + atmosphereHeight), atmosphereColor);   //draws the atmosphere to the buffer
 
@@ -752,59 +786,59 @@ void solarBody::draw() {
 	textprintf_ex (buffer, font, a(), b(), makecol (255, 255, 255), -1, "%s", name.c_str() );
 }
 
-void ship::draw() {
+void ship_t::draw() {
 
 	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the picture to the buffer
 	line (buffer, a(), b(), //draws the 'engine'
-		  a() + radius * cos (turnRadians) * camera.actualZoom(),
-		  b() + radius * sin (turnRadians) * camera.actualZoom(),
-		  engineColor);
+	      a() + radius * cos (turnRadians) * camera.actualZoom(),
+	      b() + radius * sin (turnRadians) * camera.actualZoom(),
+	      engineColor);
 }
 
-void habitat::draw() {
+void habitat_t::draw() {
 
 	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the hull to the buffer
 
 	if (engine == 0) {
 
 		circlefill (buffer, //draws the center 'engine'
-					a() + (radius - engineRadius) * cos (turnRadians - (PI) ) * camera.actualZoom(),
-					b() + (radius - engineRadius) * sin (turnRadians - (PI) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            a() + (radius - engineRadius) * cos (turnRadians - (PI) ) * camera.actualZoom(),
+		            b() + (radius - engineRadius) * sin (turnRadians - (PI) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer, //draws the left 'engine'
-					a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
-					b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
+		            b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer, //draws the right 'engine'
-					a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-					b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+		            b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 	}
 
 	else {
 
 		circlefill (buffer, //draws the center 'engine'
-					a() + (radius - engineRadius) * cos (turnRadians - (PI) ) * camera.actualZoom(),
-					b() + (radius - engineRadius) * sin (turnRadians - (PI) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					engineColor);
+		            a() + (radius - engineRadius) * cos (turnRadians - (PI) ) * camera.actualZoom(),
+		            b() + (radius - engineRadius) * sin (turnRadians - (PI) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            engineColor);
 		circlefill (buffer, //draws the left 'engine'
-					a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
-					b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					engineColor);
+		            a() + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
+		            b() + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            engineColor);
 		circlefill (buffer, //draws the right 'engine'
-					a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-					b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-					engineRadius * camera.actualZoom(),
-					engineColor);
+		            a() + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+		            b() + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
+		            engineRadius * camera.actualZoom(),
+		            engineColor);
 	}
 }
 
-void display::drawGrid () {  //draws a grid to the screen, later on I will be making gravity distort it
+void display_t::drawGrid () {  //draws a grid to the screen, later on I will be making gravity distort it
 
 	unsigned short int x, y;
 
@@ -813,7 +847,7 @@ void display::drawGrid () {  //draws a grid to the screen, later on I will be ma
 			putpixel (buffer, x, y, makecol (255, 255, 255));
 }
 
-void display::drawHUD () {
+void display_t::drawHUD () {
 
 	float thetaV = atan2f (-craft[HAB]->Vy, craft[HAB]->Vx);
 	float thetaTarg = PI;
@@ -823,7 +857,7 @@ void display::drawHUD () {
 
 	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbit V (m/s):"), textprintf_ex (buffer, font, 200, 1 * lineSpace, makecol (255, 255, 255), -1, "1337");
 	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Hab/Targ V diff:"), textprintf_ex (buffer, font, 200, 2 * lineSpace, makecol (255, 255, 255), -1, "%-10.7Lg",
-			(craft[HAB]->Vx + craft[HAB]->Vy) - (target->Vx + target->Vy));
+	        (craft[HAB]->Vx + craft[HAB]->Vy) - (target->Vx + target->Vy));
 	textprintf_ex (buffer, font, lineSpace, 3 * lineSpace, makecol (200, 200, 200), -1, "Centrifugal V (m/s):");
 	textprintf_ex (buffer, font, lineSpace, 4 * lineSpace, makecol (200, 200, 200), -1, "Tangential V (m/s):");
 	textprintf_ex (buffer, font, lineSpace, 6 * lineSpace, makecol (200, 200, 200), -1, "Fuel (kg):"), textprintf_ex (buffer, font, 200, 6 * lineSpace, makecol (255, 255, 255), -1, "%li", craft[HAB]->fuel);
@@ -832,7 +866,7 @@ void display::drawHUD () {
 	textprintf_ex (buffer, font, lineSpace, 10 * lineSpace, makecol (200, 200, 200), -1, "Altitude (m):"), textprintf_ex (buffer, font, 200, 10 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lg", craft[HAB]->distance (target->x, target->y));
 	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc:"), textprintf_ex (buffer, font, 200, 12 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
-			craft[HAB]->distance (target->x, target->y) / (2 * craft[HAB]->distance (target->x, target->y) - target->radius) * cos (thetaV - thetaTarg));
+	        craft[HAB]->distance (target->x, target->y) / (2 * craft[HAB]->distance (target->x, target->y) - target->radius) * cos (thetaV - thetaTarg));
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Periapsis (m):");
 	textprintf_ex (buffer, font, lineSpace, 14 * lineSpace, makecol (200, 200, 200), -1, "Apoapsis (m):");
 
@@ -841,52 +875,53 @@ void display::drawHUD () {
 	if (craft[HAB]->engine == 0) {
 
 		circlefill (buffer, //draws the center 'engine'
-					140 + (craft[HAB]->radius - craft[HAB]->engineRadius) * cos (craft[HAB]->turnRadians - PI ),
-					22 * lineSpace + (craft[HAB]->radius - craft[HAB]->engineRadius) * sin (craft[HAB]->turnRadians - PI ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            140 + (craft[HAB]->radius - craft[HAB]->engineRadius) * cos (craft[HAB]->turnRadians - PI ),
+		            22 * lineSpace + (craft[HAB]->radius - craft[HAB]->engineRadius) * sin (craft[HAB]->turnRadians - PI ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer, //draws the left 'engine'
-					140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * .75) ),
-					22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * .75) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * .75) ),
+		            22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * .75) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer, //draws the right 'engine'
-					140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * 1.25) ),
-					22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * 1.25) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
+		            140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * 1.25) ),
+		            22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * 1.25) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->fillColor - 1052688);   //the inactive engine color is fillColor - hex(101010)
 	}
 
 	else {
 
 		circlefill (buffer, //draws the center 'engine'
-					140 + (craft[HAB]->radius - craft[HAB]->engineRadius) * cos (craft[HAB]->turnRadians - (PI) ),
-					22 * lineSpace + (craft[HAB]->radius - craft[HAB]->engineRadius) * sin (craft[HAB]->turnRadians - (PI) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->engineColor);
+		            140 + (craft[HAB]->radius - craft[HAB]->engineRadius) * cos (craft[HAB]->turnRadians - (PI) ),
+		            22 * lineSpace + (craft[HAB]->radius - craft[HAB]->engineRadius) * sin (craft[HAB]->turnRadians - (PI) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->engineColor);
 		circlefill (buffer, //draws the left 'engine'
-					140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * .75) ),
-					22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * .75) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->engineColor);
+		            140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * .75) ),
+		            22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * .75) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->engineColor);
 		circlefill (buffer, //draws the right 'engine'
-					140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * 1.25) ),
-					22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * 1.25) ),
-					craft[HAB]->engineRadius,
-					craft[HAB]->engineColor);
+		            140 + craft[HAB]->radius * cos (craft[HAB]->turnRadians - (PI * 1.25) ),
+		            22 * lineSpace + craft[HAB]->radius * sin (craft[HAB]->turnRadians - (PI * 1.25) ),
+		            craft[HAB]->engineRadius,
+		            craft[HAB]->engineColor);
 	}
 
 	line (buffer, 140, 22 * lineSpace, (140) + (craft[HAB]->radius * 1.2) * cos (thetaV), (22 * lineSpace) + (craft[HAB]->radius * 1.2) * sin (thetaV), makecol (255, 0, 0));
 //	textprintf_ex (buffer, font, (140) + (craft[HAB]->radius * 2) * cos (thetaTarg), (22 * lineSpace) + (craft[HAB]->radius * 2) * sin (thetaTarg), makecol (255, 255, 255), -1, "%s", target->name.c_str());
 	line (buffer, 140, 22 * lineSpace, (140) + (craft[HAB]->radius * 1.2) * cos (thetaTarg), (22 * lineSpace) + (craft[HAB]->radius * 1.2) * sin (thetaTarg), makecol (0, 0, 255));
 
-	textprintf_ex (buffer, font, lineSpace, 30 * lineSpace, makecol (200, 200, 200), -1, "Center:"), textprintf_ex (buffer, font, 200, 30 * lineSpace, makecol (200, 200, 200), -1, "%s", camera.target->name.c_str());
-	textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Target:"), textprintf_ex (buffer, font, 200, 31 * lineSpace, makecol (200, 200, 200), -1, "%s", target->name.c_str());
-	textprintf_ex (buffer, font, lineSpace, 32 * lineSpace, makecol (200, 200, 200), -1, "Reference:"), textprintf_ex (buffer, font, 200, 32 * lineSpace, makecol (200, 200, 200), -1, "%s", reference->name.c_str());
-	textprintf_ex (buffer, font, lineSpace, 33 * lineSpace, makecol (200, 200, 200), -1, "FPS:"), textprintf_ex (buffer, font, 200, 33 * lineSpace, makecol (200, 200, 200), -1, "%d", frameRate);
+	textprintf_ex (buffer, font, lineSpace, 30 * lineSpace, makecol (200, 200, 200), -1, "Center:"), textprintf_ex (buffer, font, 200, 30 * lineSpace, makecol (255, 255, 255), -1, "%s", camera.target->name.c_str());
+	textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Target:"), textprintf_ex (buffer, font, 200, 31 * lineSpace, makecol (255, 255, 255), -1, "%s", target->name.c_str());
+	textprintf_ex (buffer, font, lineSpace, 32 * lineSpace, makecol (200, 200, 200), -1, "Reference:"), textprintf_ex (buffer, font, 200, 32 * lineSpace, makecol (255, 255, 255), -1, "%s", reference->name.c_str());
+	textprintf_ex (buffer, font, lineSpace, 33 * lineSpace, makecol (200, 200, 200), -1, "Autopilot:"), textprintf_ex (buffer, font, 200, 33 * lineSpace, makecol (255, 255, 255), -1, "%s", craft[HAB]->autopilot.descriptor[craft[HAB]->autopilot.navmode].c_str());
+	textprintf_ex (buffer, font, lineSpace, 34 * lineSpace, makecol (200, 200, 200), -1, "FPS:"), textprintf_ex (buffer, font, 200, 34 * lineSpace, makecol (255, 255, 255), -1, "%d", frameRate);
 }
 
-void viewpoint::zoom (short int direction) {
+void viewpoint_t::zoom (short int direction) {
 
 	if (zoomLevel < maxZoom)
 		zoomLevel += zoomStep * direction;
@@ -894,28 +929,28 @@ void viewpoint::zoom (short int direction) {
 		zoomLevel -= zoomStep;
 }
 
-long double viewpoint::actualZoom() {
+long double viewpoint_t::actualZoom() {
 
 	return (pow (zoomMagnitude, zoomLevel) + minZoom);
 }
 
-void viewpoint::panX (short int direction) {
+void viewpoint_t::panX (short int direction) {
 
 	x += panSpeed / actualZoom() * actualZoom() * direction;
 }
 
-void viewpoint::panY (short int direction) {
+void viewpoint_t::panY (short int direction) {
 
 	y += panSpeed / actualZoom() * actualZoom() * direction;
 }
 
-void viewpoint::shift() {
+void viewpoint_t::shift() {
 
 	x = target->x;
 	y = target->y;
 }
 
-void viewpoint::autoZoom() {
+void viewpoint_t::autoZoom() {
 
 //    zoom = sqrtf ( ( (target->x - reference->x) * (target->x - reference->x) ) + ( (target->y - reference->y) * (target->y - reference->y) ) ) / zoom;
 //    zoom = sqrtf ( ( (target->x - reference->x) * (target->x - reference->x) ) + ( (target->y - reference->y) * (target->y - reference->y) ) ) / zoom;

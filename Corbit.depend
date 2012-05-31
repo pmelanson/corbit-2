@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1338309974 
+1338404283 
 
 1334453559 source:c:\users\melanson\hax\summative\trying again.cpp
 	<allegro.h>
@@ -15,12 +15,17 @@
 
 1334164120 d:\zoosmell\hax\summative\version.h
 
-<<<<<<< HEAD
-1335234198 source:c:\users\melanson\corbit\trying again.cpp
+1338170099 D
+
+1335031850 source:c:\users\melanson\corbit\trying again.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
 	<memory>
+	"version.h"
+	<allegro.h>
+	<math.h>
+	<vector>
 	"version.h"
 
 1338340785 c:\users\melanson\corbit\version.h
@@ -34,7 +39,7 @@
 
 1338312721 d:\zoosmell\corbit\version.h
 
-1338345882 source:c:\users\melanson\corbit\corbit.cpp
+1338428839 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
@@ -54,8 +59,6 @@
 	<sstream>
 	<string.h>
 
-1338170099 D
-
 1338404283 source:d:\zoosmell\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
@@ -65,13 +68,6 @@
 	<fstream>
 	<sstream>
 	<string.h>
-=======
-1335031850 source:c:\users\melanson\corbit\trying again.cpp
-	<allegro.h>
-	<math.h>
-	<vector>
-	"version.h"
 
-1335031281 c:\users\melanson\corbit\version.h
->>>>>>> e2bffd3155be8612fda7974f18c76ed3fac9d52b
+1335031281 ffd3155be8612fda7974f18c76ed3fac9d52b
 
