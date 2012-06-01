@@ -958,8 +958,6 @@ void viewpoint_t::shift() {
 
 void viewpoint_t::autoZoom() {
 
-//    zoom = sqrtf ( ( (target->x - reference->x) * (target->x - reference->x) ) + ( (target->y - reference->y) * (target->y - reference->y) ) ) / zoom;
-//    zoom = sqrtf ( ( (target->x - reference->x) * (target->x - reference->x) ) + ( (target->y - reference->y) * (target->y - reference->y) ) ) / zoom;
 }
 
 void detectCollision () {
@@ -968,24 +966,6 @@ void detectCollision () {
 
 void gravitate () { //calculates gravitational forces, and accelerates, between two entities
 
-    vector <ship_t*>::iterator spaceship, _spaceship;
-	vector <solarBody_t*>::iterator rock, ROCK;
-	long double gravity, theta;
-
-	for (rock = body.begin(); rock != body.end(); ++rock) {
-        for (ROCK = rock; ROCK != body.end(); ++ROCK) {
-            gravity = (*rock)->gravity ((*ROCK)->x, (*ROCK)->y, (*ROCK)->mass);
-            theta = atan2f ( ((*rock)->x - (*ROCK)->x), ((*rock)->y - (*ROCK)->y) );
-            theta = PI / 2;
-            gravity = 0;
-
-//            (*rock)->accX (gravity, theta);
-//            (*rock)->accY (gravity, theta);
-//            (*ROCK)->accX (gravity, theta);
-//            (*ROCK)->accY (gravity, theta);
-        }
-
-	}
 }
 
 void iterate (void transform() ) {
