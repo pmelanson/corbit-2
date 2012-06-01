@@ -99,9 +99,7 @@ using namespace std;
 
 //globals
 const unsigned short int screenWidth = 1280;    //my computer's resolution
-//const unsigned short int screenWidth = 1144;    //school resolution
 const unsigned short int screenHeight = 980;    //my computer's resolution
-//const unsigned short int screenHeight = 830;    //school resolution
 bool printDebug = false;
 
 BITMAP *buffer = NULL;
