@@ -28,7 +28,7 @@
 	<vector>
 	"version.h"
 
-1338340785 c:\users\melanson\corbit\version.h
+1338511169 c:\users\melanson\corbit\version.h
 
 1335293026 source:d:\zoosmell\corbit\trying again.cpp
 	<allegro.h>
@@ -39,7 +39,7 @@
 
 1338312721 d:\zoosmell\corbit\version.h
 
-1338510755 source:c:\users\melanson\corbit\corbit.cpp
+1338511585 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
@@ -70,4 +70,16 @@
 	<string.h>
 
 1335031281 ffd3155be8612fda7974f18c76ed3fac9d52b
+
+1338511586 source:e:\corbit\corbit.cpp
+	<allegro.h>
+	<math.h>
+	<vector>
+	"version.h"
+	<iostream>
+	<fstream>
+	<sstream>
+	<string.h>
+
+1338511170 e:\corbit\version.h
 

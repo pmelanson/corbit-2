@@ -1,3 +1,20 @@
+/*union entity_t {
+
+    struct physical_t {
+    ...
+    } ph;
+    struct ship_t {
+    ...
+    } sh;
+    struct solarBody_t {
+    ...
+    } sB;
+};
+
+union entity_t foobar = {.ph = whatever};
+
+whatever = foobar.ph;*/
+
 /*******************
 
  .d8888b.                   888      d8b 888
@@ -98,8 +115,10 @@ Isn't that an awesome license? I like it.
 using namespace std;
 
 //globals
-const unsigned short int screenWidth = 1280;    //my computer's resolution
-const unsigned short int screenHeight = 980;    //my computer's resolution
+//const unsigned short int screenWidth = 1280;    //my computer's resolution
+const unsigned short int screenWidth = 1140;    //my computer's resolution
+//const unsigned short int screenHeight = 980;    //my computer's resolution
+const unsigned short int screenHeight = 800;    //my computer's resolution
 bool printDebug = false;
 
 BITMAP *buffer = NULL;
@@ -150,7 +169,8 @@ public:
 	viewpoint_t (const int _zoomMagnitude, const float _zoomStep, const float _maxZoom, const double _minZoom, const unsigned short int _panSpeed, const long double _zoomLevel) :
 		zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), minZoom (_minZoom), panSpeed (_panSpeed), x (0), y (0), zoomLevel (_zoomLevel), track (true)
 	{}
-};
+} camera (  22,             0.01,       0.5,    1e-11, 10,         0);   //constructor initializes consts in the order they are declared, which is...
+//          zoomMagnitude   zoomStep    maxZoom minZoom panSpeed    zoomLevel;
 
 class display_t {
 
@@ -166,9 +186,10 @@ public:
 	display_t (const short unsigned int _gridSpace, const unsigned short int _lineSpace) :
 		gridSpace (_gridSpace), lineSpace (_lineSpace)
 	{}
-};
+} HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
+//        gridSpace   lineSpace;
 
-struct physical_t { //stores data about any physical physical, such as mass and radius, acceleration, velocity, and angle from right
+/**struct physical_t { //stores data about any physical physical, such as mass and radius, acceleration, velocity, and angle from right
 
 	const string name;    //I love C++ over C so much for this
 
@@ -249,19 +270,70 @@ struct habitat_t : ship_t {
 	habitat_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
 		ship_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, _engineColor, _engineRadius)
 	{}
+};**/
+
+union entity_t {
+
+    struct physical_t { //stores data about any physical physical, such as mass and radius, acceleration, velocity, and angle from right
+
+//			string name;    //I love C++ over C so much for this
+
+			double mass;
+			double radius;   //mass of physical, to be used in calculation F=ma, and radius of physical
+			long double x, y; //the center of the physical
+			long int a();
+			long int b();
+			float turnRadians;
+			long int distance (long double x, long double y);
+			void move();   //moves physical
+
+			long double accX (long double radians, long double acc); //the physical's acceleration (m/s/s) along the x axis
+			long double accY (long double radians, long double acc); //''
+			long double Vx, Vy;   //the physical's speed (m/s) along each axis
+			long double gravity(const int _x, const int _y, const int _mass);
+
+			void turn();   //turns the physical
+			long double turnRate; //rate at which the physical turns
+
+			unsigned int fillColor;
+		} physical;
+
+		struct solarBody_t : physical_t {   //stores information about an astronomical body, in addition to information already stored by an physical
+
+			float atmosphereDrag;
+			unsigned int atmosphereColor;
+			unsigned short int atmosphereHeight;
+
+			void draw();
+		} solarBody;
+
+		struct ship_t : physical_t {  //stores information about a pilotable ship, in addition to information already stored by an physical
+
+			void fireEngine();
+			float engine;
+			unsigned int engineColor;
+			unsigned short int engineRadius;
+
+//			virtual void draw();
+		} ship;
+
+		struct habitat_t : ship_t {
+
+			void draw();
+		} habitat;
 };
 
-viewpoint_t camera (  22,             0.01,       0.5,    0.8e-10, 10,         0);   //constructor initializes consts in the order they are declared, which is...
-//                  zoomMagnitude   zoomStep    maxZoom minZoom panSpeed    zoomLevel
 
-display_t HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
-//              gridSpace   lineSpace
-
-vector <ship_t*> craft;
-vector <solarBody_t*> body;
+//vector <ship_t*> craft;
+//vector <solarBody_t*> body;
 
 
 int main () {
+
+    entity_t foobar;
+    whatever = foobar.physical;
+    entity[1].ship_t.engine = 42;
+    cout << entity[1].ship_t.engine << endl;
 
 	//looping variable initialization
 	vector <ship_t*>::iterator spaceship;
@@ -460,8 +532,9 @@ int main () {
 				(*spaceship)->fireEngine();
 				(*spaceship)->move();
 			}
+//			craft[HAB]->accX (PI, 100);
 
-			camera.autoZoom();
+//			camera.autoZoom();
 
 			if (camera.track == true)
 				camera.shift();
@@ -684,7 +757,7 @@ void changeFrameRate(short int step) {
 
 void debug() {
 
-	const unsigned short int spacing = 700;
+	const unsigned short int spacing = SCREEN_H - SCREEN_H / 4;
 
 	textprintf_ex (buffer, font, 0, 0 + spacing, makecol (200, 200, 200), -1, "DEBUG: hab.x: %Lf", craft[HAB]->x);
 	textprintf_ex (buffer, font, 0, 10 + spacing, makecol (200, 200, 200), -1, "DEBUG: hab.y = %Lf", craft[HAB]->y );
@@ -703,7 +776,6 @@ void debug() {
 	textprintf_ex (buffer, font, 0, 140 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera X: %Li", camera.x);
 	textprintf_ex (buffer, font, 0, 150 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera Y: %Li", camera.y);
 	textprintf_ex (buffer, font, 0, 160 + spacing, makecol (200, 200, 200), -1, "DEBUG: turnRate: %Lf", craft[HAB]->turnRate);
-	textprintf_ex (buffer, font, SCREEN_W/2, SCREEN_H/2, makecol (200, 200, 200), -1, "poop");
 }
 
 void physical_t::move() {
@@ -734,8 +806,8 @@ void physical_t::turn () {
 
 long double ship_t::accX (long double radians, long double acc) {
 
-	Vx += ( (cos (radians) * acc) / (mass + fuel) ) / frameRate;
-	return (( (sin (radians) * acc) / (mass + fuel) ) / frameRate);
+	Vx += ( (cos (radians) * acc) / (1) ) / frameRate;
+	return (( (sin (radians) * acc) / (1) ) / frameRate);
 }
 
 long double ship_t::accY (long double radians, long double acc) {
@@ -952,10 +1024,6 @@ void viewpoint_t::shift() {
 
 	x = target->x;
 	y = target->y;
-}
-
-void viewpoint_t::autoZoom() {
-
 }
 
 void detectCollision () {
