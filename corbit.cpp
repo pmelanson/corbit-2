@@ -89,12 +89,11 @@ Isn't that an awesome license? I like it.
 #include <allegro.h>
 #include <math.h>
 #include <vector>
-//#include <memory>
+#include <boost/shared_ptr.hpp>
 #include "version.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string.h>
 using namespace std;
 
 //globals
@@ -150,7 +149,8 @@ public:
 	viewpoint_t (const int _zoomMagnitude, const float _zoomStep, const float _maxZoom, const double _minZoom, const unsigned short int _panSpeed, const long double _zoomLevel) :
 		zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), minZoom (_minZoom), panSpeed (_panSpeed), x (0), y (0), zoomLevel (_zoomLevel), track (true)
 	{}
-};
+} camera (  22,             0.01,       0.5,    0.8e-10, 10,         0);   //constructor initializes consts in the order they are declared, which is...
+//          zoomMagnitude   zoomStep    maxZoom minZoom  panSpeed    zoomLevel;
 
 class display_t {
 
@@ -166,7 +166,8 @@ public:
 	display_t (const short unsigned int _gridSpace, const unsigned short int _lineSpace) :
 		gridSpace (_gridSpace), lineSpace (_lineSpace)
 	{}
-};
+} HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
+//        gridSpace   lineSpace;
 
 struct physical_t { //stores data about any physical physical, such as mass and radius, acceleration, velocity, and angle from right
 
@@ -251,17 +252,22 @@ struct habitat_t : ship_t {
 	{}
 };
 
-viewpoint_t camera (  22,             0.01,       0.5,    0.8e-10, 10,         0);   //constructor initializes consts in the order they are declared, which is...
-//                  zoomMagnitude   zoomStep    maxZoom minZoom panSpeed    zoomLevel
+struct foobar_t {
 
-display_t HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
-//              gridSpace   lineSpace
+    int a;
+    float b;
+};
 
 vector <ship_t*> craft;
 vector <solarBody_t*> body;
+//vector <boost::shared_ptr<physical_t> > entity;
+vector <boost::shared_ptr<foobar_t> > entity;
 
 
 int main () {
+
+
+    entity.push_back (new foobar_t());
 
 	//looping variable initialization
 	vector <ship_t*>::iterator spaceship;
@@ -499,7 +505,7 @@ int main () {
 		delete *spaceship;
 	craft.clear();
 
-	return 0;
+	return 32;
 }
 END_OF_MAIN();
 
