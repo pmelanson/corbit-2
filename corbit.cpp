@@ -1,3 +1,20 @@
+/*union entity_t {
+
+    struct physical_t {
+    ...
+    } ph;
+    struct ship_t {
+    ...
+    } sh;
+    struct solarBody_t {
+    ...
+    } sB;
+};
+
+union entity_t foobar = {.ph = whatever};
+
+whatever = foobar.ph;*/
+
 /*******************
 
  .d8888b.                   888      d8b 888
@@ -99,27 +116,32 @@ using namespace std;
 
 //globals
 const unsigned short int screenWidth = 1280;    //my computer's resolution
+//const unsigned short int screenWidth = 1140;    //my computer's resolution
 const unsigned short int screenHeight = 980;    //my computer's resolution
-bool printDebug = false;
+//const unsigned short int screenHeight = 800;    //my computer's resolution
+bool printDebug = true;
 
 BITMAP *buffer = NULL;
-volatile unsigned short int timer = 0, cycle = 0;
+volatile unsigned long int timer = 0, cycle = 0;
+volatile int fps, fpsCounter;
 unsigned long int frameRate = 60;   //used as the base in frameRate exponential calculations NOT ACTUAL FRAMERATE (see changeFrameRate())
 
 const long double PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587006606315588174881520920962829254091715364367892590360011330530548820466521384146951941511609433057270365759591953092186117381932611793105118548074462379962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420198938095257201065485863278865936153381827968230301952035301852968995773622599413891249721775283479131515574857242454150695950829533116861727855889075098381754637464939319255060400927701671139009848824012858361603563707660104710181942955596198946767;
 const long double G = 6.673e-11;
 const long double AU = 1495978707e2;
 
-enum craft_enum {HAB, CRAFTMAX};
-enum body_enum {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, BODYMAX};
+//enum craft_enum {HAB, CRAFTMAX};
+//enum body_enum {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, BODYMAX};
+enum entity_enum {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, HAB, ENTITYMAX};
 enum navMode_enum {MAN, APP_TARG, DEPART_REF, CCW, CW, NAVMAX};
 
 
 //prototypes
-void nextFrame(), nextCycle();
+void CYCLE(), FPS();   //CYCLE is timer function for calculations (i.e. every time cycle is run, gravity is calculated), while FPS is for counting how the FPS
 void input(), drawBuffer(), debug(), drawGrid();
 void detectCollision(), gravitate();
 void changeFrameRate(short int step);
+bool parse (istream &stream, long double &data), parse (istream &stream, float &data), parseColor (istream &stream, unsigned int &color), parse (istream &stream, char &data), parse (istream &stream, string &data);
 
 //beginning of class declarations
 class viewpoint_t {
@@ -150,7 +172,8 @@ public:
 	viewpoint_t (const int _zoomMagnitude, const float _zoomStep, const float _maxZoom, const double _minZoom, const unsigned short int _panSpeed, const long double _zoomLevel) :
 		zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), minZoom (_minZoom), panSpeed (_panSpeed), x (0), y (0), zoomLevel (_zoomLevel), track (true)
 	{}
-};
+} camera (  22,             0.01,       0.5,    1e-11, 10,         0);   //constructor initializes consts in the order they are declared, which is...
+//          zoomMagnitude   zoomStep    maxZoom minZoom panSpeed    zoomLevel;
 
 class display_t {
 
@@ -166,14 +189,15 @@ public:
 	display_t (const short unsigned int _gridSpace, const unsigned short int _lineSpace) :
 		gridSpace (_gridSpace), lineSpace (_lineSpace)
 	{}
-};
+} HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
+//        gridSpace   lineSpace;
 
 struct physical_t { //stores data about any physical physical, such as mass and radius, acceleration, velocity, and angle from right
 
 	const string name;    //I love C++ over C so much for this
 
-	const long double mass;
-	const long double radius;   //mass of physical, to be used in calculation F=ma, and radius of physical
+	const unsigned long int mass;
+	const unsigned long int radius;   //mass of physical, to be used in calculation F=ma, and radius of physical
 	long double x, y; //the center of the physical
 	long int a();
 	long int b();
@@ -182,10 +206,10 @@ struct physical_t { //stores data about any physical physical, such as mass and 
 	void move();   //moves physical
 
 	long double acc;    //total acceleration, no calculations are actually performed on this, just for printing purposes
-	virtual long double accX (long double radians, long double acc); //the physical's acceleration (m/s/s) along the x axis
-	virtual long double accY (long double radians, long double acc); //''
+	void accX (long double radians, long double acc); //the physical's acceleration (m/s/s) along the x axis
+	void accY (long double radians, long double acc); //''
 	long double Vx, Vy;   //the physical's speed (m/s) along each axis
-	long double gravity (long double _x, long double _y, long double _mass);
+	long double gravity (long double _x, long double _y, long unsigned int _mass);
 
 	void turn();   //turns the physical
 	long double turnRate; //rate at which the physical turns
@@ -193,7 +217,7 @@ struct physical_t { //stores data about any physical physical, such as mass and 
 	virtual void draw();    //draws physical
 	const unsigned int fillColor;
 
-	physical_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor) :
+	physical_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, unsigned long int _mass, unsigned long int _radius, unsigned int _fillColor) :
 		name (_name), x (_x), y (_y), Vx (_Vx), Vy (_Vy), mass (_mass), radius (_radius), fillColor (_fillColor), turnRate (0), turnRadians (0)
 	{}
 };
@@ -206,7 +230,7 @@ struct solarBody_t : physical_t {   //stores information about an astronomical b
 
 	void draw();
 
-	solarBody_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _atmosphereColor, unsigned short int _atmosphereHeight) :
+	solarBody_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _atmosphereColor, unsigned short int _atmosphereHeight) :
 		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
 		atmosphereColor (_atmosphereColor), atmosphereHeight (_atmosphereHeight), atmosphereDrag (42)
 	{}
@@ -221,8 +245,8 @@ struct ship_t : physical_t {  //stores information about a pilotable ship, in ad
 	unsigned long int fuel;
 	float burnRate;
 
-	long double accX (long double radians, long double acc); //the physical's acceleration (m/s/s) along the x axis
-	long double accY (long double radians, long double acc); //''
+	void accX (long double radians, long double acc); //the physical's acceleration (m/s/s) along the x axis
+	void accY (long double radians, long double acc); //''
 
 	struct autopilot_t {
 
@@ -236,7 +260,7 @@ struct ship_t : physical_t {  //stores information about a pilotable ship, in ad
 
 	virtual void draw();
 
-	ship_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
+	ship_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
 		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
 		engineColor (_engineColor), engineRadius (_engineRadius), engine (0), fuel (1e6), burnRate (10)
 	{}
@@ -246,19 +270,70 @@ struct habitat_t : ship_t {
 
 	void draw();
 
-	habitat_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long int _mass, unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
+	habitat_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
 		ship_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, _engineColor, _engineRadius)
 	{}
 };
 
-viewpoint_t camera (  22,             0.01,       0.5,    0.8e-10, 10,         0);   //constructor initializes consts in the order they are declared, which is...
-//                  zoomMagnitude   zoomStep    maxZoom minZoom panSpeed    zoomLevel
+union entity_t {
 
-display_t HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
-//              gridSpace   lineSpace
+	struct physical_t { //stores data about any physical physical, such as mass and radius, acceleration, velocity, and angle from right
+
+		char name[32];
+
+		double mass;
+		double radius;   //mass of physical, to be used in calculation F=ma, and radius of physical
+		long double x, y; //the center of the physical
+		long int a(), b();
+		float turnRadians;
+		long int distance (long double x, long double y);
+		void move();   //moves physical
+
+		long double accX (long double radians, long double acc), accY (long double radians, long double acc); //the physical's acceleration (m/s/s) along each axis
+		long double Vx, Vy;   //the physical's speed (m/s) along each axis
+		long double gravity(const int _x, const int _y, const int _mass);
+
+		void turn();   //turns the physical
+		long double turnRate; //rate at which the physical turns
+
+		unsigned int fillColor;
+	} physical;
+
+	struct solarBody_t : physical_t {   //stores information about an astronomical body, in addition to information already stored by an physical
+
+		unsigned int atmosphereColor;
+		unsigned short int atmosphereHeight;
+		float atmosphereDrag;
+
+		void draw();
+	} solarBody;
+
+	struct ship_t : physical_t {  //stores information about a pilotable ship, in addition to information already stored by an physical
+
+
+		unsigned int engineColor;
+		unsigned short int engineRadius;
+		float engine;
+
+		struct autopilot_t {
+
+			navMode_enum navmode;       //enum for which navmode to use, e.g. MAN, CCW
+			char descriptor[16][NAVMAX];   //string describing the current nav mode
+		} autopilot;
+
+		void fireEngine();
+	} ship;
+
+	struct habitat_t : ship_t {
+
+		void draw();
+	} habitat;
+};
 
 vector <ship_t*> craft;
 vector <solarBody_t*> body;
+
+vector <entity_t*> entity;
 
 
 int main () {
@@ -272,10 +347,15 @@ int main () {
 	install_keyboard();
 	set_color_depth (desktop_color_depth());
 	set_gfx_mode (GFX_AUTODETECT_WINDOWED, screenWidth, screenHeight, 0, 0);
+	set_display_switch_mode(SWITCH_BACKGROUND);
 
 	LOCK_VARIABLE (timer);
-	LOCK_FUNCTION (timestep);
+	LOCK_VARIABLE (fpsCounter);
+	LOCK_VARIABLE (fps);
+	LOCK_FUNCTION (CYCLE);
+	LOCK_FUNCTION (FPS);
 	changeFrameRate (0);
+	install_int_ex (FPS, BPS_TO_TIMER (1));
 	buffer = create_bitmap (SCREEN_W, SCREEN_H);
 
 	//file initialization
@@ -287,202 +367,180 @@ int main () {
 		cout << "datafile good\n";
 
 	//data initializations
+
+	string container = "", name = "";
+	long double x = 1337, y = 1337, Vx = 0, Vy = 0;
+	long double mass = 1337, radius = 1337, specialRadius = 413;
+	unsigned int fillColor = makecol (255, 255, 0), specialColor = makecol (0, 255, 255);
 	string line = "";
 
 	datafile.ignore (4096, '!');
+	cout << uppercase;
 
 	while (getline (datafile, line)) { //each loop through this reads in an entity
 
 		string container = "", name = "";
-		long double x = 1337, y = 1337, Vx = 0, Vy = 0;
-		long double mass = 1337, radius = 1337, specialRadius = 413;
-		unsigned short int R = 10, G = 11, B = 12;
-		unsigned short int R2 = 20, G2 = 21, B2 = 22;
-		unsigned int fillColor = 50, specialColor = 50;
+		x = 1337, y = 1337, Vx = 0, Vy = 0;
+		mass = 1337, radius = 1337, specialRadius = 413;
+		fillColor = makecol (255, 255, 0), specialColor = makecol (0, 255, 255);
 
-		cout << endl << line;
 		istringstream iss (line);
 		iss >> container;
+		cout << endl << container;
 
 
-		if (getline (datafile, line)) { // was able to read a line
-			istringstream iss (line);
-
-			if (iss >> name); // was able to parse the data
-			if (name == "")
-				name = "Blank";
-			cout << " " << name;
+		if (parse (datafile, name));
+		else {
+			name = "N/A";
+			cout << "could not determine name, set to " << name << endl;
 		}
 
-		if (getline (datafile, line)) { // was able to read a line
-			istringstream iss (line);
+		if (parse (datafile, x))
+			x *= AU;
+		else
+			cout << "x read fail for " << name << endl;
 
-			if (iss >> x) // was able to parse the number
-				x *= AU;
-		}
+		if (parse (datafile, y))
+			y *= AU;
+		else
+			cout << "y read fail for " << name << endl;
 
-		if (getline (datafile, line)) { // was able to read a line
-			istringstream iss (line);
+		if (parse (datafile, Vx));
+		else
+			cout << "Vx read fail for " << name << endl;
 
-			if (iss >> y) // was able to parse the number
-				y *= AU;
-		}
+		if (parse (datafile, Vy));
+		else
+			cout << "Vy read fail for " << name << endl;
 
-		if (getline (datafile, line)) { // was able to read a line
-			istringstream iss (line);
+		if (parse (datafile, mass));
+		else
+			cout << "mass read fail for " << name << endl;
 
-			if (iss >> Vx); // was able to parse the number
-		}
+		if (parse (datafile, radius))
+			radius *= 2;
+		else
+			cout << "radius read fail for " << name << endl;
 
-		if (getline (datafile, line)) { // was able to read a line
-			istringstream iss (line);
+		if (parseColor (datafile, fillColor));
+		else
+			cout << "fillColor read fail for " << name << endl;
 
-			if (iss >> Vy); // was able to parse the number
-		}
+		if (parseColor (datafile, specialColor));
+		else
+			cout << "specialColor read fail for " << name << endl;
 
-		if (getline (datafile, line)) { // was able to read a line
-			istringstream iss (line);
-
-			if (iss >> mass); // was able to parse the number
-
-			if (mass <= 0)
-				mass = 1337;
-		}
-
-		if (getline (datafile, line)) { // was able to read a line
-			istringstream iss (line);
-
-			if (iss >> radius) // was able to parse the number
-				radius *= 2;
-
-			if (radius <= 0)
-				radius = 1337;
-		}
-
-		if (getline (datafile, line)) {
-			istringstream iss (line);
-
-			if (iss >> R) {
-				iss.ignore (2, ',');
-				if (iss >> G) {
-					iss.ignore (2, ',');
-					if (iss >> B)
-						fillColor = makecol (R, G, B);
-				}
-			}
-		}
-
-		if (getline (datafile, line)) {
-			istringstream iss (line);
-
-			if (iss >> R2) {
-				iss.ignore (2, ',');
-				if (iss >> G2) {
-					iss.ignore (2, ',');
-					if (iss >> B2)
-						specialColor = makecol (R2, G2, B2);
-				}
-			}
-		}
-
-		if (getline (datafile, line)) { // was able to read a line
-			istringstream iss (line);
-
-			if (iss >> specialRadius); // was able to parse the number
-
-			if (specialRadius <= 0)
-				specialRadius = 1337;
-		}
+		if (parse (datafile, specialRadius));
+		else
+			cout << "specialRadius read fail for " << name << endl;
 
 		if (container == "solarBody") {
-			body.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
+			entity.push_back (new entity_t);
 
-			cout << "\nBody initialized, with data of\nx = " << x << endl;
+			strcpy (entity.back()->solarBody.name, name.c_str());
+			entity.back()->solarBody.x = x, entity.back()->solarBody.y = y;
+			entity.back()->solarBody.Vx = Vx, entity.back()->solarBody.Vy = Vy;
+			entity.back()->solarBody.mass = mass;
+			entity.back()->solarBody.radius = radius;
+			entity.back()->solarBody.fillColor = fillColor, entity.back()->solarBody.atmosphereColor = specialColor;
+			entity.back()->solarBody.atmosphereHeight = specialRadius;
+
+			cout << endl << name << " initialized, with data of\n";
+			cout << "x = " << x << endl;
 			cout << "y = " << y << endl;
 			cout << "Vx = " << Vx << endl;
 			cout << "Vy = " << Vy << endl;
 			cout << "mass = " << mass << endl;
 			cout << "radius = " << radius << endl;
-			cout << "fillColor = " << R << ", " << G << ", " << B << ", " << endl;;
-			cout << "atmosphereColor = " << R2 << ", " << G2 << ", " << B2 << ", " << endl;
+			cout << hex << "fillColor = " << fillColor << endl;
+			cout << hex << "atmosphereColor = " << specialColor << endl;
 			cout << "atmosphereHeight = " << specialRadius << endl;
 		}
 
 		if (container == "ship")
 			if (name == "Habitat") {
-				craft.push_back (new habitat_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
-				cout << "\nHabitat initialized, with data of\nx = " << x << endl;
-				cout << "y = " << y << endl;
-				cout << "Vx = " << Vx << endl;
-				cout << "Vy = " << Vy << endl;
-				cout << "mass = " << mass << endl;
-				cout << "radius = " << radius << endl;
-				cout << "fillColor = " << R << ", " << G << ", " << B << ", " << endl;
-				cout << "engine = " << 0 << endl;
-				cout << "engineColor = " << R2 << ", " << G2 << ", " << B2 << ", " << endl;
-				cout << "engineRadius = " << specialRadius << endl;
+				entity.push_back (new entity_t);
+
+				specialRadius *= 2;
+
+				strcpy (entity.back()->habitat.name, name.c_str());
+				entity.back()->habitat.x = x, entity.back()->habitat.y = y;
+				entity.back()->habitat.Vx = Vx, entity.back()->habitat.Vy = Vy;
+				entity.back()->habitat.mass = mass;
+				entity.back()->habitat.radius = radius;
+				entity.back()->habitat.fillColor = fillColor, entity.back()->habitat.engineColor = specialColor;
+				entity.back()->habitat.engineRadius = specialRadius;
+				entity.back()->habitat.autopilot.navmode = MAN;
+				strcpy (entity.back()->habitat.autopilot.descriptor[MAN], "Manual");
+				strcpy (entity.back()->habitat.autopilot.descriptor[APP_TARG], "App Targ");
+				strcpy (entity.back()->habitat.autopilot.descriptor[DEPART_REF], "Depart Ref");
+				strcpy (entity.back()->habitat.autopilot.descriptor[CCW], "CCW Prograde");
+				strcpy (entity.back()->habitat.autopilot.descriptor[CW], "CW Retrograde");
+
+
+				cout << endl << name << " initialized, with data of\n";
+				cout << "x = " << entity.back()->habitat.x << endl;
+				cout << "y = " << entity.back()->habitat.y << endl;
+				cout << "Vx = " << entity.back()->habitat.Vx << endl;
+				cout << "Vy = " << entity.back()->habitat.Vy << endl;
+				cout << "mass = " << entity.back()->habitat.mass << endl;
+				cout << "radius = " << entity.back()->habitat.radius << endl;
+				cout << hex << "fillColor = " << entity.back()->habitat.fillColor << endl;
+				cout << hex << "engineColor = " << entity.back()->habitat.engineColor << endl;
+				cout << "engineRadius = " << entity.back()->habitat.engineRadius << endl;
 			}
 
 		datafile.ignore (4096, '!');
 	}
+	datafile.close();
+	cout << nouppercase;
+                            ///end of file reading and parsing operations///
 
-	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-		(*spaceship)->autopilot.descriptor[MAN] = "Manual";
-		(*spaceship)->autopilot.descriptor[APP_TARG] = "App Targ";
-		(*spaceship)->autopilot.descriptor[DEPART_REF] = "Depart Ref";
-		(*spaceship)->autopilot.descriptor[CCW] = "CCW Prograde";
-		(*spaceship)->autopilot.descriptor[CW] = "CW Retrograde";
-	}
-
-	camera.target = craft[HAB];
-//	camera.target = body[EARTH];
+	/*camera.target = craft[HAB];
 	camera.reference = body[EARTH];
 	HUD.target = body[EARTH];
-	HUD.reference = body[MARS];
+	HUD.reference = body[MARS];*/
 
-///PROGRAM STARTS HERE///
+                                        ///PROGRAM STARTS HERE///
 	while (!key[KEY_ESC]) {
 
-		while (timer > 0) {
-
-			craft[HAB]->acc = 0;
+		while (cycle > 0) {
 
 			input();
 
 			gravitate();
 			detectCollision();
 
-			for (rock = body.begin(); rock != body.end(); ++rock)
+			/*for (rock = body.begin(); rock != body.end(); ++rock)
 				(*rock)->move();
 
 			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
 				(*spaceship)->turn();
 				(*spaceship)->fireEngine();
 				(*spaceship)->move();
-			}
+			}*/
 
-			camera.autoZoom();
+//			if (camera.track == true)
+//				camera.shift();
 
-			if (camera.track == true)
-				camera.shift();
-
-			timer--;
-
+			cycle--;
 		}
+
+		fpsCounter++;
 
 		HUD.drawGrid();
 
-		for (rock = body.begin(); rock != body.end(); ++rock)
+		/*for (rock = body.begin(); rock != body.end(); ++rock)
 			(*rock)->draw();
 
 		for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
 			(*spaceship)->draw();
-		}
+		}*/
 
-		HUD.drawHUD();
+//		HUD.drawHUD();
 
-		if (printDebug)
-			debug();
+//		if (printDebug)
+//			debug();
 
 		drawBuffer();
 	}
@@ -491,23 +549,30 @@ int main () {
 	destroy_bitmap (buffer);
 	release_screen();
 
-	for (rock = body.begin(); rock != body.end(); ++rock)
+	/*for (rock = body.begin(); rock != body.end(); ++rock)
 		delete *rock;
 	body.clear();
 
 	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
 		delete *spaceship;
-	craft.clear();
+	craft.clear();*/
 
 	return 0;
 }
 END_OF_MAIN();
 
-void nextFrame() {
+void CYCLE () {
 
-	timer++;
+	cycle++;
 }
-END_OF_FUNCTION (nextFrame);
+END_OF_FUNCTION (CYCLE);
+
+void FPS () {
+
+	fps = fpsCounter;
+	fpsCounter = 0;
+}
+END_OF_FUNCTION (FPS);
 
 void drawBuffer () {
 
@@ -520,8 +585,8 @@ void drawBuffer () {
 
 void input () {
 
-    if (key[KEY_Z])
-        printDebug = !printDebug;
+	if (key[KEY_Z])
+		printDebug = !printDebug;
 
 	if (key[KEY_A] && craft[HAB]->turnRate < 0.05)
 		craft[HAB]->turnRate -= 0.005 * PI / 180;
@@ -676,34 +741,30 @@ void input () {
 
 void changeFrameRate(short int step) {
 
-	if (frameRate + step <= 4294967295 && frameRate + step > 0) {
+	if (frameRate + step <= 4294967295 && frameRate + step > 0) {   //making sure that frameRate does not go beyond the limits of an unsigned long int
 		frameRate += step;
-		install_int_ex (nextFrame, BPS_TO_TIMER (frameRate + 1) );
+		install_int_ex (CYCLE, BPS_TO_TIMER (frameRate + 1) );
 	}
 }
 
 void debug() {
 
-	const unsigned short int spacing = 700;
+	const unsigned short int spacing = SCREEN_H - SCREEN_H / 4;
 
-	textprintf_ex (buffer, font, 0, 0 + spacing, makecol (200, 200, 200), -1, "DEBUG: hab.x: %Lf", craft[HAB]->x);
-	textprintf_ex (buffer, font, 0, 10 + spacing, makecol (200, 200, 200), -1, "DEBUG: hab.y = %Lf", craft[HAB]->y );
-	textprintf_ex (buffer, font, 0, 20 + spacing, makecol (200, 200, 200), -1, "DEBUG: hab a: %Li", craft[HAB]->a() );
-	textprintf_ex (buffer, font, 0, 30 + spacing, makecol (200, 200, 200), -1, "DEBUG: hab b: %Li", craft[HAB]->b() );
-	textprintf_ex (buffer, font, 0, 40 + spacing, makecol (200, 200, 200), -1, "DEBUG: Vx: %Lf", craft[HAB]->Vx);
-	textprintf_ex (buffer, font, 0, 50 + spacing, makecol (200, 200, 200), -1, "DEBUG: Vy: %Lf", craft[HAB]->Vy);
-	textprintf_ex (buffer, font, 0, 60 + spacing, makecol (200, 200, 200), -1, "DEBUG: Venus.a: %Li", body[VENUS]->a() );
-	textprintf_ex (buffer, font, 0, 70 + spacing, makecol (200, 200, 200), -1, "DEBUG: Venus.b: %Li", body[VENUS]->b() );
-	textprintf_ex (buffer, font, 0, 80 + spacing, makecol (200, 200, 200), -1, "DEBUG: Earth.a: %Li", body[EARTH]->a() );
-	textprintf_ex (buffer, font, 0, 90 + spacing, makecol (200, 200, 200), -1, "DEBUG: Earth.b: %Li", body[EARTH]->b() );
-	textprintf_ex (buffer, font, 0, 100 + spacing, makecol (200, 200, 200), -1, "DEBUG: Venus.x: %Lf", body[VENUS]->x);
-	textprintf_ex (buffer, font, 0, 110 + spacing, makecol (200, 200, 200), -1, "DEBUG: Venus.y: %Lf", body[VENUS]->y);
-	textprintf_ex (buffer, font, 0, 120 + spacing, makecol (200, 200, 200), -1, "DEBUG: arc tan: %Lf", atan2f (craft[HAB]->x - body[EARTH]->x, craft[HAB]->y - body[EARTH]->y) + PI * 0.5 );
-	textprintf_ex (buffer, font, 0, 130 + spacing, makecol (200, 200, 200), -1, "DEBUG: Actual zoom: %Lf", camera.actualZoom() );
-	textprintf_ex (buffer, font, 0, 140 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera X: %Li", camera.x);
-	textprintf_ex (buffer, font, 0, 150 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera Y: %Li", camera.y);
-	textprintf_ex (buffer, font, 0, 160 + spacing, makecol (200, 200, 200), -1, "DEBUG: turnRate: %Lf", craft[HAB]->turnRate);
-	textprintf_ex (buffer, font, SCREEN_W/2, SCREEN_H/2, makecol (200, 200, 200), -1, "poop");
+	textprintf_ex (buffer, font, 0, 0 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.x: %Lf", camera.target->x);
+	textprintf_ex (buffer, font, 0, 10 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.y = %Lf", camera.target->y );
+	textprintf_ex (buffer, font, 0, 20 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.a: %Li", camera.target->a() );
+	textprintf_ex (buffer, font, 0, 30 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.b: %Li", camera.target->b() );
+	textprintf_ex (buffer, font, 0, 40 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.Vx: %Lf", camera.target->Vx);
+	textprintf_ex (buffer, font, 0, 50 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.Vy: %Lf", camera.target->Vy);
+	textprintf_ex (buffer, font, 0, 60 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.turnRate: %Lf", camera.target->turnRate);
+	textprintf_ex (buffer, font, 0, 70 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.radius: %lu", camera.target->radius);
+	textprintf_ex (buffer, font, 0, 80 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.mass: %lu", camera.target->mass);
+	textprintf_ex (buffer, font, 0, 90 + spacing, makecol (200, 200, 200), -1, "DEBUG: arc tan: %Lf", atan2f (craft[HAB]->x - body[EARTH]->x, craft[HAB]->y - body[EARTH]->y) + PI * 0.5 );
+	textprintf_ex (buffer, font, 0, 100 + spacing, makecol (200, 200, 200), -1, "DEBUG: Actual zoom: %Lf", camera.actualZoom() );
+	textprintf_ex (buffer, font, 0, 110 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera X: %Ld", camera.x);
+	textprintf_ex (buffer, font, 0, 120 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera Y: %Ld", camera.y);
+	textprintf_ex (buffer, font, 0, 150 + spacing, makecol (200, 200, 200), -1, "DEBUG: earth atmosphere: %u", body[EARTH]->atmosphereHeight);
 }
 
 void physical_t::move() {
@@ -715,8 +776,8 @@ void physical_t::move() {
 void ship_t::fireEngine() {
 
 	if (fuel > 0) {
-		acc += accX (turnRadians, (engine * 1000000) / frameRate );
-		acc += accY (turnRadians, (engine * 1000000) / frameRate );
+		accX (turnRadians, engine / frameRate);
+		accY (turnRadians, engine / frameRate);
 		fuel -= fabs (engine) / frameRate;
 	}
 }
@@ -732,28 +793,28 @@ void physical_t::turn () {
 		turnRadians -= 2 * PI;
 }
 
-long double ship_t::accX (long double radians, long double acc) {
+void ship_t::accX (long double radians, long double acc) {
 
-	Vx += ( (cos (radians) * acc) / (mass + fuel) ) / frameRate;
-	return (( (sin (radians) * acc) / (mass + fuel) ) / frameRate);
+	Vx += ( (cos (radians) * acc) / (1) ) / 60;
+	acc += fabs(( (cos (radians) * acc) / (1) )) / 60;
 }
 
-long double ship_t::accY (long double radians, long double acc) {
+void ship_t::accY (long double radians, long double acc) {
 
-	Vy += ( (sin (radians) * acc) / (mass + fuel) ) / frameRate;
-	return (( (sin (radians) * acc) / (mass + fuel) ) / frameRate);
+	Vy += ( (sin (radians) * acc) / (1) ) / frameRate;
+	acc += fabs(( (sin (radians) * acc) / (1) )) / 60;
 }
 
-long double physical_t::accX (long double radians, long double acc) {
+void physical_t::accX (long double radians, long double acc) {
 
 	Vx += ( (cos (radians) * acc) / mass ) / frameRate;
-	return (( (cos (radians) * acc) / mass ) / frameRate);
+	acc += fabs(( (cos (radians) * acc) / (1) )) / 60;
 }
 
-long double physical_t::accY (long double radians, long double acc) {
+void physical_t::accY (long double radians, long double acc) {
 
 	Vy += ( (sin (radians) * acc) / mass ) / frameRate;
-	return (( (sin (radians) * acc) / mass ) / frameRate);
+	acc += fabs(( (sin (radians) * acc) / (1) )) / 60;
 }
 
 long double physical_t::distance (const long double _x, const long double _y) { //finds distance from physical to target
@@ -761,7 +822,7 @@ long double physical_t::distance (const long double _x, const long double _y) { 
 	return (sqrtf( ((x - _x) * (x - _x)) + ((y - _y) * (y - _y)) )); //finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
 
-long double physical_t::gravity(long double _x, long double _y, long double _mass) {
+long double physical_t::gravity(long double _x, long double _y, unsigned long int _mass) {
 
 	return (G * mass * _mass / distance (_x, _y) );    //G * mass1 * mass2 / r^2
 }
@@ -783,7 +844,7 @@ void physical_t::draw() {
 
 void solarBody_t::draw() {
 
-	circlefill (buffer, a(), b(), camera.actualZoom() * (radius + atmosphereHeight), atmosphereColor);   //draws the atmosphere to the buffer
+	circlefill (buffer, a(), b(), camera.actualZoom() * (radius), atmosphereColor);   //draws the atmosphere to the buffer
 
 	circlefill (buffer, a(), b(), radius * camera.actualZoom(), fillColor); //draws the planet body to the buffer
 
@@ -922,7 +983,7 @@ void display_t::drawHUD () {
 	textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Target:"), textprintf_ex (buffer, font, 200, 31 * lineSpace, makecol (255, 255, 255), -1, "%s", target->name.c_str());
 	textprintf_ex (buffer, font, lineSpace, 32 * lineSpace, makecol (200, 200, 200), -1, "Reference:"), textprintf_ex (buffer, font, 200, 32 * lineSpace, makecol (255, 255, 255), -1, "%s", reference->name.c_str());
 	textprintf_ex (buffer, font, lineSpace, 33 * lineSpace, makecol (200, 200, 200), -1, "Autopilot:"), textprintf_ex (buffer, font, 200, 33 * lineSpace, makecol (255, 255, 255), -1, "%s", craft[HAB]->autopilot.descriptor[craft[HAB]->autopilot.navmode].c_str());
-	textprintf_ex (buffer, font, lineSpace, 34 * lineSpace, makecol (200, 200, 200), -1, "FPS:"), textprintf_ex (buffer, font, 200, 34 * lineSpace, makecol (255, 255, 255), -1, "%d", frameRate);
+	textprintf_ex (buffer, font, lineSpace, 34 * lineSpace, makecol (200, 200, 200), -1, "FPS:"), textprintf_ex (buffer, font, 200, 34 * lineSpace, makecol (255, 255, 255), -1, "%d", fps);
 }
 
 void viewpoint_t::zoom (short int direction) {
@@ -954,18 +1015,101 @@ void viewpoint_t::shift() {
 	y = target->y;
 }
 
-void viewpoint_t::autoZoom() {
-
-}
-
 void detectCollision () {
 
 }
 
-void gravitate () { //calculates gravitational forces, and accelerates, between two entities
+void gravitate () { //calculates gravitational acceleration, between two entities, then accelerates them
 
 }
 
 void iterate (void transform() ) {
+
+}
+
+bool parse (istream &stream, long double &data) {
+
+	string line;
+
+	if (getline (stream, line)) { // was able to read a line
+		istringstream iss (line);
+
+		if (iss >> data); // was able to parse the data
+		else
+			return false;
+	} else
+		return false;
+
+	return true;
+}
+
+bool parse (istream &stream, float &data) {
+
+	string line;
+
+	if (getline (stream, line)) { // was able to read a line
+		istringstream iss (line);
+
+		if (iss >> data); // was able to parse the data
+		else
+			return false;
+	} else
+		return false;
+
+	return true;
+}
+
+bool parse (istream &stream, char &data) {
+
+	string line;
+
+	if (getline (stream, line)) { // was able to read a line
+		istringstream iss (line);
+
+		if (iss >> data); // was able to parse the number
+		else
+			return false;
+	} else
+		return true;
+
+	return true;
+}
+
+bool parse (istream &stream, string &data) {
+
+	string line;
+
+	if (getline (stream, line)) { // was able to read a line
+		istringstream iss (line);
+
+		if (iss >> data); // was able to parse the number
+		else
+			return false;
+	} else
+		return false;
+
+	return true;
+}
+
+bool parseColor (istream &stream, unsigned int &data) { //takes input in the form of RRR, GGG, BBB, default color is fuschia (if color cannot be read)
+
+	string line;
+	unsigned short int R = 255, G = 0, B = 255;
+
+	if (getline (stream, line)) {
+		istringstream iss (line);
+
+		if (iss >> R) {
+			iss.ignore (2, ',');
+			if (iss >> G) {
+				iss.ignore (2, ',');
+				if (iss >> B)
+					data = makecol (R, G, B);
+			} else
+				return false;
+		} else
+			return false;
+	} else
+		return false;
 
 }
