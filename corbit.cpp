@@ -91,8 +91,8 @@ Isn't that an awesome license? I like it.
 #include <vector>
 //#include <memory>
 #include "version.h"
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
+//#include <boost/shared_ptr.hpp>
+//#include <boost/make_shared.hpp>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -107,7 +107,7 @@ const unsigned short int screenHeight = 980;    //my computer's resolution
 bool printDebug = true;
 
 BITMAP *buffer = NULL;
-volatile unsigned int timer = 0, cycle = 0, fps = 0, fpsCounter = 0;
+volatile unsigned int cycle = 0, cps = 0, cycleCounter = 0, fps = 0, fpsCounter = 0;
 unsigned long long cycleRate = 60;   //frame rate of program
 
 const long double AU = 1495978707e2, G = 6.673e-11, PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587006606315588174881520920962829254091715364367892590360011330530548820466521384146951941511609433057270365759591953092186117381932611793105118548074462379962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420198938095257201065485863278865936153381827968230301952035301852968995773622599413891249721775283479131515574857242454150695950829533116861727855889075098381754637464939319255060400927701671139009848824012858361603563707660104710181942955596198946767;
@@ -161,6 +161,7 @@ class display_t {
 
 	const short unsigned int gridSpace;
 	const unsigned short int lineSpace;
+	const short unsigned int targVectorLength, vVectorLength;
 
 public:
 	struct physical_t *target;
@@ -169,7 +170,7 @@ public:
 	void drawGrid();
 
 	display_t (const short unsigned int _gridSpace, const unsigned short int _lineSpace) :
-		gridSpace (_gridSpace), lineSpace (_lineSpace)
+		gridSpace (_gridSpace), lineSpace (_lineSpace), targVectorLength (140), vVectorLength (160)
 	{}
 } HUD (   18,         15);    //constructor initializes consts in the order they are declared, which is...
 //        gridSpace   lineSpace;
@@ -236,18 +237,13 @@ struct ship_t : physical_t {  //stores information about a pilotable ship, in ad
 		string descriptor[NAVMAX];   //string describing the current nav mode
 
 		autopilot_t () :
-			navmode (MAN),
-			descriptor[MAN] = "Manual",
-			descriptor[APP_TARG] = "Approach Targ",
-			descriptor[DEPART_REF] = "Depart Ref",
-			descriptor[CCW] = "CCW Prograde",
-			descriptor[CW] = "CW Retrograde"
+			navmode (MAN)
 		{}
 	} autopilot;
 
 	virtual void draw();
 
-	ship_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius, float _fuel) :
+	ship_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius, unsigned long int _fuel) :
 		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
 		engineColor (_engineColor), engineRadius (_engineRadius), engine (0), fuel (_fuel), burnRate (10)
 	{}
@@ -255,12 +251,10 @@ struct ship_t : physical_t {  //stores information about a pilotable ship, in ad
 
 struct habitat_t : ship_t {
 
-	float fuel;
-
 	void draw();
 
-	habitat_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius, float _fuel) :
-		ship_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, _engineColor, _engineRadius), fuel (_fuel)
+	habitat_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius, unsigned long int _fuel) :
+		ship_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, _engineColor, _engineRadius, _fuel)
 	{}
 };
 
@@ -277,12 +271,12 @@ struct foobar_t {
 vector <ship_t*> craft;
 vector <solarBody_t*> body;
 
-vector <boost::shared_ptr <foobar_t> > eg;
+//vector <boost::shared_ptr <foobar_t> > eg;
 
 int main () {
 
-    eg.push_back (boost::make_shared <foobar_t> (42));
-    cout << eg[0]->foo;
+//    eg.push_back (boost::make_shared <foobar_t> (42));
+//    cout << eg[0]->foo;
 
 	//looping variable initialization
 	vector <ship_t*>::iterator ship;
@@ -449,9 +443,12 @@ int main () {
 	HUD.reference = body[MARS];
 
 	///PROGRAM STARTS HERE///
-	while (!key[KEY_ESC]) {
 
+	cout << "entering main loop of program... ";
+	while (!key[KEY_ESC]) {
+        cout << "success" << endl;
 		while (cycle > 0) {
+            cout << "cycling... ";
 
 			input();
 
@@ -471,6 +468,7 @@ int main () {
 				camera.shift();
 
 			cycle--;
+			cycleCounter++;
 		}
 
 		fpsCounter++;
@@ -515,6 +513,9 @@ void CYCLE () {
 END_OF_FUNCTION (CYCLE);
 
 void FPS () {
+
+    cps = cycleCounter;
+    cycleCounter = 0;
 
 	fps = fpsCounter;
 	fpsCounter = 0;
@@ -861,11 +862,13 @@ void display_t::drawGrid () {  //draws a grid to the screen, later on I will be 
 
 void display_t::drawHUD () {
 
-	float thetaV = atan2f (-craft[HAB]->Vy, craft[HAB]->Vx);
-	float thetaTarg = PI;
+    craft[HAB]->Vy = 5000000;
 
-	rectfill (buffer, 0, 0, 300, 35 * lineSpace, 0);
-	rect (buffer, -1, -1, 300, 35 * lineSpace, makecol (255, 255, 255));
+	float thetaV = atan2f (-craft[HAB]->Vy, craft[HAB]->Vx);
+	float thetaTarg = atan2f ( -(craft[HAB]->y - target->y), -(craft[HAB]->x - target->x) );
+
+	rectfill (buffer, 0, 0, 300, 36 * lineSpace, 0);
+	rect (buffer, -1, -1, 300, 36 * lineSpace, makecol (255, 255, 255));
 
 	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbit V (m/s):"), textprintf_ex (buffer, font, 200, 1 * lineSpace, makecol (255, 255, 255), -1, "1337");
 	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Hab/Targ V diff:"), textprintf_ex (buffer, font, 200, 2 * lineSpace, makecol (255, 255, 255), -1, "%-10.7Lg",
@@ -922,15 +925,16 @@ void display_t::drawHUD () {
 					craft[HAB]->engineColor);
 	}
 
-	line (buffer, 140, 22 * lineSpace, (140) + (craft[HAB]->radius * 1.2) * cos (thetaV), (22 * lineSpace) + (craft[HAB]->radius * 1.2) * sin (thetaV), makecol (255, 0, 0));
-//	textprintf_ex (buffer, font, (140) + (craft[HAB]->radius * 2) * cos (thetaTarg), (22 * lineSpace) + (craft[HAB]->radius * 2) * sin (thetaTarg), makecol (255, 255, 255), -1, "%s", target->name.c_str());
-	line (buffer, 140, 22 * lineSpace, (140) + (craft[HAB]->radius * 1.2) * cos (thetaTarg), (22 * lineSpace) + (craft[HAB]->radius * 1.2) * sin (thetaTarg), makecol (0, 0, 255));
+	line (buffer, 140, 22 * lineSpace, (vVectorLength) + (craft[HAB]->radius * 1.2) * cos (thetaV), (22 * lineSpace) + (craft[HAB]->radius * 1.2) * sin (thetaV), makecol (255, 0, 0));
+	textprintf_ex (buffer, font, (targVectorLength) + (craft[HAB]->radius * 2) * cos (thetaTarg), (targVectorLength + 22 * lineSpace) + (craft[HAB]->radius * 2) * sin (thetaTarg), makecol (255, 255, 255), -1, "%s", target->name.c_str());
+//	line (buffer, 140, 22 * lineSpace, (140) + (craft[HAB]->radius * 1.2) * cos (thetaTarg), (22 * lineSpace) + (craft[HAB]->radius * 1.2) * sin (thetaTarg), makecol (0, 0, 255));
 
 	textprintf_ex (buffer, font, lineSpace, 30 * lineSpace, makecol (200, 200, 200), -1, "Center:"), textprintf_ex (buffer, font, 200, 30 * lineSpace, makecol (255, 255, 255), -1, "%s", camera.target->name.c_str());
 	textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Target:"), textprintf_ex (buffer, font, 200, 31 * lineSpace, makecol (255, 255, 255), -1, "%s", target->name.c_str());
 	textprintf_ex (buffer, font, lineSpace, 32 * lineSpace, makecol (200, 200, 200), -1, "Reference:"), textprintf_ex (buffer, font, 200, 32 * lineSpace, makecol (255, 255, 255), -1, "%s", reference->name.c_str());
 	textprintf_ex (buffer, font, lineSpace, 33 * lineSpace, makecol (200, 200, 200), -1, "Autopilot:"), textprintf_ex (buffer, font, 200, 33 * lineSpace, makecol (255, 255, 255), -1, "%s", craft[HAB]->autopilot.descriptor[craft[HAB]->autopilot.navmode].c_str());
 	textprintf_ex (buffer, font, lineSpace, 34 * lineSpace, makecol (200, 200, 200), -1, "FPS:"), textprintf_ex (buffer, font, 200, 34 * lineSpace, makecol (255, 255, 255), -1, "%d", fps);
+	textprintf_ex (buffer, font, lineSpace, 35 * lineSpace, makecol (200, 200, 200), -1, "Calcs per Second:"), textprintf_ex (buffer, font, 200, 35 * lineSpace, makecol (255, 255, 255), -1, "%d", cps);
 }
 
 void viewpoint_t::zoom (short int direction) {
