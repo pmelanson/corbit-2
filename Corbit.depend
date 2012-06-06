@@ -38,11 +38,15 @@
 	<memory>
 	"version.h"
 
-<<<<<<< HEAD
-1335464186 source:d:\zoosmell\corbit\corbit.cpp
-=======
-1336066669 source:d:\zoosmell\corbit\corbit.cpp
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
+1335406003 D
+
+1336155938 source:d:\zoosmell\corbit\corbit.cpp
+	<allegro.h>
+	<math.h>
+	<vector>
+	"version.h"
+
+1336066669 12b7bd3a693fba8f332a9008c81962058e564
 	<allegro.h>
 	<math.h>
 	<vector>

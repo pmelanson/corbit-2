@@ -83,20 +83,14 @@ Isn't that an awesome license? I like it.
 #include <vector>
 //#include <memory>
 #include "version.h"
+#include "globals.h"
 using namespace std;
 
 //globals
-<<<<<<< HEAD
-const unsigned short int screenWidth = 1280;
-//const unsigned short int screenWidth = 1144;    //school resolution
-const unsigned short int screenHeight = 980;
-//const unsigned short int screenHeight = 700;    //school resolution
-=======
 //const unsigned short int screenWidth = 1280;
-const unsigned short int screenWidth = 1144;    //school resolution
+//const unsigned short int screenWidth = 1144;    //school resolution
 //const unsigned short int screenHeight = 980;
-const unsigned short int screenHeight = 830;    //school resolution
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
+//const unsigned short int screenHeight = 830;    //school resolution
 const float zoomMagnitude = 2;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 const float zoomStep = 0.02; //rate at which cameras zoom out
 const unsigned short int maxZoom = 20;
@@ -145,10 +139,6 @@ struct entity { //stores data about any physical entity, such as mass and radius
 	long double turnRadians;
 	long double distance (long double x, long double y);
 	void move();   //moves entity
-<<<<<<< HEAD
-	void entity::detectCollision (struct entity object);    //checks if the entity will collide with another entity next move
-=======
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 
 	void accelerate();
 	long double acc;  //net acceleration of entity
@@ -211,39 +201,6 @@ int main () {
 
 	//data initializations
 
-<<<<<<< HEAD
-	//looping variables
-	unsigned short int n;
-	vector<ship*>::iterator spaceship;
-	vector<body*>::iterator rock;
-
-
-	for (n = 0; n < PLANETMAX; n++)
-		planet.push_back ( new body() );
-
-	strcpy (planet[EARTH]->name, "Earth");
-	planet[EARTH]->Vx = 0;
-	planet[EARTH]->Vy = 0;
-	planet[EARTH]->radius = 200;
-	planet[EARTH]->mass = 5.9742e2;
-	planet[EARTH]->fillColour = makecol (0, 255, 0);
-	planet[EARTH]->atmosphereColour = makecol (0, 0, 255);
-	planet[EARTH]->atmosphereHeight = 3;
-	planet[EARTH]->x = SCREEN_W / 2;
-	planet[EARTH]->y = SCREEN_H / 2;
-
-	strcpy (planet[MARS]->name, "Mars");
-	planet[MARS]->x = planet[EARTH]->x + planet[EARTH]->radius + 800;
-	planet[MARS]->y = planet[EARTH]->y;
-	planet[MARS]->radius = 150;
-	planet[MARS]->mass = 6e1;
-	planet[MARS]->fillColour = makecol (205, 164, 150);
-	planet[MARS]->atmosphereColour = makecol (160, 40, 40);
-	planet[MARS]->atmosphereHeight = 7;
-
-	for (n = 0; n < CRAFTMAX; n++)
-		craft.push_back ( new habitat() );
-=======
 	//looping variables, and declaring blank
 	unsigned short int n;
 
@@ -287,25 +244,16 @@ int main () {
 	body[MARS]->atmosphereHeight = 7;
 
 	craft.push_back ( new habitat() );
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 
 	strcpy (craft[HAB]->name, "Habitat");
 	craft[HAB]->fillColour = makecol (211, 211, 211);
 	craft[HAB]->engineColour = makecol (139, 0, 0);
 	craft[HAB]->radius = 30;
-<<<<<<< HEAD
-	craft[HAB]->Vx = planet[EARTH]->Vx;
-	craft[HAB]->Vy = planet[EARTH]->Vy;
-	craft[HAB]->x = SCREEN_W / 2 + planet[EARTH]->radius + craft[HAB]->radius;
-	craft[HAB]->y = SCREEN_H / 2;
-	craft[HAB]->mass = 50000;
-=======
 	craft[HAB]->Vx = body[EARTH]->Vx;
 	craft[HAB]->Vy = body[EARTH]->Vy;
 	craft[HAB]->x = SCREEN_W / 2 + body[EARTH]->radius + craft[HAB]->radius;
 	craft[HAB]->y = SCREEN_H / 2;
 	craft[HAB]->mass = 5e4;
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 	craft[HAB]->turnRadians = 0;
 	craft[HAB]->turnRate = 0;
 	craft[HAB]->engineRadius = 8;
@@ -313,46 +261,6 @@ int main () {
 	camera.zoom = 0;
 	camera.x = craft[HAB]->x - (SCREEN_W / 4);
 	camera.y = craft[HAB]->y - (SCREEN_H / 4);
-<<<<<<< HEAD
-
-	camera.target = craft[HAB];
-	camera.reference = planet[EARTH];
-
-	while (!key[KEY_ESC]) {
-
-		while (timer > 0) {
-
-			input();
-
-//            for (i = 0; i < CRAFTMAX; i++)
-//                for (n = 0; n < PLANETMAX; n++) {
-//                    craft[i].gravitate (planet[n]);
-//                    craft[i].detectCollision (planet[n]);
-//                    planet[n].gravitate (craft[i]);
-//                }
-
-//            for (i = 1; i < 4; i++)
-//                for (n = 1; n < 4; n++) {
-////					craft[i].gravitate (planet[n]);
-//                    if (n != i)
-//                        planet[n].gravitate (planet[i]);
-//
-//                    planet[n].detectCollision (planet[i]);
-//                }
-
-			gravitate();
-
-			for (rock = planet.begin(); rock != planet.end(); ++rock)
-				(*rock)->move();
-
-			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-				(*spaceship)->turn();
-				(*spaceship)->fireEngine();
-				(*spaceship)->move();
-
-				for (rock = planet.begin(); rock != planet.end(); ++rock)
-					(*spaceship)->detectCollision ( * (*rock) );
-=======
 
 	camera.target = craft[HAB];
 	camera.reference = body[EARTH];
@@ -362,19 +270,10 @@ int main () {
 		while (timer > 0) {
 
 			input();
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 
 			gravitate();
 			detectCollision();
 
-<<<<<<< HEAD
-			}
-
-			camera.autoZoom();
-
-			if (camera.track = true)
-				camera.shift();
-=======
 			for (rock = body.begin(); rock != body.end(); ++rock)
 				(*rock)->move();
 
@@ -384,44 +283,9 @@ int main () {
 				(*spaceship)->move();
 
 			}
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 
 			camera.autoZoom();
 
-<<<<<<< HEAD
-			timer--;
-		}
-
-		drawGrid();
-
-		for (rock = planet.begin(); rock != planet.end(); ++rock)
-			(*rock)->draw();
-
-//		for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-//			(*spaceship)->draw();
-//		}
-
-		debug();
-
-		drawBuffer();
-
-	}
-
-	//end of program
-	destroy_bitmap (buffer);
-	release_screen();
-
-	for (rock = planet.begin(); rock != planet.end(); ++rock)
-		delete *rock;
-
-	planet.clear();
-
-	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
-		delete *spaceship;
-
-	craft.clear();
-
-=======
 			if (camera.track == true)
 				camera.shift();
 
@@ -457,7 +321,6 @@ int main () {
 
 	craft.clear();
 
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 	return (0);
 }
 END_OF_MAIN();
@@ -542,15 +405,6 @@ void debug() {
 
 	textprintf_ex (buffer, font, 0, 0, makecol (255, 255, 255), -1, "DEBUG: hab.x: %Lf", craft[HAB]->x);
 	textprintf_ex (buffer, font, 0, 10, makecol (255, 255, 255), -1, "DEBUG: hab.y = %Lf", craft[HAB]->y );
-<<<<<<< HEAD
-	textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: Mars.x = %Lf", planet[MARS]->x );
-	textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: Mars.y = %Lf", planet[MARS]->y );
-	textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %Lf", craft[HAB]->Vx);
-	textprintf_ex (buffer, font, 0, 50, makecol (255, 255, 255), -1, "DEBUG: Vy: %Lf", craft[HAB]->Vy);
-	textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Earth.x: %Lf", planet[EARTH]->x);
-	textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Earth.y: %Lf", planet[EARTH]->y);
-	textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: arc tan: %Lf", atan2l (craft[HAB]->y - planet[EARTH]->y, craft[HAB]->x - planet[EARTH]->x) + PI * 0.5 );
-=======
 	textprintf_ex (buffer, font, 0, 20, makecol (255, 255, 255), -1, "DEBUG: Mars.x = %Lf", body[MARS]->x );
 	textprintf_ex (buffer, font, 0, 30, makecol (255, 255, 255), -1, "DEBUG: Mars.y = %Lf", body[MARS]->y );
 	textprintf_ex (buffer, font, 0, 40, makecol (255, 255, 255), -1, "DEBUG: Vx: %Lf", craft[HAB]->Vx);
@@ -558,7 +412,6 @@ void debug() {
 	textprintf_ex (buffer, font, 0, 60, makecol (255, 255, 255), -1, "DEBUG: Earth.x: %Lf", body[EARTH]->x);
 	textprintf_ex (buffer, font, 0, 70, makecol (255, 255, 255), -1, "DEBUG: Earth.y: %Lf", body[EARTH]->y);
 	textprintf_ex (buffer, font, 0, 80, makecol (255, 255, 255), -1, "DEBUG: arc tan: %Lf", atan2f (craft[HAB]->x - body[EARTH]->x, craft[HAB]->y - body[EARTH]->y) + PI * 0.5 );
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 	textprintf_ex (buffer, font, 0, 90, makecol (255, 255, 255), -1, "DEBUG: Actual zoom: %Lf", camera.actualZoom() );
 	textprintf_ex (buffer, font, 0, 100, makecol (255, 255, 255), -1, "DEBUG: Camera zoom: %Lf", camera.zoom);
 	textprintf_ex (buffer, font, 0, 110, makecol (255, 255, 255), -1, "DEBUG: turn Radians: %Lf", craft[HAB]->turnRadians);
@@ -603,15 +456,9 @@ void ship::draw() {
 
 	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
 	line (buffer, A, B, //draws the 'engine'
-<<<<<<< HEAD
 	      A + radius * cos (turnRadians) * camera.actualZoom(),
 	      B + radius * sin (turnRadians) * camera.actualZoom(),
 	      engineColour);
-=======
-		  A + radius * cos (turnRadians) * camera.actualZoom(),
-		  B + radius * sin (turnRadians) * camera.actualZoom(),
-		  engineColour);
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 }
 
 void habitat::draw() {
@@ -622,7 +469,6 @@ void habitat::draw() {
 
 	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColour); //draws the picture to the buffer
 	circlefill (buffer, //draws the center 'engine'
-<<<<<<< HEAD
 	            A + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
 	            B + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
 	            engineRadius * camera.actualZoom(),
@@ -637,22 +483,6 @@ void habitat::draw() {
 	            B + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
 	            engineRadius * camera.actualZoom(),
 	            engineColour);
-=======
-				A + (radius - engineRadius * camera.actualZoom() / 2) * cos (turnRadians - PI) * camera.actualZoom(),
-				B + (radius - engineRadius * camera.actualZoom() / 2) * sin (turnRadians - PI) * camera.actualZoom(),
-				engineRadius * camera.actualZoom(),
-				engineColour);
-	circlefill (buffer, //draws the left 'engine'
-				A + radius * cos (turnRadians - (PI * .75) ) * camera.actualZoom(),
-				B + radius * sin (turnRadians - (PI * .75) ) * camera.actualZoom(),
-				engineRadius * camera.actualZoom(),
-				engineColour);
-	circlefill (buffer, //draws the right 'engine'
-				A + radius * cos (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-				B + radius * sin (turnRadians - (PI * 1.25) ) * camera.actualZoom(),
-				engineRadius * camera.actualZoom(),
-				engineColour);
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 }
 
 void entity::turn () {
@@ -698,20 +528,6 @@ void detectCollision () {
 				}
 			}
 
-<<<<<<< HEAD
-	long double stepDistance = distance (object.x + object.Vx, object.y + object.Vy) + (Vx + Vy) - (radius + object.radius); //the distance the objects will be at the next move
-
-	if (stepDistance < 0) {
-		Vx = object.Vx;
-		Vy = object.Vy;
-
-		if (stepDistance < -0.01 ) {
-			long double angle = atan2l (object.y - y, object.x - x);
-			x -= cos (angle);
-			y -= sin (angle);
-		}
-	}
-=======
 		}
 
 		for (vector<ship*>::iterator flyer = spaceship + 1; flyer != craft.end(); ++flyer) {
@@ -752,7 +568,6 @@ void detectCollision () {
 
 		}
 	}*/
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 }
 
 long double viewpoint::actualZoom() {
@@ -774,35 +589,15 @@ void gravitate () { //calculates gravitational forces, and accelerates, between 
 
 	long double theta, gravity; //theta being the angle at which the object is accelerated, gravity being the rate at which it is accelerated
 	//looping pointers, for looping
-<<<<<<< HEAD
-
-	for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-
-		for (vector<body*>::iterator rock = planet.begin(); rock != planet.end(); ++rock) {
-			theta = atan2l ( (*spaceship)->y - (*rock)->y, (*spaceship)->x - (*rock)->x );
-//            theta = atan2l
-//            theta = PI;
-//            system ("pause");
-//			gravity =
-//			G *
-//			( (*spaceship)->mass * (*rock)->mass) /
-//			( (*ship)->distance ( (*rock)->x, (*rock)->y) * (*ship)->distance ( (*rock)->x, (*rock)->y) );
-			//finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
-			gravity = 50;
-		}
-
-		(*spaceship)->accX (theta, gravity);
-		(*spaceship)->accY (theta, gravity);
-=======
 
 	for (vector<ship*>::iterator spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
 
 		for (vector<solarBody*>::iterator rock = body.begin(); rock != body.end(); ++rock) {
 			theta = atan2l ( (*spaceship)->x - (*rock)->x, (*spaceship)->y - (*rock)->y) + PI * 0.5;
 			gravity =
-				G *
-				( (*spaceship)->mass * (*rock)->mass) /
-				( (*spaceship)->distance ( (*rock)->x, (*rock)->y) * (*spaceship)->distance ( (*rock)->x, (*rock)->y) );
+			    G *
+			    ( (*spaceship)->mass * (*rock)->mass) /
+			    ( (*spaceship)->distance ( (*rock)->x, (*rock)->y) * (*spaceship)->distance ( (*rock)->x, (*rock)->y) );
 			//finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
 
 			(*spaceship)->accX (theta, gravity);
@@ -819,9 +614,9 @@ void gravitate () { //calculates gravitational forces, and accelerates, between 
 
 					theta = atan2l ( (*rock)->x - (*otherRock)->x, (*rock)->y - (*otherRock)->y) + PI * 0.5;
 					gravity =
-						G *
-						( (*rock)->mass * (*otherRock)->mass) /
-						( (*rock)->distance ( (*otherRock)->x, (*otherRock)->y) * (*rock)->distance ( (*otherRock)->x, (*otherRock)->y) );
+					    G *
+					    ( (*rock)->mass * (*otherRock)->mass) /
+					    ( (*rock)->distance ( (*otherRock)->x, (*otherRock)->y) * (*rock)->distance ( (*otherRock)->x, (*otherRock)->y) );
 					//finds total gravitational force between hab and earth, in the formula G (m1 * m2) / r^2
 
 					(*rock)->accX (theta, gravity);
@@ -834,7 +629,6 @@ void gravitate () { //calculates gravitational forces, and accelerates, between 
 
 		}
 
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 
 	}
 }
@@ -850,10 +644,9 @@ void drawGrid () {  //draws a grid to the screen, later on I will be making grav
 
 	for (n = 0; n < SCREEN_W; n++)
 		line (buffer,
-<<<<<<< HEAD
-		      n * camera.actualZoom() * gridSpace,
+		      n * gridSpace,
 		      0,
-		      n * camera.actualZoom() * gridSpace,
+		      n * gridSpace,
 		      SCREEN_H,
 		      makecol (100, 100, 100)
 		     );
@@ -861,26 +654,10 @@ void drawGrid () {  //draws a grid to the screen, later on I will be making grav
 	for (n = 0; n < SCREEN_H; n++)
 		line (buffer,
 		      0,
-		      n * camera.actualZoom() * gridSpace,
-		      SCREEN_W, n * camera.actualZoom() * gridSpace,
+		      n * gridSpace,
+		      SCREEN_W, n * gridSpace,
 		      makecol (100, 100, 100)
 		     );
-=======
-			  n * gridSpace,
-			  0,
-			  n * gridSpace,
-			  SCREEN_H,
-			  makecol (100, 100, 100)
-			 );
-
-	for (n = 0; n < SCREEN_H; n++)
-		line (buffer,
-			  0,
-			  n * gridSpace,
-			  SCREEN_W, n * gridSpace,
-			  makecol (100, 100, 100)
-			 );
->>>>>>> ca512b7bd3a693fba8f332a9008c81962058e564
 }
 
 void viewpoint::shift() {
