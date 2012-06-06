@@ -1,20 +1,3 @@
-/*union entity_t {
-
-    struct physical_t {
-    ...
-    } ph;
-    struct ship_t {
-    ...
-    } sh;
-    struct solarBody_t {
-    ...
-    } sB;
-};
-
-union entity_t foobar = {.ph = whatever};
-
-whatever = foobar.ph;*/
-
 /*******************
 
  .d8888b.                   888      d8b 888
@@ -108,6 +91,8 @@ Isn't that an awesome license? I like it.
 #include <vector>
 //#include <memory>
 #include "version.h"
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -122,13 +107,10 @@ const unsigned short int screenHeight = 980;    //my computer's resolution
 bool printDebug = true;
 
 BITMAP *buffer = NULL;
-volatile unsigned long int timer = 0, cycle = 0;
-volatile int fps, fpsCounter;
-unsigned long int frameRate = 60;   //used as the base in frameRate exponential calculations NOT ACTUAL FRAMERATE (see changeFrameRate())
+volatile unsigned int timer = 0, cycle = 0, fps = 0, fpsCounter = 0;
+unsigned long long cycleRate = 60;   //frame rate of program
 
-const long double PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587006606315588174881520920962829254091715364367892590360011330530548820466521384146951941511609433057270365759591953092186117381932611793105118548074462379962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420198938095257201065485863278865936153381827968230301952035301852968995773622599413891249721775283479131515574857242454150695950829533116861727855889075098381754637464939319255060400927701671139009848824012858361603563707660104710181942955596198946767;
-const long double G = 6.673e-11;
-const long double AU = 1495978707e2;
+const long double AU = 1495978707e2, G = 6.673e-11, PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587006606315588174881520920962829254091715364367892590360011330530548820466521384146951941511609433057270365759591953092186117381932611793105118548074462379962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420198938095257201065485863278865936153381827968230301952035301852968995773622599413891249721775283479131515574857242454150695950829533116861727855889075098381754637464939319255060400927701671139009848824012858361603563707660104710181942955596198946767;
 
 enum craft_enum {HAB, CRAFTMAX};
 enum body_enum {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, BODYMAX};
@@ -140,8 +122,8 @@ enum navMode_enum {MAN, APP_TARG, DEPART_REF, CCW, CW, NAVMAX};
 void CYCLE(), FPS();   //CYCLE is timer function for calculations (i.e. every time cycle is run, gravity is calculated), while FPS is for counting how the FPS
 void input(), drawBuffer(), debug(), drawGrid();
 void detectCollision(), gravitate();
-void changeFrameRate(short int step);
-bool parse (istream &stream, long double &data), parse (istream &stream, float &data), parseColor (istream &stream, unsigned int &color), parse (istream &stream, char &data), parse (istream &stream, string &data);
+void changeFrameRate (short int step);
+bool parse (istream &stream, long double &data), parse (istream &stream, float &data), parse (istream &stream, unsigned int &data), parseColor (istream &stream, unsigned int &color), parse (istream &stream, char &data), parse (istream &stream, string &data);
 
 //beginning of class declarations
 class viewpoint_t {
@@ -230,9 +212,9 @@ struct solarBody_t : physical_t {   //stores information about an astronomical b
 
 	void draw();
 
-	solarBody_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _atmosphereColor, unsigned short int _atmosphereHeight) :
+	solarBody_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _atmosphereColor, unsigned short int _atmosphereHeight, float _atmosphereDrag) :
 		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
-		atmosphereColor (_atmosphereColor), atmosphereHeight (_atmosphereHeight), atmosphereDrag (42)
+		atmosphereColor (_atmosphereColor), atmosphereHeight (_atmosphereHeight), atmosphereDrag (_atmosphereDrag)
 	{}
 };
 
@@ -254,21 +236,26 @@ struct ship_t : physical_t {  //stores information about a pilotable ship, in ad
 		string descriptor[NAVMAX];   //string describing the current nav mode
 
 		autopilot_t () :
-			navmode (MAN)
+			navmode (MAN),
+			descriptor[MAN] = "Manual",
+			descriptor[APP_TARG] = "Approach Targ",
+			descriptor[DEPART_REF] = "Depart Ref",
+			descriptor[CCW] = "CCW Prograde",
+			descriptor[CW] = "CW Retrograde"
 		{}
 	} autopilot;
 
 	virtual void draw();
 
-	ship_t (const string _name, const long double _x, const long double _y, const long double _Vx, const long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius) :
+	ship_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long unsigned int _mass, long unsigned int _radius, unsigned int _fillColor, unsigned int _engineColor, unsigned short int _engineRadius, float _fuel) :
 		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor),
-		engineColor (_engineColor), engineRadius (_engineRadius), engine (0), fuel (1e6), burnRate (10)
+		engineColor (_engineColor), engineRadius (_engineRadius), engine (0), fuel (_fuel), burnRate (10)
 	{}
 };
 
 struct habitat_t : ship_t {
 
-    float fuel;
+	float fuel;
 
 	void draw();
 
@@ -277,14 +264,28 @@ struct habitat_t : ship_t {
 	{}
 };
 
+struct foobar_t {
+
+    int foo;
+    void bar();
+
+    foobar_t (int FOO) :
+        foo (FOO)
+    {}
+};
+
 vector <ship_t*> craft;
 vector <solarBody_t*> body;
 
+vector <boost::shared_ptr <foobar_t> > eg;
 
 int main () {
 
+    eg.push_back (boost::make_shared <foobar_t> (42));
+    cout << eg[0]->foo;
+
 	//looping variable initialization
-	vector <ship_t*>::iterator spaceship;
+	vector <ship_t*>::iterator ship;
 	vector <solarBody_t*>::iterator rock;
 
 	//allegro initializations
@@ -312,23 +313,22 @@ int main () {
 		cout << "datafile good\n";
 
 	//data initializations
-
-	string container = "", name = "";
+	string container (""), name ("");
 	long double x = 1337, y = 1337, Vx = 0, Vy = 0;
-	long double mass = 1337, radius = 1337, specialRadius = 413;
-	unsigned int fillColor = makecol (255, 255, 0), specialColor = makecol (0, 255, 255);
-	float fuel;
-	string line = "";
+	long double mass = 1337, radius = 1337;
+	unsigned int fillColor = makecol (255, 255, 0), specialColor = makecol (0, 255, 255), specialRadius = 413;
+	float specialFloat = 612;
+	string line ("");
 
 	datafile.ignore (4096, '!');
 	cout << uppercase;
 
 	while (getline (datafile, line)) { //each loop through this reads in an entity
 
-		string container = "", name = "";
+		string container (""), name ("");
 		x = 1337, y = 1337, Vx = 0, Vy = 0;
 		mass = 1337, radius = 1337, specialRadius = 413;
-		fuel = 612;
+		specialFloat = 612;
 		fillColor = makecol (255, 255, 0), specialColor = makecol (0, 255, 255);
 
 		istringstream iss (line);
@@ -381,12 +381,12 @@ int main () {
 		else
 			cout << "specialRadius read fail for " << name << endl;
 
-        if (parse (datafile, fuel));
-        else
-            cout << "fuel read fail for " << name << endl;
+		if (parse (datafile, specialFloat));
+		else
+			cout << "fuel read fail for " << name << endl;
 
 		if (container == "solarBody") {
-			body.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius) );
+			body.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
 
 			cout << endl << name << " initialized, with data of\n";
 			cout << "x = " << body.back()->x << endl;
@@ -396,15 +396,17 @@ int main () {
 			cout << "mass = " << body.back()->mass << endl;
 			cout << "radius = " << body.back()->radius << endl;
 			cout << hex << "fillColor = " << hex << body.back()->fillColor << endl;
-			cout << hex << "engineColor = " << body.back()->atmosphereColor << endl;
-			cout << "engineRadius = " << dec << body.back()->atmosphereHeight << endl;
+			cout << hex << "atmosphereColor = " << body.back()->atmosphereColor << endl;
+			cout << "atmosphereHeight = " << dec << body.back()->atmosphereHeight << endl;
+			cout << "atmosphereDrag = " << body.back()->atmosphereDrag << endl;
 		}
 
-		if (container == "ship")
+		if (container == "craft")
 			if (name == "Habitat") {
-			    specialRadius *= 2;
+				specialRadius *= 2;
 
-				craft.push_back (new habitat_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, fuel) );
+				craft.push_back (new habitat_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
+//				craft.push_back (boost::make_shared<ship_t>(name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
 
 				cout << endl << name << " initialized, with data of\n";
 				cout << "x = " << craft.back()->x << endl;
@@ -419,13 +421,26 @@ int main () {
 				cout << "fuel = " << craft.back()->fuel << endl;
 			}
 
+		if (container == "N/A") {
+
+			cout << endl << name << " was not constructed with data of\n";
+			cout << "x = " << x << endl;
+			cout << "y = " << y << endl;
+			cout << "Vx = " << Vx << endl;
+			cout << "Vy = " << Vy << endl;
+			cout << "mass = " << mass << endl;
+			cout << "radius = " << radius << endl;
+			cout << hex << "fillColor = " << hex << fillColor << endl;
+			cout << hex << "specialColor = " << specialColor << endl;
+			cout << "specialRadius = " << dec << specialRadius << endl;
+			cout << "specialFloat = " << specialFloat << endl;
+		}
+
 		datafile.ignore (4096, '!');
 	}
 	datafile.close();
 	cout << nouppercase;
 	///end of file reading and parsing operations///
-
-	cout << craft[HAB]->x;
 
 	camera.target = craft[HAB];
 //	camera.target = body[EARTH];
@@ -446,10 +461,10 @@ int main () {
 			for (rock = body.begin(); rock != body.end(); ++rock)
 				(*rock)->move();
 
-			for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-				(*spaceship)->turn();
-				(*spaceship)->fireEngine();
-				(*spaceship)->move();
+			for (ship = craft.begin(); ship != craft.end(); ++ship) {
+				(*ship)->turn();
+				(*ship)->fireEngine();
+				(*ship)->move();
 			}
 
 			if (camera.track == true)
@@ -465,8 +480,8 @@ int main () {
 		for (rock = body.begin(); rock != body.end(); ++rock)
 			(*rock)->draw();
 
-		for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship) {
-			(*spaceship)->draw();
+		for (ship = craft.begin(); ship != craft.end(); ++ship) {
+			(*ship)->draw();
 		}
 
 		HUD.drawHUD();
@@ -485,8 +500,8 @@ int main () {
 		delete *rock;
 	body.clear();
 
-	for (spaceship = craft.begin(); spaceship != craft.end(); ++spaceship)
-		delete *spaceship;
+	for (ship = craft.begin(); ship != craft.end(); ++ship)
+		delete *ship;
 	craft.clear();
 
 	return 0;
@@ -542,9 +557,9 @@ void input () {
 		if (key_shifts & KB_SHIFT_FLAG) {   //all those if statements there just slow the turnRate gradually
 			if (fabs (craft[HAB]->turnRate) < 0.005 * PI / 180)
 				craft[HAB]->turnRate = 0;
-			else if (craft[HAB]->turnRate > 0)
+			else if (craft[HAB]->turnRate > 0 && !key[KEY_A])   //you can't turn in the opposite direction of turning, and use the stop key at the same time
 				craft[HAB]->turnRate -= 0.005 * PI / 180;
-			else
+			else if (craft[HAB]->turnRate < 0 && !key[KEY_D])   //ditto, but for the other key
 				craft[HAB]->turnRate += 0.005 * PI / 180;
 		} else
 			craft[HAB]->engine = 0;
@@ -671,11 +686,11 @@ void input () {
 		camera.target = craft[HAB];
 }
 
-void changeFrameRate(short int step) {
+void changeFrameRate (short int step) {
 
-	if (frameRate + step <= 4294967295 && frameRate + step > 0) {   //making sure that frameRate does not go beyond the limits of an unsigned long int
-		frameRate += step;
-		install_int_ex (CYCLE, BPS_TO_TIMER (frameRate + 1) );
+	if (cycleRate + step <= 18446744073709551615LL && cycleRate + step > 0) {   //making sure that cycleRate does not go beyond the limits of an unsigned long long int (but frankly, you'd better have a crazy computer to do this many cycles per second, you silly person
+		cycleRate += step;
+		install_int_ex (CYCLE, BPS_TO_TIMER (cycleRate) );
 	}
 }
 
@@ -708,9 +723,9 @@ void physical_t::move() {
 void ship_t::fireEngine() {
 
 	if (fuel > 0) {
-		accX (turnRadians, engine / frameRate);
-		accY (turnRadians, engine / frameRate);
-		fuel -= fabs (engine) / frameRate;
+		accX (turnRadians, engine * (60 / cycleRate) );
+		accY (turnRadians, engine * (60 / cycleRate) );
+		fuel -= fabs (engine) * (60 / cycleRate);
 	}
 }
 
@@ -727,26 +742,26 @@ void physical_t::turn () {
 
 void ship_t::accX (long double radians, long double acc) {
 
-	Vx += ( (cos (radians) * acc) / (1) ) / 60;
-	acc += fabs(( (cos (radians) * acc) / (1) )) / 60;
+	Vx += ( (cos (radians) * acc) / (1) ) * (60 / cycleRate);
+	acc += fabs(( (cos (radians) * acc) / (1) )) * (60 / cycleRate);
 }
 
 void ship_t::accY (long double radians, long double acc) {
 
-	Vy += ( (sin (radians) * acc) / (1) ) / frameRate;
-	acc += fabs(( (sin (radians) * acc) / (1) )) / 60;
+	Vy += ( (sin (radians) * acc) / (1) ) * (60 / cycleRate);
+	acc += fabs(( (sin (radians) * acc) / (1) )) * (60 / cycleRate);
 }
 
 void physical_t::accX (long double radians, long double acc) {
 
-	Vx += ( (cos (radians) * acc) / mass ) / frameRate;
-	acc += fabs(( (cos (radians) * acc) / (1) )) / 60;
+	Vx += ( (cos (radians) * acc) / mass ) * (60 / cycleRate);
+	acc += fabs(( (cos (radians) * acc) / (1) )) * (60 / cycleRate);
 }
 
 void physical_t::accY (long double radians, long double acc) {
 
-	Vy += ( (sin (radians) * acc) / mass ) / frameRate;
-	acc += fabs(( (sin (radians) * acc) / (1) )) / 60;
+	Vy += ( (sin (radians) * acc) / mass ) * (60 / cycleRate);
+	acc += fabs(( (sin (radians) * acc) / (1) )) * (60 / cycleRate);
 }
 
 long double physical_t::distance (const long double _x, const long double _y) { //finds distance from physical to target
@@ -955,8 +970,26 @@ void gravitate () { //calculates gravitational acceleration, between two entitie
 
 }
 
-void iterate (void transform() ) {
+void iterate (void transform(physical_t &targ, physical_t &TARG) ) {
 
+//    (ship = craft.begin(); ship != craft.end(); ++ship)
+//    for (rock = body.begin(); rock != body.end(); ++rock)
+//				(*rock)->move();
+
+	/*vector <ship_t*>::iterator ship = craft.begin(), SHIP = craft.begin();
+	vector <solarBody_t*>::iterator rock = body.begin(), ROCK = body.begin();
+
+	for (; rock != body.end();) {   //since I increment rock in the ROCK loop, I don't have to increment it here
+
+		for (ROCK = rock++; ROCK != body.begin(); ++ROCK)   //note the use of the postfix ++ operator in the assignment section. I wonder if that (incrementing rock like this)'s bad programming practice. It looks cool.
+			transform ((*rock), (*ROCK));
+		for (; ship != craft.end(); ++ship)
+			transform ((*rock), (*ship));
+	}
+
+	for (ship = craft.begin(); ship != craft.end();)
+		for (SHIP = ship++; SHIP != body.begin(); ++SHIP)
+			transform ((*ship), (*SHIP));*/
 }
 
 bool parse (istream &stream, long double &data) {
@@ -1008,6 +1041,22 @@ bool parse (istream &stream, char &data) {
 }
 
 bool parse (istream &stream, string &data) {
+
+	string line;
+
+	if (getline (stream, line)) { // was able to read a line
+		istringstream iss (line);
+
+		if (iss >> data); // was able to parse the number
+		else
+			return false;
+	} else
+		return false;
+
+	return true;
+}
+
+bool parse (istream &stream, unsigned int &data) {
 
 	string line;
 

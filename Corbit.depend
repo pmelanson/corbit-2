@@ -39,15 +39,16 @@
 
 1338312721 d:\zoosmell\corbit\version.h
 
-1338843902 source:c:\users\melanson\corbit\corbit.cpp
+1338936382 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
-	<boost/make_shared.hpp>
 	"version.h"
+	<boost/shared_ptr.hpp>
 	<iostream>
 	<fstream>
 	<sstream>
+	<string.h>
 
 1338165393 b9bd94248f2b566df5745d7f1d373349e0623
 	<allegro.h>

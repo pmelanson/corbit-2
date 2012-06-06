@@ -1,3 +1,9 @@
+05 June 2012
+   Corbit Beta v1.0.25:
+
+     Change log:
+        -Applied: boost::shared_ptrs. I still have some syntax to work out, but this will allow me to put all entities into one entity vector. Also smart pointers. Just how cool.
+
 29 May 2012
    Corbit Beta v1.0.22:
 
