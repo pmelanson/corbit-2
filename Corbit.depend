@@ -15,7 +15,7 @@
 
 1334164120 d:\zoosmell\hax\summative\version.h
 
-1338170099 D
+1335406003 D
 
 1335031850 source:c:\users\melanson\corbit\trying again.cpp
 	<allegro.h>
@@ -37,11 +37,17 @@
 	<memory>
 	"version.h"
 
-<<<<<<< HEAD
-1335463626 d:\zoosmell\corbit\version.h
-=======
-1338312721 d:\zoosmell\corbit\version.h
->>>>>>> b374cb72a93a9f0cdf2f87e4c7ff4176f30b1169
+1339005019 d:\zoosmell\corbit\version.h
+
+1338165393 4cb72a93a9f0cdf2f87e4c7ff4176f30b1169
+	<allegro.h>
+	<math.h>
+	<vector>
+	"version.h"
+	<iostream>
+	<fstream>
+	<sstream>
+	<string.h>
 
 1338936382 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
@@ -54,37 +60,19 @@
 	<sstream>
 	<string.h>
 
-<<<<<<< HEAD
-1335406003 D
-
-1336155938 source:d:\zoosmell\corbit\corbit.cpp
+1339009037 source:d:\zoosmell\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
 	"version.h"
+	<iostream>
+	<fstream>
+	<sstream>
+	<string.h>
 
 1336066669 12b7bd3a693fba8f332a9008c81962058e564
-=======
-1338165393 b9bd94248f2b566df5745d7f1d373349e0623
->>>>>>> b374cb72a93a9f0cdf2f87e4c7ff4176f30b1169
-	<allegro.h>
-	<math.h>
-	<vector>
-	"version.h"
-	<iostream>
-	<fstream>
-	<sstream>
-	<string.h>
 
-1338917908 source:d:\zoosmell\corbit\corbit.cpp
-	<allegro.h>
-	<math.h>
-	<vector>
-	"version.h"
-	<iostream>
-	<fstream>
-	<sstream>
-	<string.h>
+1338165393 b9bd94248f2b566df5745d7f1d373349e0623
 
 1335031281 ffd3155be8612fda7974f18c76ed3fac9d52b
 
