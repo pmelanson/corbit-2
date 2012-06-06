@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
+<<<<<<< HEAD
 	<File name="corbit.cpp" open="1" top="0" tabpos="1">
 		<Cursor position="1822" topLine="65" />
 	</File>
 	<File name="globals.h" open="1" top="1" tabpos="2">
 		<Cursor position="93" topLine="0" />
+=======
+	<File name="corbit.cpp" open="1" top="1" tabpos="0">
+<<<<<<< HEAD
+		<Cursor position="11076" topLine="249" />
+=======
+		<Cursor position="13977" topLine="359" />
+>>>>>>> 6f46a1a3c2a41441ab863129d30d3b3c0c023e0b
+	</File>
+	<File name="version.h" open="0" top="0" tabpos="0">
+		<Cursor position="440" topLine="0" />
+>>>>>>> b374cb72a93a9f0cdf2f87e4c7ff4176f30b1169
 	</File>
 </CodeBlocks_layout_file>
