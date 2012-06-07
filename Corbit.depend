@@ -28,7 +28,11 @@
 	<vector>
 	"version.h"
 
+<<<<<<< HEAD
 1339032252 c:\users\melanson\corbit\version.h
+=======
+1338511170 c:\users\melanson\corbit\version.h
+>>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
 
 1335293026 source:d:\zoosmell\corbit\trying again.cpp
 	<allegro.h>
@@ -39,7 +43,11 @@
 
 1339086452 d:\zoosmell\corbit\version.h
 
+<<<<<<< HEAD
 1338165393 4cb72a93a9f0cdf2f87e4c7ff4176f30b1169
+=======
+1338773519 source:c:\users\melanson\corbit\corbit.cpp
+>>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
 	<allegro.h>
 	<math.h>
 	<vector>

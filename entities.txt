@@ -47,7 +47,10 @@ Mercury
 169, 169, 169
 0, 0, 0
 0
+<<<<<<< HEAD
 3
+=======
+>>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
 
 !solarBody
 Venus
@@ -60,7 +63,10 @@ Venus
 250, 235, 215
 250, 235, 215
 25e4
+<<<<<<< HEAD
 60
+=======
+>>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
 
 !solarBody
 Earth
@@ -73,7 +79,10 @@ Earth
 34, 139, 34
 65, 105, 225
 12e4
+<<<<<<< HEAD
 20
+=======
+>>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
 
 !solarBody
 Mars
@@ -163,5 +172,9 @@ Habitat
 30
 220, 220, 220
 180, 0, 0
+<<<<<<< HEAD
 6
 100000
+=======
+8
+>>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
