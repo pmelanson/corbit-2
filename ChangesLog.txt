@@ -1,3 +1,9 @@
+06 June 2012
+   Corbit Beta v1.0.26:
+
+     Change log:
+        -Cleaned: int main is now only 10 lines, and is therefore much simpler.
+
 05 June 2012
    Corbit Beta v1.0.25:
 
