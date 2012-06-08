@@ -1,4 +1,6 @@
-format goes like this (all entity datasets are preceded by an exclamation mark, before [containter]
+an exclamation mark tells corbit to start reading data in
+angle brackets denotes a set of background stars (i.e. stars that have no effect on anything, essentially just a pixel) to read in
+format for normal entity reading goes like this
 
 data		example		comments
 
@@ -155,10 +157,10 @@ Pluto
 
 !craft
 Habitat
-1.11671388
+1.016618
 0
 1
--50.5e4
+-29.78e3
 5.0e3
 30
 220, 220, 220

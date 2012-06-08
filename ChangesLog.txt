@@ -1,3 +1,9 @@
+07 June 2012
+   Corbit Beta v1.0.27:
+
+     Change log:
+        -Cleaned: Finally gave up on trying to make a vector of smart pointers to hold ships and solarBodies, just made a single vector (entity) of dumb pointers. Not bad though.
+
 06 June 2012
    Corbit Beta v1.0.26:
 

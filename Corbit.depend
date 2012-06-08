@@ -28,7 +28,7 @@
 	<vector>
 	"version.h"
 
-1339032252 c:\users\melanson\corbit\version.h
+1339110097 c:\users\melanson\corbit\version.h
 
 1335293026 source:d:\zoosmell\corbit\trying again.cpp
 	<allegro.h>
@@ -49,13 +49,11 @@
 	<sstream>
 	<string.h>
 
-1339109243 source:c:\users\melanson\corbit\corbit.cpp
+1339123426 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
 	"version.h"
-	<boost/shared_ptr.hpp>
-	<boost/make_shared.hpp>
 	<iostream>
 	<fstream>
 	<sstream>
