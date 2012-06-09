@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
 				<Compiler>
+					<Add option="-O" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -21,8 +22,10 @@
 				<Option object_output="obj\Release\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-O1" />
+					<Add option="-w" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
