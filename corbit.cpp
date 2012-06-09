@@ -590,7 +590,7 @@ void ship_t::fireEngine() {
 
 	if (fuel > 0) {
 		acc (turnRadians, engine * enginePower);
-		fuel -= (engine * burnRate) / 60;
+		fuel -= (fabs(engine) * burnRate) / 60;
 	}
 }
 
