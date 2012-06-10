@@ -1,3 +1,9 @@
+10 June 2012
+   Corbit Beta v1.0.29:
+
+     Change log:
+        -Cleaned: Split main file into several different files, for easier maintenance
+
 09 June 2012
    Corbit Beta v1.0.28:
 
