@@ -28,7 +28,7 @@
 	<vector>
 	"version.h"
 
-1339271546 c:\users\melanson\corbit\version.h
+1339347522 c:\users\melanson\corbit\version.h
 
 1335293026 source:d:\zoosmell\corbit\trying again.cpp
 	<allegro.h>
@@ -49,7 +49,7 @@
 	<sstream>
 	<string.h>
 
-1339345049 source:c:\users\melanson\corbit\corbit.cpp
+1339370324 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
@@ -58,6 +58,9 @@
 	<fstream>
 	<sstream>
 	<string.h>
+	"entity.h"
+	"display.h"
+	"initialization.h"
 
 1339180537 source:d:\zoosmell\corbit\corbit.cpp
 	<allegro.h>
@@ -110,4 +113,32 @@
 	<string.h>
 
 1339271546 c:\users\melanson\corbet\version.h
+
+1339371230 source:c:\users\melanson\corbit\display.cpp
+	"entity.h"
+	"display.h"
+	<allegro.h>
+	<math.h>
+
+1339371541 c:\users\melanson\corbit\entity.h
+	<iostream>
+
+1339368724 c:\users\melanson\corbit\display.h
+	<allegro.h>
+
+1339370440 source:c:\users\melanson\corbit\entity.cpp
+	"entity.h"
+	<math.h>
+
+1339368262 source:c:\users\melanson\corbit\initialization.cpp
+	<iostream>
+	<sstream>
+	<fstream>
+	<allegro.h>
+	<vector>
+	"entity.h"
+	"initialization.h"
+
+1339368246 c:\users\melanson\corbit\initialization.h
+	<iostream>
 

@@ -17,7 +17,7 @@ Started on 23/03/2012
 This program provides a realistic space flight simulation
 The player's ship_t is called the "Hab"
 Forces are as realistic as possible
-Each pixel at camera.actualzoomLevel() = 0 level is equivalent the distance light travels in a vacumn in 1/299,792,458th of a second (one meter)
+Each pixel at camera.actualZoom() == 0 level is equivalent the distance light travels in a vacumn in 1/299,792,458th of a second (one meter)
 See changelog.txt for changelog past 31/03/2012
 
 *******************/
@@ -148,70 +148,36 @@ Isn't that an awesome license? I like it.
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string.h>
-#include "entity.h"
 #include "display.h"
+#include "entity.h"
 #include "initialization.h"
 using namespace std;
 
 ///global and constant declarations///
-const unsigned short int screenWidth = 1280, screenHeight = 980;    //my computer's resolution, works with 1280x1024
+BITMAP* buffer = NULL;
+
 bool printDebug = true;
-viewpoint_t camera (22,				0.05,		0.5,	1e-11,	1,			0);   //constructor initializes consts in the order they are declared, which is...
-//					zoomMagnitude	zoomStep	maxZoom	minZoom	panSpeed    zoomLevel
-display_t HUD (	18,			15,			110,				65,				140,	23);    //constructor initializes consts in the order they are declared, which is...
-//     			gridSpace	lineSpace	targVectorLength	vVectorLength	craftX	craftY
 
-const unsigned short int FPS_COUT_BPS = 2,	//how many times per second FPS and CPS (cycles per second) are calculated. Larger numbers result in faster refresh rates, but also larger extrapolations
-                                        INPUT_BPS = 10;	//how many times per second keyboard is checked for input
-unsigned long long cycleRate = 60;	//how many times per second all calculations are performed
-
-volatile unsigned int cycle = 0, cps = 0, cycleCounter = 0,	//used for running calculation loop and getting calculations performed per second
-                                       fps = 0, fpsCounter = 0,	//used for getting frams per second
-                                               inputTimer = 0;	//used for getting input
-
-const long double AU = 1495978707e2, G = 6.673e-11;
 enum entity_enum {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, HAB, ENTITYMAX};
 
+unsigned long long cycleRate = 60;	//how many times per second all calculations are performed
+unsigned int cycle = 0, cps = 0, cycleCounter = 0,	//used for running calculation loop and getting calculations performed per second
+                                     fps = 0, fpsCounter = 0,	//used for getting frames per second
+                                             inputTimer = 0;	//used for timing input
 
-vector <physical_t*> entity;
+vector <physical_t*> entity;	//the vector of ALL entities. It's public because otherwise I'd just end up passing dozens of references, to achieve the same result
 
-//vector iterators are initialized here so they aren't redeclared thousands of times a millisecond
-vector <physical_t*>::iterator it = entity.begin(), itX = entity.begin(), itY = entity.begin();	//it stands for iterator
+//vector iterators are
+vector <physical_t*>::iterator it = entity.begin(), itX = entity.begin(), itY = entity.begin();	//it stands for iterator. Initialized here, so they don't have to be redeclared literally hundreds of times a second
 
 ///prototypes///
-void CYCLE(), FPS(), INPUT();   //timer functions for running calculations, getting FPS, and getting input, respectively
 void input(), drawBuffer(), drawDisplay(), debug();	//gets input, draws buffer to screen, draw stuff to buffer, draws debug information, respectively
 void changeTimeStep (float step);	//changes how many calculations are performed per second (60 default)
 void calculate();	//calculates velocities, accelerations, new positions, turn, etc. for all objects
-void initialize(), initializeAllegro();
-void cleanup();
-
-void CYCLE() {
-
-	cycle++;
-}
-END_OF_FUNCTION (CYCLE);
-
-void FPS() {
-
-	cps = cycleCounter * FPS_COUT_BPS;
-	cycleCounter = 0;
-
-	fps = fpsCounter * FPS_COUT_BPS;
-	fpsCounter = 0;
-}
-END_OF_FUNCTION (FPS);
-
-void INPUT() {
-
-	inputTimer++;
-};
-END_OF_FUNCTION (INPUT);
 
 void drawBuffer() {
 
-	textprintf_ex (buffer, font, 0, SCREEN_H - 10, makecol (255, 255, 255), -1, "Corbit v%li%li%li.%li", AutoVersion::MAJOR, AutoVersion::MINOR, AutoVersion::REVISION, AutoVersion::BUILD);	//prints version information
+	textprintf_ex (buffer, font, 0, SCREEN_H - 10, makecol (255, 255, 255), -1, "Corbit v%d.%d%d.%d", AutoVersion::MAJOR, AutoVersion::MINOR, AutoVersion::REVISION, AutoVersion::BUILD);	//prints version information
 
 	draw_sprite (buffer, screen, SCREEN_H, SCREEN_W); // Draw the buffer to the screen
 	draw_sprite (screen, buffer, 0, 0);
@@ -413,114 +379,9 @@ void input() {
 	inputTimer--;
 }
 
-unsigned int physical_t::a() { //on-screen x position of physical
-
-	return ( (x - camera.x) * camera.actualZoom() + SCREEN_W / 2);
-}
-
-unsigned int physical_t::b() { //on-screen y position of physical
-
-	return ( (y - camera.y) * camera.actualZoom() + SCREEN_H / 2);
-}
-
-void physical_t::draw(unsigned int A, unsigned int B, long double zoom) {
-
-	circlefill (buffer, A, B, radius * zoom, fillColor); //draws a circle.
-}
-
-
-void solarBody_t::draw(unsigned int A, unsigned int B, long double zoom) {
-
-	if (zoom < 0.005) {
-		circlefill (buffer, A, B, zoom * (atmosphereHeight + radius), atmosphereColor);	//draws the atmosphere to the buffer
-
-		circlefill (buffer, A, B, radius * camera.actualZoom(), fillColor);	//draws the planet body to the buffer
-	}
-//	rectfill (buffer, A, B, zoom * (atmosphereHeight + radius), atmosphereColor);	//draws the atmosphere to the buffer
-//
-//	rectfill (buffer, A, B, radius * camera.actualZoom(), fillColor);	//draws the planet body to the buffer
-
-	textprintf_ex (buffer, font, A, B, makecol (200, 200, 200), -1, "%s", name.c_str() );	//draws name of planet
-}
-
-void ship_t::draw(unsigned int A, unsigned int B, long double zoom) {
-
-	circlefill (buffer, A, B, radius * zoom, fillColor);	//draws the picture to the buffer
-	line (buffer, A, B,	//draws the 'engine'
-	      A + radius * cos (turnRadians) * zoom,
-	      B + radius * sin (turnRadians) * zoom,
-	      engineColor);
-}
-
-void habitat_t::draw(unsigned int A, unsigned int B, long double zoom) {
-
-	circlefill (buffer, A, B, radius * zoom, fillColor);	//draws the hull to the buffer
-
-	if (engine == 0) {	//idle engines
-
-		circlefill (buffer,	//draws the center 'engine'
-		            A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
-		            B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
-		            engineRadius * zoom,
-		            fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
-		circlefill (buffer,	//draws the left 'engine'
-		            A + radius * cos (turnRadians - (PI * .75) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * .75) ) * zoom,
-		            engineRadius * zoom,
-		            fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
-		circlefill (buffer,	//draws the right 'engine'
-		            A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
-		            engineRadius * zoom,
-		            fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
-	}
-
-	else {
-
-		circlefill (buffer,	//draws the center 'engine'
-		            A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
-		            B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
-		            engineRadius * zoom,
-		            engineColor);
-		circlefill (buffer,	//draws the left 'engine'
-		            A + radius * cos (turnRadians - (PI * .75) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * .75) ) * zoom,
-		            engineRadius * zoom,
-		            engineColor);
-		circlefill (buffer,	//draws the right 'engine'
-		            A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
-		            engineRadius * zoom,
-		            engineColor);
-	}
-}
-
-
-void initializeAllegro() {
-
-	allegro_init();
-	install_keyboard();
-	set_keyboard_rate(100, 100);
-	set_color_depth (desktop_color_depth());
-	set_gfx_mode (GFX_AUTODETECT_WINDOWED, screenWidth, screenHeight, 0, 0);
-	set_display_switch_mode(SWITCH_BACKGROUND);
-
-	LOCK_VARIABLE (timer);
-	LOCK_VARIABLE (fpsCounter);
-	LOCK_VARIABLE (fps);
-	LOCK_VARIABLE (inputTimer);
-	LOCK_FUNCTION (INPUT);
-	LOCK_FUNCTION (CYCLE);
-	LOCK_FUNCTION (FPS);
-	install_int_ex (CYCLE, BPS_TO_TIMER (60) );
-	install_int_ex (FPS, BPS_TO_TIMER (FPS_COUT_BPS));
-	install_int_ex (INPUT, BPS_TO_TIMER (INPUT_BPS));
-}
-
-
 void changeTimeStep (float step) {
 
-	if (cycleRate * step <= 18446744073709551615ULL && cycleRate * step > 1) {   //making sure that cycleRate does not go too small, or beyond the limits of an unsigned long long int (but frankly, you'd better have a crazy computer to do this many cycles per second, you silly person)
+	if (cycleRate * step <= 18446744073709551615LL && cycleRate * step > 1) {   //making sure that cycleRate does not go too small, or beyond the limits of an unsigned long long int (but frankly, you'd better have a crazy computer to do this many cycles per second, you silly person)
 		cycleRate *= step;	//in/decrements calculations performed per second
 		install_int_ex (CYCLE, BPS_TO_TIMER (cycleRate) );	//applies changes
 	}
@@ -532,22 +393,22 @@ void debug() {
 
 	textprintf_ex (buffer, font, 0, 0 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.x: %Lf", camera.target->x);
 	textprintf_ex (buffer, font, 0, 10 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.y = %Lf", camera.target->y );
-	textprintf_ex (buffer, font, 0, 20 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.a: %i", camera.target->a() );
-	textprintf_ex (buffer, font, 0, 30 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.b: %i", camera.target->b() );
+	textprintf_ex (buffer, font, 0, 20 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.a: %li", camera.target->a() );
+	textprintf_ex (buffer, font, 0, 30 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.b: %li", camera.target->b() );
 	textprintf_ex (buffer, font, 0, 40 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.Vx: %Lf", camera.target->Vx);
 	textprintf_ex (buffer, font, 0, 50 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.Vy: %Lf", camera.target->Vy);
 	textprintf_ex (buffer, font, 0, 60 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.turnRate: %Lf", camera.target->turnRate);
-	textprintf_ex (buffer, font, 0, 70 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.radius: %llu", camera.target->radius);
-	textprintf_ex (buffer, font, 0, 80 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.mass: %Lf", camera.target->mass);
-	textprintf_ex (buffer, font, 0, 90 + spacing, makecol (200, 200, 200), -1, "DEBUG: arc tan: %Lf", atan2f (entity[HAB]->x - entity[EARTH]->x, entity[HAB]->y - entity[EARTH]->y) + PI * 0.5 );
+	textprintf_ex (buffer, font, 0, 70 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.radius: %lu", camera.target->radius);
+	textprintf_ex (buffer, font, 0, 80 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.mass: %lu", camera.target->mass);
+	textprintf_ex (buffer, font, 0, 90 + spacing, makecol (200, 200, 200), -1, "DEBUG: arc tan: %Lf", atan2f (entity[HAB]->x - entity[EARTH]->x, entity[HAB]->y - entity[EARTH]->y));
 	textprintf_ex (buffer, font, 0, 100 + spacing, makecol (200, 200, 200), -1, "DEBUG: Actual zoom: %Lf", camera.actualZoom() );
-	textprintf_ex (buffer, font, 0, 110 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera X: %Lf", camera.x);
-	textprintf_ex (buffer, font, 0, 120 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera Y: %Lf", camera.y);
-	textprintf_ex (buffer, font, 0, 150 + spacing, makecol (200, 200, 200), -1, "DEBUG: earth atmosphere: %llu", entity[EARTH]->atmosphereHeight);
+	textprintf_ex (buffer, font, 0, 110 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera X: %Ld", camera.x);
+	textprintf_ex (buffer, font, 0, 120 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera Y: %Ld", camera.y);
+	textprintf_ex (buffer, font, 0, 150 + spacing, makecol (200, 200, 200), -1, "DEBUG: earth atmosphere: %u", entity[EARTH]->atmosphereHeight);
 	textprintf_ex (buffer, font, 0, 160 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera.x: %Lf", camera.x);
 	textprintf_ex (buffer, font, 0, 170 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera.y: %Lf", camera.y);
-	textprintf_ex (buffer, font, 0, 180 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera.Vx: %Lf", camera.Vx);
-	textprintf_ex (buffer, font, 0, 190 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera.Vy: %Lf", camera.Vy);
+	textprintf_ex (buffer, font, 0, 180 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera.Vx: %li", camera.Vx);
+	textprintf_ex (buffer, font, 0, 190 + spacing, makecol (200, 200, 200), -1, "DEBUG: camera.Vy: %li", camera.Vy);
 }
 
 void calculate() {
@@ -593,15 +454,165 @@ void drawDisplay() {
 	fpsCounter++;
 }
 
-void cleanup() {
+/*void initializeFromFile() {
 
-	destroy_bitmap (buffer);
-	release_screen();
+	//file initialization
+	ifstream datafile;
+	datafile.open ("entities.txt");
+	if (datafile.is_open())
+		cout << "datafile open\n";
+	if (datafile.good())
+		cout << "datafile good\n";
 
-	for (it = entity.begin(); it != entity.end(); ++it)
-		delete *it;
-	entity.clear();
+	//data initializations
+	string container (""), name ("");
+	long double x = 1337, y = 1337, Vx = 0, Vy = 0;
+	long double mass = 1337, radius = 1337;
+	unsigned int fillColor = makecol (255, 255, 0), specialColor = makecol (0, 255, 255), specialRadius = 413;
+	short unsigned int R = 255, G = 255, B = 255;
+	float specialFloat = 612;
+	string line ("");
+
+	datafile.ignore (4096, '!');
+	cout << uppercase;
+
+	while (getline (datafile, line)) { //each loop through this reads in an entity
+
+		string container (""), name ("");
+		x = 1337, y = 1337, Vx = 0, Vy = 0;
+		mass = 1337, radius = 1337, specialRadius = 413;
+		specialFloat = 612;
+		fillColor = makecol (255, 255, 0), specialColor = makecol (0, 255, 255);
+
+		stringstream iss (line);
+		iss >> container;
+		cout << endl << container;
+
+
+		if (parse (datafile, name));
+		else {
+			name = "N/A";
+			cout << "could not determine name, set to " << name << endl;
+		}
+
+		if (parse (datafile, x)) {
+			x *= AU;
+			if (x == 0)
+				x = 1;
+		} else
+			cout << "x read fail for " << name << endl;
+
+		if (parse (datafile, y)) {
+			y *= AU;
+			if (y == 0)
+				y = 1;
+		} else
+			cout << "y read fail for " << name << endl;
+
+		if (parse (datafile, Vx));
+		else
+			cout << "Vx read fail for " << name << endl;
+
+		if (parse (datafile, Vy));
+		else
+			cout << "Vy read fail for " << name << endl;
+
+		if (parse (datafile, mass));
+		else
+			cout << "mass read fail for " << name << endl;
+
+		if (parse (datafile, radius))
+			radius *= 2;
+		else
+			cout << "radius read fail for " << name << endl;
+
+		if (parseColor (datafile, R, G, B))
+			fillColor = makecol (R, G, B);
+		else
+			cout << "fillColor read fail for " << name << endl;
+
+		if (parseColor (datafile, R, G, B))
+			specialColor = makecol (R, G, B);
+		else
+			cout << "specialColor read fail for " << name << endl;
+
+		if (parse (datafile, specialRadius));
+		else
+			cout << "specialRadius read fail for " << name << endl;
+
+		if (parse (datafile, specialFloat));
+		else
+			cout << "specialFloat read fail for " << name << endl;
+
+		if (container == "solarBody") {
+			specialRadius *= 100;
+
+//            body.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
+			entity.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
+//			body_eg.push_back (boost::make_shared <solarBody_t> (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
+		}
+
+		if (container == "craft")
+			if (name == "Habitat") {
+				specialRadius *= 2;
+
+//				craft.push_back (new habitat_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
+				entity.push_back (new habitat_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
+//				body_eg.push_back (boost::make_shared<habitat_t>(name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
+			}
+
+		if (container == "N/A") {
+
+			cout << endl << name << " was not constructed with data of\n";
+			cout << "x = " << x << endl;
+			cout << "y = " << y << endl;
+			cout << "Vx = " << Vx << endl;
+			cout << "Vy = " << Vy << endl;
+			cout << "mass = " << mass << endl;
+			cout << "radius = " << radius << endl;
+			cout << hex << "fillColor = " << hex << fillColor << endl;
+			cout << hex << "specialColor = " << specialColor << endl;
+			cout << "specialRadius = " << dec << specialRadius << endl;
+			cout << "specialFloat = " << specialFloat << endl;
+		}
+
+		datafile.ignore (4096, '!');
+	}
+
+
+	long double xPos = 0, yPos = 0;
+
+	datafile.ignore (4096, '<');
+
+	while (getline (datafile, line, '>')) { //loops, getting the position of each background star
+
+		istringstream iss (line);
+	}
+	datafile.close();
+	cout << nouppercase;
 }
+
+void initializeAllegro() {
+
+	allegro_init();
+	install_keyboard();
+	set_keyboard_rate(100, 100);
+	set_color_depth (desktop_color_depth());
+	set_gfx_mode (GFX_AUTODETECT_WINDOWED, screenWidth, screenHeight, 0, 0);
+	set_display_switch_mode(SWITCH_BACKGROUND);
+
+	LOCK_VARIABLE (timer);
+	LOCK_VARIABLE (fpsCounter);
+	LOCK_VARIABLE (fps);
+	LOCK_VARIABLE (inputTimer);
+	LOCK_FUNCTION (INPUT);
+	LOCK_FUNCTION (CYCLE);
+	LOCK_FUNCTION (FPS);
+	install_int_ex (CYCLE, BPS_TO_TIMER (cycleRate) );
+	install_int_ex (FPS, BPS_TO_TIMER (FPSCOUNTBPS));
+	install_int_ex (INPUT, BPS_TO_TIMER (INPUTBPS));
+	buffer = create_bitmap (SCREEN_W, SCREEN_H);
+}*/
 
 void initialize() {
 
@@ -614,6 +625,16 @@ void initialize() {
 	camera.reference = entity[EARTH];
 	HUD.target = entity[EARTH];
 	HUD.reference = entity[MARS];
+}
+
+void cleanup() {
+
+	destroy_bitmap (buffer);
+	release_screen();
+
+	for (it = entity.begin(); it != entity.end(); ++it)
+		delete *it;
+	entity.clear();
 }
 
 

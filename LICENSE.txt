@@ -1,3 +1,5 @@
+Copyright (C) 2012 Patrick Melanson <patrick.melanson@gmail.com>
+
 This software is licensed for 2012 under the WTFPL license, as follows:
 
 

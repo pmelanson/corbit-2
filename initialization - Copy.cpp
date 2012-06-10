@@ -1,18 +1,8 @@
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <allegro.h>
-#include <vector>
+//#include <iostream>
+//#include <fstream>
+//#include <sstream>
 
-#ifndef ENTITY_H
-#include "entity.h"
-#endif
-
-#include "initialization.h"
-using namespace std;
-const long double au = 1495978707e2;
-
-extern vector <physical_t*> entity;	//the vector of ALL entities. It's public because otherwise I'd just end up passing dozens of references, to achieve the same result
+//bool parse (istream &stream, long double &data), parse (istream &stream, float &data), parse (istream &stream, unsigned int &data), parse (istream &stream, unsigned long int &data), parse (istream &stream, unsigned long long int &data), parseColor (istream &stream, unsigned int &color), parse (istream &stream, char &data), parse (istream &stream, string &data);	//overloadable functions for parsing data from input stream (i.e. file)
 
 void initializeFromFile() {
 
@@ -28,8 +18,7 @@ void initializeFromFile() {
 	string container (""), name ("");
 	long double x = 1337, y = 1337, Vx = 0, Vy = 0;
 	long double mass = 1337, radius = 1337;
-	unsigned int fillColor = 255, specialColor = 255, specialRadius = 413;
-	short unsigned int R = 255, G = 255, B = 255;
+	unsigned int fillColor = makecol (255, 255, 0), specialColor = makecol (0, 255, 255), specialRadius = 413;
 	float specialFloat = 612;
 	string line ("");
 
@@ -42,9 +31,9 @@ void initializeFromFile() {
 		x = 1337, y = 1337, Vx = 0, Vy = 0;
 		mass = 1337, radius = 1337, specialRadius = 413;
 		specialFloat = 612;
-		fillColor = 255, specialColor = 255;
+		fillColor = makecol (255, 255, 0), specialColor = makecol (0, 255, 255);
 
-		stringstream iss (line);
+		istringstream iss (line);
 		iss >> container;
 		cout << endl << container;
 
@@ -56,14 +45,14 @@ void initializeFromFile() {
 		}
 
 		if (parse (datafile, x)) {
-			x *= au;
+			x *= AU;
 			if (x == 0)
 				x = 1;
 		} else
 			cout << "x read fail for " << name << endl;
 
 		if (parse (datafile, y)) {
-			y *= au;
+			y *= AU;
 			if (y == 0)
 				y = 1;
 		} else
@@ -86,13 +75,11 @@ void initializeFromFile() {
 		else
 			cout << "radius read fail for " << name << endl;
 
-		if (parseColor (datafile, R, G, B))
-			fillColor = makecol (R, G, B);
+		if (parseColor (datafile, fillColor));
 		else
 			cout << "fillColor read fail for " << name << endl;
 
-		if (parseColor (datafile, R, G, B))
-			specialColor = makecol (R, G, B);
+		if (parseColor (datafile, specialColor));
 		else
 			cout << "specialColor read fail for " << name << endl;
 
@@ -152,13 +139,48 @@ void initializeFromFile() {
 	cout << nouppercase;
 }
 
+void initializeAllegro() {
+
+	allegro_init();
+	install_keyboard();
+	set_keyboard_rate(100, 100);
+	set_color_depth (desktop_color_depth());
+	set_gfx_mode (GFX_AUTODETECT_WINDOWED, screenWidth, screenHeight, 0, 0);
+	set_display_switch_mode(SWITCH_BACKGROUND);
+
+	LOCK_VARIABLE (timer);
+	LOCK_VARIABLE (fpsCounter);
+	LOCK_VARIABLE (fps);
+	LOCK_VARIABLE (inputTimer);
+	LOCK_FUNCTION (INPUT);
+	LOCK_FUNCTION (CYCLE);
+	LOCK_FUNCTION (FPS);
+	install_int_ex (CYCLE, BPS_TO_TIMER (cycleRate) );
+	install_int_ex (FPS, BPS_TO_TIMER (FPSCOUNTBPS));
+	install_int_ex (INPUT, BPS_TO_TIMER (INPUTBPS));
+	buffer = create_bitmap (SCREEN_W, SCREEN_H);
+}
+
+void initialize() {
+
+	initializeAllegro();
+	initializeFromFile();
+
+	camera.target = entity[HAB];
+	camera.x = camera.target->x;
+	camera.y = camera.target->y;
+	camera.reference = entity[EARTH];
+	HUD.target = entity[EARTH];
+	HUD.reference = entity[MARS];
+}
+
 
 bool parse (istream &stream, long double &data) {
 
-	std::string line;
+	string line;
 
 	if (getline (stream, line)) { // was able to read a line
-		stringstream iss (line);
+		istringstream iss (line);
 
 		if (iss >> data); // was able to parse the number
 		else
@@ -174,7 +196,7 @@ bool parse (istream &stream, float &data) {
 	string line;
 
 	if (getline (stream, line)) { // was able to read a line
-		stringstream iss (line);
+		istringstream iss (line);
 
 		if (iss >> data); // was able to parse the number
 		else
@@ -249,9 +271,10 @@ bool parse (istream &stream, unsigned long long int &data) {
 	return true;
 }
 
-bool parseColor (istream &stream, unsigned short int &R, unsigned short int &G, unsigned short int &B) { //takes input in the form of [RRR, GGG, BBB], default color is fuschia (if color cannot be read)
+bool parseColor (istream &stream, unsigned int &data) { //takes input in the form of [RRR, GGG, BBB], default color is fuschia (if color cannot be read)
 
 	string line;
+	unsigned short int R = 255, G = 0, B = 255;
 
 	if (getline (stream, line)) {
 		istringstream iss (line);
@@ -260,7 +283,8 @@ bool parseColor (istream &stream, unsigned short int &R, unsigned short int &G, 
 			iss.ignore (2, ',');
 			if (iss >> G) {
 				iss.ignore (2, ',');
-				if (iss >> B);
+				if (iss >> B)
+					data = makecol (R, G, B);	//if able to parse every color value
 			} else
 				return false;
 		} else
