@@ -58,7 +58,7 @@ struct physical_t {	//stores data about any physical physical, such as mass and 
 	long double x, y; //the center of the physical, compared to the origin (center of solar system)
 	unsigned a(), b();  //on-screen position of physical
 	float turnRadians;	//radians physical is rotated from right
-	long double distance (long double x, long double y), thetaToObject (physical_t &target);	//distance to point, theta between physical and object
+	long double distance (long double targX, long double targY), stepDistance (long double targX, long double targY), thetaToObject (physical_t &target);	//distance to point, theta between physical and object
 	virtual void move() {
 		x += Vx, y -= Vy;    //moves physical
 	}

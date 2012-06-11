@@ -33,7 +33,6 @@
 		</Compiler>
 		<Unit filename="classDeclarations.h" />
 		<Unit filename="corbit.cpp" />
-		<Unit filename="display.h" />
 		<Unit filename="parseDeclarations.h" />
 		<Unit filename="version.h" />
 		<Extensions>

@@ -123,6 +123,13 @@ Isn't that an awesome license? I like it.
 -Greater time acceleration with fewer CPU cycles (i.e. not calculating every step, only every 60th, then extrapolating)
 -Background stars
 
+	 KNOWN BUGS
+
+-Program hangs when you set timestep too high
+Not actually a bug, just don't do it.
+-After pressing a mod key, escape key doesn't work
+It looks like sticky keys, probably an Allegro thing. No fix, just press another not-mod key.
+
 *******************/
 
 /*******************
@@ -535,7 +542,7 @@ void display_t::drawHUD () {
 	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Hab/Targ V diff:"), textprintf_ex (buffer, font, 200, 2 * lineSpace, makecol (255, 255, 255), -1, "%-10.7Lg",
 	        (craft->Vx + craft->Vy) - (target->Vx + target->Vy));
 	textprintf_ex (buffer, font, lineSpace, 3 * lineSpace, makecol (200, 200, 200), -1, "Centripetal V (m/s):");
-	textprintf_ex (buffer, font, lineSpace, 4 * lineSpace, makecol (200, 200, 200), -1, "Tangential V (m/s):");
+	textprintf_ex (buffer, font, lineSpace, 4 * lineSpace, makecol (200, 200, 200), -1, "Tangential V (m/s):"), textprintf_ex (buffer, font, 200, 4 * lineSpace, makecol (255, 255, 255), -1, "%-10.7Lf", craft->Vtan(*target));
 	textprintf_ex (buffer, font, lineSpace, 6 * lineSpace, makecol (200, 200, 200), -1, "Fuel (kg):"), textprintf_ex (buffer, font, 200, 6 * lineSpace, makecol (255, 255, 255), -1, "%li", craft->fuel);
 	textprintf_ex (buffer, font, lineSpace, 7 * lineSpace, makecol (200, 200, 200), -1, "Engines (kg/s):");
 	if (craft->engine > 0)
@@ -623,7 +630,7 @@ long double physical_t::Vcen (physical_t &targ) {	//centripetal force
 
 long double physical_t::Vtan (physical_t &targ) {
 
-
+	return (sqrtf((Vx * Vx) + (Vy * Vy) * sin(thetaToObject(targ))) / distance (targ.x, targ.y));
 }
 
 long double physical_t::thetaV() {	//returns theta of velocity vector
@@ -637,6 +644,11 @@ long double physical_t::thetaToObject (physical_t &targ) {	//returns theta of an
 }
 
 long double physical_t::distance (long double targX, long double targY) {	//finds distance from physical to target
+
+	return (sqrtf( ((x - targX) * (x - targX)) + ((y - targY) * (y - targY)) ));	//finds the distance between two entities next cycle, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
+}
+
+long double physical_t::stepDistance (long double targX, long double targY) {	//finds distance from physical to target next step, takes targ.pos + targ.v as parameters
 
 	return (sqrtf( (((x + Vx) - targX) * ((x + Vx) - targX)) + (((y + Vy) - targY) * ((y + Vy) - targY)) ));	//finds the distance between two entities next cycle, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
@@ -657,7 +669,7 @@ void physical_t::gravitate (physical_t &targ) { //calculates gravitational accel
 
 void physical_t::detectCollision (physical_t &targ) {
 
-	if (distance (targ.x + targ.Vx, targ.y + targ.Vy) < radius + targ.radius) {	//I get the implementation and math, if not so much the concept. But at least I learnt vector manipulation from this.
+	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < radius + targ.radius) {	//I get the implementation and math, if not so much the concept. But at least I learnt vector manipulation from this.
 		long double
 		impact[2] = {Vx - targ.Vx, Vy - targ.Vy},	//this.V - targ.V
 		            impactSpeed,

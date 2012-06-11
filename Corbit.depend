@@ -1,0 +1,22 @@
+# depslib dependency file v1.0
+1339416584 source:c:\users\melanson\corbit\corbit.cpp
+	<allegro.h>
+	<math.h>
+	<vector>
+	"version.h"
+	<iostream>
+	<fstream>
+	<sstream>
+	<string.h>
+	"classDeclarations.h"
+	"parseDeclarations.h"
+
+1339390795 c:\users\melanson\corbit\version.h
+
+1339416207 c:\users\melanson\corbit\classdeclarations.h
+	<iostream>
+
+1339387499 c:\users\melanson\corbit\parsedeclarations.h
+	<iostream>
+	<sstream>
+
