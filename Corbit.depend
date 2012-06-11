@@ -15,7 +15,7 @@
 
 1334164120 d:\zoosmell\hax\summative\version.h
 
-1335406003 D
+1339416207 D
 
 1335031850 source:c:\users\melanson\corbit\trying again.cpp
 	<allegro.h>
@@ -28,11 +28,9 @@
 	<vector>
 	"version.h"
 
-<<<<<<< HEAD
-1339032252 c:\users\melanson\corbit\version.h
-=======
-1338511170 c:\users\melanson\corbit\version.h
->>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
+1339390795 c:\users\melanson\corbit\version.h
+
+1338773519 fbb96cf7ad378bb345c5d4d529d462808fdd6
 
 1335293026 source:d:\zoosmell\corbit\trying again.cpp
 	<allegro.h>
@@ -41,13 +39,13 @@
 	<memory>
 	"version.h"
 
-1339086452 d:\zoosmell\corbit\version.h
+1339431729 d:\zoosmell\corbit\version.h
 
-<<<<<<< HEAD
 1338165393 4cb72a93a9f0cdf2f87e4c7ff4176f30b1169
-=======
-1338773519 source:c:\users\melanson\corbit\corbit.cpp
->>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
+
+1339416584 source:c:\users\melanson\corbit\corbit.cpp
+
+1339387499 89e0b3ffe36e99488d39edd1f59f923b3278f
 	<allegro.h>
 	<math.h>
 	<vector>
@@ -56,20 +54,15 @@
 	<fstream>
 	<sstream>
 	<string.h>
-
-1339035323 source:c:\users\melanson\corbit\corbit.cpp
-	<allegro.h>
-	<math.h>
-	<vector>
-	"version.h"
-	<boost/shared_ptr.hpp>
-	<boost/make_shared.hpp>
+	"classDeclarations.h"
+	"parseDeclarations.h"
 	<iostream>
-	<fstream>
 	<sstream>
-	<string.h>
 
-1339090628 source:d:\zoosmell\corbit\corbit.cpp
+1339416207 c:\users\melanson\corbit\classdeclarations.h
+	<iostream>
+
+1339432700 source:d:\zoosmell\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
@@ -78,10 +71,17 @@
 	<fstream>
 	<sstream>
 	<string.h>
+	"classDeclarations.h"
+	"parseDeclarations.h"
 
-1336066669 12b7bd3a693fba8f332a9008c81962058e564
+1339090628 "
 
-1338165393 b9bd94248f2b566df5745d7f1d373349e0623
+1339387499 c:\users\melanson\corbit\parsedeclarations.h
 
-1335031281 ffd3155be8612fda7974f18c76ed3fac9d52b
+1339432186 d:\zoosmell\corbit\classdeclarations.h
+	<iostream>
+
+1339431729 d:\zoosmell\corbit\parsedeclarations.h
+	<iostream>
+	<sstream>
 

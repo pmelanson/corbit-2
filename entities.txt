@@ -1,4 +1,6 @@
-format goes like this (all entity datasets are preceded by an exclamation mark, before [containter]
+an exclamation mark tells corbit to start reading data in
+angle brackets denotes a set of background stars (i.e. stars that have no effect on anything, essentially just a pixel) to read in
+format for normal entity reading goes like this
 
 data		example		comments
 
@@ -47,10 +49,7 @@ Mercury
 169, 169, 169
 0, 0, 0
 0
-<<<<<<< HEAD
 3
-=======
->>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
 
 !solarBody
 Venus
@@ -63,10 +62,7 @@ Venus
 250, 235, 215
 250, 235, 215
 25e4
-<<<<<<< HEAD
 60
-=======
->>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
 
 !solarBody
 Earth
@@ -79,10 +75,7 @@ Earth
 34, 139, 34
 65, 105, 225
 12e4
-<<<<<<< HEAD
-20
-=======
->>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
+120000
 
 !solarBody
 Mars
@@ -164,17 +157,13 @@ Pluto
 
 !craft
 Habitat
-1.11671388
+1.0168
 0
 1
--50.5e4
-5.0e3
+-29.78e3
+300000
 30
 220, 220, 220
 180, 0, 0
-<<<<<<< HEAD
 6
 100000
-=======
-8
->>>>>>> eb3fbb96cf7ad378bb345c5d4d529d462808fdd6
