@@ -462,7 +462,7 @@ void solarBody_t::draw(unsigned int A, unsigned int B, long double zoom) {
 
 	circlefill (buffer, A, B, zoom * (atmosphereHeight + radius), atmosphereColor);	//draws the atmosphere to the buffer
 
-	circlefill (buffer, A, B, radius * camera.actualZoom(), fillColor);	//draws the planet body to the buffer
+	circlefill (buffer, A, B, radius * zoom, fillColor);	//draws the planet body to the buffer
 
 	textprintf_ex (buffer, font, A, B, makecol (200, 200, 200), -1, "%s", name.c_str() );
 }
@@ -526,11 +526,11 @@ void display_t::drawGrid () {	//eventually I will make this a gravity grid, but 
 
 	for (x = 0; x < SCREEN_W; x += gridSpace)
 		for (y = 0; y < SCREEN_H; y += gridSpace)
-			_putpixel32 (buffer, x, y, makecol (255, 255, 255));
+			putpixel (buffer, x, y, makecol (255, 255, 255));
 
 //	rectfill (buffer, 300, 320, 400, 420, makecol (0, 0, 255));
-	fastline (buffer, 0, 0, SCREEN_W, SCREEN_H, makecol (255, 255, 255));
-	floodfill (buffer, 0, 100, 255);
+//	fastline (buffer, 0, 0, SCREEN_W, SCREEN_H, makecol (255, 255, 255));
+//	floodfill (buffer, 0, 100, 255);
 }
 
 void display_t::drawHUD () {
@@ -538,9 +538,9 @@ void display_t::drawHUD () {
 	rectfill (buffer, 0, 0, 330, 37 * lineSpace, 0);	//draws background for HUD
 	rect (buffer, -1, -1, 330, 37 * lineSpace, makecol (255, 255, 255));	//draws outline for HUD
 
-	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbit V (m/s):"), textprintf_ex (buffer, font, 200, 1 * lineSpace, makecol (255, 255, 255), -1, "1337");
+	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbit V (m/s):"), textprintf_ex (buffer, font, 200, 1 * lineSpace, makecol (255, 255, 255), -1, "");
 	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Hab/Targ V diff:"), textprintf_ex (buffer, font, 200, 2 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lf", (craft->Vx + craft->Vy) - (target->Vx + target->Vy));
-	textprintf_ex (buffer, font, lineSpace, 3 * lineSpace, makecol (200, 200, 200), -1, "Centripetal V (m/s):"), textprintf_ex (buffer, font, 200, 3 * lineSpace, makecol (200, 200, 200), -1, "%-10.9Lf", craft->Vcen(*target));
+	textprintf_ex (buffer, font, lineSpace, 3 * lineSpace, makecol (200, 200, 200), -1, "Centripetal V (m/s):"), textprintf_ex (buffer, font, 200, 3 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lf", craft->Vcen(*target));
 	textprintf_ex (buffer, font, lineSpace, 4 * lineSpace, makecol (200, 200, 200), -1, "Tangential V (m/s):"), textprintf_ex (buffer, font, 200, 4 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lf", craft->Vtan(*target));
 	textprintf_ex (buffer, font, lineSpace, 6 * lineSpace, makecol (200, 200, 200), -1, "Fuel (kg):"), textprintf_ex (buffer, font, 200, 6 * lineSpace, makecol (255, 255, 255), -1, "%li", craft->fuel);
 	textprintf_ex (buffer, font, lineSpace, 7 * lineSpace, makecol (200, 200, 200), -1, "Engines (kg/s):");
@@ -669,27 +669,36 @@ void physical_t::gravitate (physical_t &targ) { //calculates gravitational accel
 	long double theta = atan2f( -(y - targ.y), -(x - targ.x) );
 
 	acc (force, theta);
+	acc (100, PI);
 	targ.acc (-force, theta);
 }
 
 void physical_t::detectCollision (physical_t &targ) {
 
 	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < radius + targ.radius) {	//I get the implementation and math, if not so much the concept. But at least I learnt vector manipulation from this.
-		long double
+        Vx = targ.Vx;
+        Vy = targ.Vy;
+        cout << name << ", " << targ.name << endl;
+
+		/*long double
 		impact[2] = {Vx - targ.Vx, Vy - targ.Vy},	//this.V - targ.V
 		            impactSpeed,
 		            impulse[2] = {x - targ.x, y - targ.y};	//normalise (this.center - targ.center)
 
 		impulse[0] /= sqrtf (impulse[0] * impulse[0] + impulse[1] * impulse[1]);	//normalising
 		impulse[1] /= sqrtf (impulse[0] * impulse[0] + impulse[1] * impulse[1]);
-		impactSpeed = impulse[0] * impact[0] + impulse[0] * impact[1];	//dot product(impulse, impact)
+
+		impactSpeed = -impulse[0] * impact[0] + impulse[0] * impact[1];	//dot product(impulse, impact)
+		cout << "impactspeed: " << impactSpeed << endl;
+		cout << "sqrtf" << impactSpeed << " * " << mass << " * " << targ.mass << endl;
 		impulse[0] *= sqrtf(impactSpeed * mass * targ.mass);	//impulse *= sqrt(impactSpeed * this.mass * targ.mss)
 		impulse[1] *= sqrtf(impactSpeed * mass * targ.mass);
+		cout << "impulse: " << impulse[0] << ", " << impulse[1] << endl;
 
-		Vx += impulse[0] / mass;	//this.Vx += impulse / this.mass
-		Vy += impulse[1] / mass;
-		targ.Vx += impulse[0] / targ.mass;	//targ.Vx += impulse / targ.mass
-		targ.Vy += impulse[1] / targ.mass;
+		Vx = impulse[0] / totalMass();	//this.Vx += impulse / this.mass
+		Vy = impulse[1] / totalMass();
+		targ.Vx = impulse[0] / targ.totalMass();	//targ.Vx += impulse / targ.mass
+		targ.Vy = impulse[1] / targ.totalMass();*/
 	}
 }
 
@@ -798,9 +807,9 @@ void calculate() {
 	}
 
 	for (itX = entity.begin(); itX != entity.end(); ++itX)
-		for (itY = itX, ++itY; itY != entity.end(); ++itY) {
+		for (itY = itX, ++itY; itY != entity.end(); ++itY){
 			(*itX)->gravitate (**itY);
-			(*itX)->detectCollision (**itY);
+			cout << (*itX)->name << ", " << (*itY)->name << endl;
 		}
 
 	camera.shift();

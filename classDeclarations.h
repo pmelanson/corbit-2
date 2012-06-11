@@ -107,7 +107,7 @@ struct physical_t {	//stores data about any physical physical, such as mass and 
 	};
 
 	physical_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long double _mass, unsigned long _radius, unsigned _fillColor, float _engine_atmosphereHeight, unsigned long long int _fuel_atmosphereDrag) :
-		name (_name), x (_x), y (_y), Vx (_Vx), Vy (_Vy), mass (_mass), radius (_radius), fillColor (_fillColor), turnRate (0), turnRadians (0), atmosphereHeight (_engine_atmosphereHeight), atmosphereDrag (_fuel_atmosphereDrag), turnRateStep (0.5 * Pi / 180), maxTurnRate (41.5 * Pi / 180) {
+		name (_name), x (_x), y (_y), Vx (_Vx), Vy (_Vy), mass (_mass), radius (_radius), fillColor (_fillColor), turnRate (0), turnRadians (3.1), atmosphereHeight (_engine_atmosphereHeight), atmosphereDrag (_fuel_atmosphereDrag), turnRateStep (0.5 * Pi / 180), maxTurnRate (41.5 * Pi / 180) {
 	}
 };
 
@@ -150,7 +150,7 @@ struct ship_t : physical_t {  //stores information about a pilotable ship, in ad
 
 	ship_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long double _mass, unsigned long _radius, unsigned _fillColor, unsigned _engineColor, unsigned short _engineRadius, unsigned long _fuel) :
 		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, 0, _fuel),
-		engineColor (_engineColor), engineRadius (_engineRadius), enginePower (15e3), burnRate (.0444) {
+		engineColor (_engineColor), engineRadius (_engineRadius), enginePower (15e5), burnRate (.0444) {
 	}
 };
 
