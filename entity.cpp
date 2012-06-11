@@ -107,7 +107,7 @@ void physical_t::gravitate (physical_t &targ) { //calculates gravitational accel
 
 void physical_t::detectCollision (physical_t &targ) {
 
-	if (distance (targ.x + targ.Vx, targ.y + targ.Vy) < radius + targ.radius) {	//This line of code is responsible for me knowing about dot products, scalars, normalisation. Kind of.
+	if (distance (targ.x + targ.Vx, targ.y + targ.Vy) < radius + targ.radius) {	//I get the implementation and math, if not so much the concept. But at least I learnt vector manipulation from this.
 		long double
 		impact[2] = {Vx - targ.Vx, Vy - targ.Vy},	//this.V - targ.V
 		impactSpeed,

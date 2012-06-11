@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="..\classDeclarations.h" open="1" top="1" tabpos="3">
+		<Cursor position="16865" topLine="227" />
+	</File>
+	<File name="..\corbitFixed.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="24957" topLine="655" />
+	</File>
+	<File name="..\parseDeclarations.h" open="1" top="0" tabpos="2">
+		<Cursor position="950" topLine="22" />
+	</File>
+</CodeBlocks_layout_file>

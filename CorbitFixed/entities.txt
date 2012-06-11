@@ -1,0 +1,169 @@
+an exclamation mark tells corbit to start reading data in
+angle brackets denotes a set of background stars (i.e. stars that have no effect on anything, essentially just a pixel) to read in
+format for normal entity reading goes like this
+
+data		example		comments
+
+[container]	(solarBody)	puts this entity in the solarBody vector
+[name]		(Earth)		name of entity
+[x]		(500)		location on x axis, in AU, wherein origin is at sun
+[y]		(320)		location on y axis, in AU
+[Vx]		(124)		velocity along x axis
+[Vy]		(431)		velocity along y axis
+[mass]		(1.426e7)	mass, in tonnes
+[radius]	(5.8325e8)	radius (note: not diameter, because all calculations are for radii, though it converts to diameter when being read into the program), in metres
+[fillColor]	(255, 255, 255)	fill color, in RGB values
+
+#SOLARBODY-ONLY VALUES
+[atmspherClr]	(255, 255, 255)	atmosphere color, in RGB values
+[atmspherDrag]	(7)		drag exerted by atmosphere. I haven't started implementing this, so I don't know the units
+[atmspherHght]	(32)		height atmosphere extends beyond solar body's surface
+
+#CRAFT-ONLY VALUES
+[engineColor]	(255, 255, 255)	engine color, in RGB values
+[engineRadius]	(10)		engine RADIUS, in meters
+[fuel]		(100000)	fuel on the craft, in kg
+
+
+!solarBody
+Sun
+0
+0
+0
+0
+1.9891e27
+6.955e8
+255, 140, 0
+255, 185, 0
+7
+0
+
+!solarBody
+Mercury
+0.466697
+0
+1
+47.87e3
+2.4397e3
+2.4397e6
+169, 169, 169
+0, 0, 0
+0
+0
+
+!solarBody
+Venus
+0.72823128
+0
+1
+35.02e3
+4.869e21
+6.0518e6
+250, 235, 215
+250, 235, 215
+25e4
+250
+
+!solarBody
+Earth
+1.01671388
+0
+1
+29.78e3
+5.978e21
+6.3781e6
+34, 139, 34
+65, 105, 225
+12e4
+120
+
+!solarBody
+Mars
+1.665861
+0
+1
+24.077e3
+6.420e20
+3.3962e6
+255, 164, 96
+255, 164, 96
+7
+110
+
+!solarBody
+Jupiter
+5.458104
+0
+1
+13.07e3
+1.899e24
+7.1492e7
+240, 184, 135
+240, 184, 135
+7
+3200
+
+!solarBody
+Saturn
+10.11595804
+0
+1
+9.69e3
+5.685e23
+6.0268e7
+240, 230, 140
+240, 230, 140
+7
+4000
+
+!solarBody
+Uranus
+20.08330526
+0
+1
+6.81e3
+8.686e22
+2.5559e7
+176, 224, 230
+176, 224, 230
+7
+3900
+
+!solarBody
+Neptune
+30.44125206
+0
+1
+5.43e3
+1.025e23
+2.4764e7
+30, 144, 255
+30, 144, 255
+10
+4100
+
+!solarBody
+Pluto
+48.871
+0
+1
+4.666e3
+5.0e20
+1.153e6
+222, 184, 135
+0, 0, 0
+7
+0
+
+!craft
+Habitat
+1.0168
+0
+1
+29.78e3
+3e3
+30
+220, 220, 220
+180, 0, 0
+6
+100000

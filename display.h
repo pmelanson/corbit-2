@@ -8,7 +8,7 @@ class viewpoint_t {
 
 	const int zoomMagnitude;  //when zooming out, actual zoom level = camera.zoom ^ zoomMagnitude, therefore is an exponential zoom
 	const float zoomStep, panSpeed, maxZoom; //rate at which cameras zoom out, panning speed and how far you can zoom in
-	const double minZoom; //the smaller this is, the farther you can zoom out
+	const long double minZoom; //the smaller this is, the farther you can zoom out
 
 public:
 	long double x, y, Vx, Vy;	//position of camera, and velocity
