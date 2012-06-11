@@ -12,9 +12,7 @@
 using namespace std;
 const long double au = 1495978707e2;
 
-extern vector <physical_t*> entity;	//the vector of ALL entities. It's public because otherwise I'd just end up passing dozens of references, to achieve the same result
-
-void initializeFromFile() {
+void initializeFromFile(vector <physical_t*> &entity) {
 
 	//file initialization
 	ifstream datafile;

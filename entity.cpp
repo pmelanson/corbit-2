@@ -45,13 +45,13 @@ long double physical_t::totalMass() {
 
 long double ship_t::totalMass() {
 
-	return (mass + fuel);
+	return (mass + fuel / 1000);
 }
 
 void physical_t::acc (long double radians, long double acc) {
 
 	accX (radians, acc / totalMass() / 60);
-	accY (radians, -acc / totalMass() / 60);
+	accY (radians, -acc / totalMass() / 60);	//negative acceleration because of the way the computer draws on the screen
 	acceleration += fabs(acc) / totalMass() / 60;
 }
 
@@ -87,7 +87,7 @@ long double physical_t::thetaToObject (physical_t &targ) {	//returns theta of an
 
 long double physical_t::distance (long double targX, long double targY) {	//finds distance from physical to target
 
-	return (sqrtf( ((x - targX) * (x - targX)) + ((y - targY) * (y - targY)) ));	//finds the distance between two entities, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
+	return (sqrtf( (((x + Vx) - targX) * ((x + Vx) - targX)) + (((y + Vy) - targY) * ((y + Vy) - targY)) ));	//finds the distance between two entities next cycle, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
 
 long double physical_t::gravity (long double targX, long double targY, long double targMass) {
@@ -107,9 +107,22 @@ void physical_t::gravitate (physical_t &targ) { //calculates gravitational accel
 
 void physical_t::detectCollision (physical_t &targ) {
 
-	if (distance (targ.x, targ.y) < radius + targ.radius) {
-		long double VxNorm, VyNorm;
-//		VxNorm
+	if (distance (targ.x + targ.Vx, targ.y + targ.Vy) < radius + targ.radius) {	//This line of code is responsible for me knowing about dot products, scalars, normalisation. Kind of.
+		long double
+		impact[2] = {Vx - targ.Vx, Vy - targ.Vy},	//this.V - targ.V
+		impactSpeed,
+		impulse[2] = {x - targ.x, y - targ.y};	//normalise (this.center - targ.center)
+
+		impulse[0] /= sqrtf (impulse[0] * impulse[0] + impulse[1] * impulse[1]);	//normalising
+		impulse[1] /= sqrtf (impulse[0] * impulse[0] + impulse[1] * impulse[1]);
+		impactSpeed = impulse[0] * impact[0] + impulse[0] * impact[1];	//dot product(impulse, impact)
+		impulse[0] *= sqrtf(impactSpeed * mass * targ.mass);	//impulse *= sqrt(impactSpeed * this.mass * targ.mss)
+		impulse[1] *= sqrtf(impactSpeed * mass * targ.mass);
+
+		Vx += impulse[0] / mass;	//this.Vx += impulse / this.mass
+		Vy += impulse[1] / mass;
+		targ.Vx += impulse[0] / targ.mass;	//targ.Vx += impulse / targ.mass
+		targ.Vy += impulse[1] / targ.mass;
 	}
 }
 

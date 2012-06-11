@@ -1,7 +1,6 @@
 #ifndef INITIALIZATION_H
 #define INITIALIZATION_H
 
-#include <iostream>
 using namespace std;
 
 bool parse (istream &stream, long double &data),
