@@ -260,15 +260,15 @@ void input() {
 		camera.panY (-1);
 
 	if (key[KEY_PLUS_PAD])	//zooms camera in, holding alt increases calculations performed per second
-		if (key_shifts & KB_ALT_FLAG)
+		/*if (key_shifts & KB_ALT_FLAG)
 			changeTimeStep (1.1);
-		else
+		else*/
 			camera.zoom (1);
 
 	if (key[KEY_MINUS_PAD])	//ditto, zooming out, decreases calculations
-		if (key_shifts & KB_ALT_FLAG)
+		/*if (key_shifts & KB_ALT_FLAG)
 			changeTimeStep (0.9);
-		else
+		else*/
 			camera.zoom (-1);
 
 	if (key[KEY_TILDE])
@@ -711,7 +711,7 @@ void physical_t::detectCollision (physical_t &targ) {
 	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < radius + targ.radius) {	//I get the implementation and math, if not so much the concept. But at least I learnt vector manipulation from this.
 //		Vx = targ.Vx;
 //		Vy = targ.Vy;
-//		cout << name << ", " << targ.name << endl;
+		cout << name << ", " << targ.name << endl;
 
 		long double
 		impact[2] = {Vx - targ.Vx, Vy - targ.Vy},	//this.V - targ.V
@@ -722,16 +722,23 @@ void physical_t::detectCollision (physical_t &targ) {
 		impulse[1] /= sqrtf (impulse[0] * impulse[0] + impulse[1] * impulse[1]);
 
 		impactSpeed = -impulse[0] * impact[0] + impulse[0] * impact[1];	//dot product(impulse, impact)
-		cout << "impactspeed: " << impactSpeed << endl;
-		cout << "sqrtf" << impactSpeed << " * " << mass << " * " << targ.mass << endl;
+//		cout << "impactspeed: " << impactSpeed << endl;
+//		cout << "sqrtf" << impactSpeed << " * " << mass << " * " << targ.mass << endl;
 		impulse[0] *= sqrtf(impactSpeed * mass * targ.mass);	//impulse *= sqrt(impactSpeed * this.mass * targ.mss)
 		impulse[1] *= sqrtf(impactSpeed * mass * targ.mass);
-		cout << "impulse: " << impulse[0] << ", " << impulse[1] << endl;
+//		cout << "impulse: " << impulse[0] << ", " << impulse[1] << endl;
+
+		cout << name << "V: " << Vx << ", " << Vy << endl;
+		cout << targ.name << ".V: " << targ.Vx << ", " << targ.Vy << endl;
 
 		Vx = impulse[0] / totalMass();	//this.Vx += impulse / this.mass
 		Vy = impulse[1] / totalMass();
 		targ.Vx = impulse[0] / targ.totalMass();	//targ.Vx += impulse / targ.mass
 		targ.Vy = impulse[1] / targ.totalMass();
+
+		cout << "new\n";
+		cout << name << "V: " << Vx << ", " << Vy << endl;
+		cout << targ.name << ".V: " << targ.Vx << ", " << targ.Vy << endl;
 	}
 }
 
@@ -831,7 +838,7 @@ void calculate() {
 	for (itX = entity.begin(); itX != entity.end(); ++itX)
 		for (itY = itX, ++itY; itY != entity.end(); ++itY) {
 			(*itX)->gravitate (**itY);
-//			cout << (*itX)->name << ", " << (*itY)->name << endl;
+			(*itX)->detectCollision (**itY);
 		}
 
 	camera.shift();
