@@ -170,9 +170,9 @@ volatile unsigned int cycle = 0, cps = 0, cycleCounter = 0,	//used for running c
                                                inputTimer = 0;	//used for getting input
 unsigned long long cycleRate = 60;	//how many times per second all calculations are performed
 const unsigned short int FPS_COUNT_BPS = 2,	//how many times per second FPS and CPS (cycles per second) are calculated. Larger numbers result in faster refresh rates, but also larger extrapolations
-                                       INPUT_BPS = 10;	//how many times per second keyboard is checked for input
+        INPUT_BPS = 10;	//how many times per second keyboard is checked for input
 
-const long double AU = 1495978707e2, G = 6.673e-11, PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117067982148086513282306647093844609550582231725359408128481117450284102701938521105559644622948954930381964428810975665933446128475648233786783165271201909145648566923460348610454326648213393607260249141273724587006606315588174881520920962829254091715364367892590360011330530548820466521384146951941511609433057270365759591953092186117381932611793105118548074462379962749567351885752724891227938183011949129833673362440656643086021394946395224737190702179860943702770539217176293176752384674818467669405132000568127145263560827785771342757789609173637178721468440901224953430146549585371050792279689258923542019956112129021960864034418159813629774771309960518707211349999998372978049951059731732816096318595024459455346908302642522308253344685035261931188171010003137838752886587533208381420617177669147303598253490428755468731159562863882353787593751957781857780532171226806613001927876611195909216420198938095257201065485863278865936153381827968230301952035301852968995773622599413891249721775283479131515574857242454150695950829533116861727855889075098381754637464939319255060400927701671139009848824012858361603563707660104710181942955596198946767;
+const long double AU = 1495978707e2, G = 6.673e-11, PI = acos(-1.0L);
 
 enum entity_enum {SUN, MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTUNE, PLUTO, HAB, ENTITYMAX};
 
@@ -223,27 +223,6 @@ void drawBuffer() {
 
 void input() {
 
-	if (key[KEY_TAB]) {	//toggles camera tracking
-		camera.track = !camera.track;
-		camera.x = camera.target->x;
-		camera.y = camera.target->y;
-	}
-
-	if (key[KEY_TILDE])
-		HUD.display = !HUD.display;
-
-	if (key[KEY_Z])	//toggles printing of debug information
-		printDebug = !printDebug;
-
-	if (key[KEY_G])	//toggles grid drawing
-		HUD.displayGrid = !HUD.displayGrid;
-
-	if (key[KEY_A] && entity[HAB]->turnRate > -entity[HAB]->maxTurnRate && entity[HAB]->AI.navmode == MAN)	//turns hab, if hab is under the maximum turn rate, and the navmode is set to manual
-		entity[HAB]->turnRate -= entity[HAB]->turnRateStep;
-
-	if (key[KEY_D] && entity[HAB]->turnRate < entity[HAB]->maxTurnRate && entity[HAB]->AI.navmode == MAN)	//ditto, but for CW turning
-		entity[HAB]->turnRate += entity[HAB]->turnRateStep;
-
 	if (key[KEY_W])	//throttle up, hold shift for fine adjustments. There is no cap on how high you can go, like in original version of orbit
 		if (key_shifts & KB_SHIFT_FLAG)
 			entity[HAB]->engine += 0.1;
@@ -256,21 +235,17 @@ void input() {
 		else
 			entity[HAB]->engine -= 1;
 
+	if (key[KEY_A] && entity[HAB]->turnRate > -entity[HAB]->maxTurnRate && entity[HAB]->AI.navmode == MAN)	//turns hab, if hab is under the maximum turn rate, and the navmode is set to manual
+		entity[HAB]->turnRate -= entity[HAB]->turnRateStep;
 
-	if (key[KEY_BACKSPACE]) {	//cuts engines, holding down ctrl stops turning
-		if (key_shifts & KB_CTRL_FLAG) {   //all those if statements there just slow the turnRate gradually
-			if (fabs (entity[HAB]->turnRate) < entity[HAB]->turnRateStep)
-				entity[HAB]->turnRate = 0;
-			else if (entity[HAB]->turnRate > 0 && !key[KEY_A])   //you can't turn in the opposite direction of turning, and use the stop key at the same time
-				entity[HAB]->turnRate -= entity[HAB]->turnRateStep;
-			else if (entity[HAB]->turnRate < 0 && !key[KEY_D])   //ditto, but for the other key
-				entity[HAB]->turnRate += entity[HAB]->turnRateStep;
-		} else
-			entity[HAB]->engine = 0;
+	if (key[KEY_D] && entity[HAB]->turnRate < entity[HAB]->maxTurnRate && entity[HAB]->AI.navmode == MAN)	//ditto, but for CW turning
+		entity[HAB]->turnRate += entity[HAB]->turnRateStep;
+
+	if (key[KEY_TAB]) {	//toggles camera tracking
+		camera.track = !camera.track;
+		camera.x = camera.target->x;
+		camera.y = camera.target->y;
 	}
-
-	if (key[KEY_ENTER])	//engines to 100%, RAMMING SPEED!
-		entity[HAB]->engine = 100;
 
 	if (key[KEY_LEFT])	//pans camera left
 		camera.panX (-1);
@@ -296,7 +271,45 @@ void input() {
 		else
 			camera.zoom (-1);
 
+	if (key[KEY_TILDE])
+		HUD.display = !HUD.display;
+
+	if (key[KEY_Z])	//toggles printing of debug information
+		printDebug = !printDebug;
+
+	if (key[KEY_G])	//toggles grid drawing
+		HUD.displayGrid = !HUD.displayGrid;
+
+	if (key[KEY_BACKSPACE]) {	//cuts engines, holding down ctrl stops turning
+		if (key_shifts & KB_CTRL_FLAG) {   //all those if statements there just slow the turnRate gradually
+			if (fabs (entity[HAB]->turnRate) < entity[HAB]->turnRateStep)
+				entity[HAB]->turnRate = 0;
+			else if (entity[HAB]->turnRate > 0 && !key[KEY_A])   //you can't turn in the opposite direction of turning, and use the stop key at the same time
+				entity[HAB]->turnRate -= entity[HAB]->turnRateStep;
+			else if (entity[HAB]->turnRate < 0 && !key[KEY_D])   //ditto, but for the other key
+				entity[HAB]->turnRate += entity[HAB]->turnRateStep;
+		} else
+			entity[HAB]->engine = 0;
+	}
+
+	if (key[KEY_ENTER])	//engines to 100%, RAMMING SPEED!
+		if (key_shifts & KB_SHIFT_FLAG)
+			entity[HAB]->engine *= -1;
+		else
+			entity[HAB]->engine = 100;
+
 	///set targ/ref to nth planet from sun when holding down shift/ctrl, alt sets navmode for hab
+	if (key[KEY_0])
+		if (key_shifts & KB_SHIFT_FLAG)
+			HUD.target = entity[SUN];
+		else if (key_shifts & KB_CTRL_FLAG)
+			HUD.reference = entity[SUN];
+		else {
+			camera.target = entity[SUN];
+			camera.x = camera.target->x;
+			camera.y = camera.target->y;
+		}
+
 	if (key[KEY_1])	//AI to manual
 		if (key_shifts & KB_SHIFT_FLAG)
 			HUD.target = entity[MERCURY];
@@ -406,7 +419,7 @@ void input() {
 			camera.y = camera.target->y;
 		}
 
-	if (key[KEY_0]) {	//sets center to hab
+	if (key[KEY_H]) {	//sets center to hab
 		camera.target = entity[HAB];
 		camera.x = camera.target->x;
 		camera.y = camera.target->y;
@@ -453,6 +466,16 @@ void viewpoint_t::updateSpeed() {
 }
 
 
+long double physical_t::a() { //on-screen x position of physical
+
+	return ( (x - camera.x) * camera.actualZoom() + SCREEN_W / 2);
+}
+
+long double physical_t::b() { //on-screen y position of physical
+
+	return ( (y - camera.y) * camera.actualZoom() + SCREEN_H / 2);
+}
+
 void physical_t::draw(unsigned int A, unsigned int B, long double zoom) {
 
 	circlefill (buffer, A, B, radius * zoom, fillColor); //draws the physical to the buffer
@@ -460,11 +483,12 @@ void physical_t::draw(unsigned int A, unsigned int B, long double zoom) {
 
 void solarBody_t::draw(unsigned int A, unsigned int B, long double zoom) {
 
-	circlefill (buffer, A, B, zoom * (atmosphereHeight + radius), atmosphereColor);	//draws the atmosphere to the buffer
+	if (zoom < 0.05) {
+		circlefill (buffer, A, B, zoom * (atmosphereHeight + radius), atmosphereColor);	//draws the atmosphere to the buffer
+		circlefill (buffer, A, B, radius * zoom, fillColor);	//draws the planet body to the buffer
+	}
 
-	circlefill (buffer, A, B, radius * zoom, fillColor);	//draws the planet body to the buffer
-
-	textprintf_ex (buffer, font, A, B, makecol (200, 200, 200), -1, "%s", name.c_str() );
+	textprintf_ex (buffer, font, A, B + 10, makecol (200, 200, 200), -1, "%s", name.c_str() );
 }
 
 void ship_t::draw(unsigned int A, unsigned int B, long double zoom) {
@@ -538,10 +562,10 @@ void display_t::drawHUD () {
 	rectfill (buffer, 0, 0, 330, 37 * lineSpace, 0);	//draws background for HUD
 	rect (buffer, -1, -1, 330, 37 * lineSpace, makecol (255, 255, 255));	//draws outline for HUD
 
-	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbit V (m/s):"), textprintf_ex (buffer, font, 200, 1 * lineSpace, makecol (255, 255, 255), -1, "");
-	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Hab/Targ V diff:"), textprintf_ex (buffer, font, 200, 2 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lf", (craft->Vx + craft->Vy) - (target->Vx + target->Vy));
-	textprintf_ex (buffer, font, lineSpace, 3 * lineSpace, makecol (200, 200, 200), -1, "Centripetal V (m/s):"), textprintf_ex (buffer, font, 200, 3 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lf", craft->Vcen(*target));
-	textprintf_ex (buffer, font, lineSpace, 4 * lineSpace, makecol (200, 200, 200), -1, "Tangential V (m/s):"), textprintf_ex (buffer, font, 200, 4 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lf", craft->Vtan(*target));
+	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbit V (m/s):"), textprintf_ex (buffer, font, 200, 1 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->orbitV(*target));
+	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Hab/Targ V (m/s):"), textprintf_ex (buffer, font, 200, 2 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->Vtarg(*target));	//velocity relative to target
+	textprintf_ex (buffer, font, lineSpace, 3 * lineSpace, makecol (200, 200, 200), -1, "Centripetal V (m/s):"), textprintf_ex (buffer, font, 200, 3 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->Vcen(*target));
+	textprintf_ex (buffer, font, lineSpace, 4 * lineSpace, makecol (200, 200, 200), -1, "Tangential V (m/s):"), textprintf_ex (buffer, font, 200, 4 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->Vtan(*target));
 	textprintf_ex (buffer, font, lineSpace, 6 * lineSpace, makecol (200, 200, 200), -1, "Fuel (kg):"), textprintf_ex (buffer, font, 200, 6 * lineSpace, makecol (255, 255, 255), -1, "%li", craft->fuel);
 	textprintf_ex (buffer, font, lineSpace, 7 * lineSpace, makecol (200, 200, 200), -1, "Engines (kg/s):");
 	if (craft->engine > 0)
@@ -558,7 +582,7 @@ void display_t::drawHUD () {
 		textprintf_ex (buffer, font, 200, 9 * lineSpace, makecol (50, 255, 50), -1, "<");
 	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->distance (target->x, target->y) / 1000);
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
-	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc:"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
+	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
 	        craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
 	textprintf_ex (buffer, font, lineSpace, 14 * lineSpace, makecol (200, 200, 200), -1, "Periapsis (m):");
 	textprintf_ex (buffer, font, lineSpace, 15 * lineSpace, makecol (200, 200, 200), -1, "Apoapsis (m):");
@@ -593,16 +617,11 @@ void physical_t::turn () {
 
 	else if (turnRadians > 2 * PI)
 		turnRadians -= 2 * PI;
-
-	if (AI.navmode == APP_TARG) {
-
-//		if (entity[HAB]->thetaToObject (HUD.target) == PI);
-	}
 }
 
 long double ship_t::totalMass() {
 
-	return (mass + fuel / 1000);
+	return (mass + fuel);
 }
 
 void physical_t::acc (long double radians, long double force) {
@@ -622,20 +641,35 @@ void physical_t::accY (long double radians, long double force) {	//takes angle a
 	Vy += sin (radians) * force;
 }
 
+long double physical_t::orbitV (physical_t &targ) {
+
+	return sqrtf(
+	           (G * targ.mass) /
+	           distance (targ.x, targ.y)
+	       );
+}
+
+long double physical_t::Vtarg (physical_t &targ) {	//velocity relative to target
+
+	return sqrtf(	//basic pythagorean theorem to find magnitude of relative velocity vector
+	           (Vx - targ.Vx) * (Vx - targ.Vx) +
+	           (Vy - targ.Vy) * (Vy - targ.Vy) );
+}
+
 long double physical_t::Vcen (physical_t &targ) {	//centripetal force
 
-    return sqrtf(   //sqrt (V) * cos(theta)
-              (Vx - targ.Vx) * (Vx - targ.Vx) +
-              (Vy - targ.Vy) * (Vy - targ.Vy) )
-              * -cos(thetaToObject(targ) );
+	return sqrtf(   //sqrt (V) * cos(theta)
+	           (Vx - targ.Vx) * (Vx - targ.Vx) +
+	           (Vy - targ.Vy) * (Vy - targ.Vy) )
+	       * -sin(thetaToObject(targ) );
 }
 
 long double physical_t::Vtan (physical_t &targ) {
 
 	return fabs(sqrtf(   //sqrt (V) * sin(theta)
-              (Vx - targ.Vx) * (Vx - targ.Vx) +
-              (Vy - targ.Vy) * (Vy - targ.Vy) )
-              * sin(thetaToObject(targ) ) );
+	                (Vx - targ.Vx) * (Vx - targ.Vx) +
+	                (Vy - targ.Vy) * (Vy - targ.Vy) )
+	            * cos(thetaToObject(targ) ) );
 }
 
 long double physical_t::thetaV() {	//returns theta of velocity vector
@@ -665,22 +699,21 @@ long double physical_t::gravity (long double targX, long double targY, long doub
 
 void physical_t::gravitate (physical_t &targ) { //calculates gravitational acceleration, calling and target entity, then accelerates them
 
-	long double force = (G * 1000 * mass * targ.mass) / (distance (targ.x, targ.y) * distance (targ.x, targ.y));
-	long double theta = atan2f( -(y - targ.y), -(x - targ.x) );
+	long double force = (G * totalMass() * targ.totalMass()) / (distance (targ.x, targ.y) * distance (targ.x, targ.y));	//G(m1)(m2) / r^2
+	long double theta = atan2f( -(y - targ.y), -(x - targ.x) );	//direction in which to accelerate
 
 	acc (force, theta);
-	acc (100, PI);
 	targ.acc (-force, theta);
 }
 
 void physical_t::detectCollision (physical_t &targ) {
 
 	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < radius + targ.radius) {	//I get the implementation and math, if not so much the concept. But at least I learnt vector manipulation from this.
-        Vx = targ.Vx;
-        Vy = targ.Vy;
-        cout << name << ", " << targ.name << endl;
+//		Vx = targ.Vx;
+//		Vy = targ.Vy;
+//		cout << name << ", " << targ.name << endl;
 
-		/*long double
+		long double
 		impact[2] = {Vx - targ.Vx, Vy - targ.Vy},	//this.V - targ.V
 		            impactSpeed,
 		            impulse[2] = {x - targ.x, y - targ.y};	//normalise (this.center - targ.center)
@@ -698,7 +731,7 @@ void physical_t::detectCollision (physical_t &targ) {
 		Vx = impulse[0] / totalMass();	//this.Vx += impulse / this.mass
 		Vy = impulse[1] / totalMass();
 		targ.Vx = impulse[0] / targ.totalMass();	//targ.Vx += impulse / targ.mass
-		targ.Vy = impulse[1] / targ.totalMass();*/
+		targ.Vy = impulse[1] / targ.totalMass();
 	}
 }
 
@@ -729,17 +762,6 @@ long double ship_t::eccentricity (physical_t &targ) {
 	          (2 * E * h * h) /
 	          (u * u));*/
 }
-
-unsigned physical_t::a() { //on-screen x position of physical
-
-	return ( (x - camera.x) * camera.actualZoom() + SCREEN_W / 2);
-}
-
-unsigned physical_t::b() { //on-screen y position of physical
-
-	return ( (y - camera.y) * camera.actualZoom() + SCREEN_H / 2);
-}
-
 
 void initializeAllegro() {
 
@@ -778,8 +800,8 @@ void debug() {
 
 	textprintf_ex (buffer, font, 0, 0 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.x: %Lf", camera.target->x);
 	textprintf_ex (buffer, font, 0, 10 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.y = %Lf", camera.target->y );
-	textprintf_ex (buffer, font, 0, 20 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.a: %i", camera.target->a() );
-	textprintf_ex (buffer, font, 0, 30 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.b: %i", camera.target->b() );
+	textprintf_ex (buffer, font, 0, 20 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.a: %Lf", camera.target->a() );
+	textprintf_ex (buffer, font, 0, 30 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.b: %Lf", camera.target->b() );
 	textprintf_ex (buffer, font, 0, 40 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.Vx: %Lf", camera.target->Vx);
 	textprintf_ex (buffer, font, 0, 50 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.Vy: %Lf", camera.target->Vy);
 	textprintf_ex (buffer, font, 0, 60 + spacing, makecol (200, 200, 200), -1, "DEBUG: center.turnRate: %Lf", camera.target->turnRate);
@@ -807,9 +829,9 @@ void calculate() {
 	}
 
 	for (itX = entity.begin(); itX != entity.end(); ++itX)
-		for (itY = itX, ++itY; itY != entity.end(); ++itY){
+		for (itY = itX, ++itY; itY != entity.end(); ++itY) {
 			(*itX)->gravitate (**itY);
-			cout << (*itX)->name << ", " << (*itY)->name << endl;
+//			cout << (*itX)->name << ", " << (*itY)->name << endl;
 		}
 
 	camera.shift();

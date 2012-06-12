@@ -51,12 +51,12 @@ struct physical_t {	//stores data about any physical physical, such as mass and 
 	const string name;  //I love C++ over C so much for this
 
 	const unsigned long long int radius;   //radius of physical, in m
-	const long double mass;	//mass of physical, in metric tonnes
+	const long double mass;	//mass of physical, in kg (easier to do gravity calculations with)
 	virtual long double totalMass() {
 		return mass;    //total mass of physical
 	}
 	long double x, y; //the center of the physical, compared to the origin (center of solar system)
-	unsigned a(), b();  //on-screen position of physical
+	long double a(), b();  //on-screen position of physical
 	float turnRadians;	//radians physical is rotated from right
 	long double distance (long double targX, long double targY), stepDistance (long double targX, long double targY), thetaToObject (physical_t &target);	//distance to point, theta between physical and object
 	virtual void move() {
@@ -67,7 +67,8 @@ struct physical_t {	//stores data about any physical physical, such as mass and 
 	void acc (long double radians, long double acc),	//just calls accX and accY, and converts from m/s/ms to m/s/s
 	accX (long double radians, long double acc), accY (long double radians, long double acc);
 	long double Vx, Vy;   //the physical's speed (m/s) along each axis
-	long double Vcen (physical_t &targ), Vtan (physical_t &targ), thetaV();	//gets the vcen and vtan relative to a target, as well as the theta of the velocity vector
+	long double Vcen (physical_t &targ), Vtan (physical_t &targ), Vtarg (physical_t &targ), thetaV();	//gets the vcen and vtan relative to a target, velocity relative to target, as well as the theta of the velocity vector
+	long double orbitV (physical_t &targ);	//calculates the relative velocity needed to orbit at current height around target, NOT TAKING INTO ACCOUNT TARGET MASS
 	long double gravity (long double _x, long double _y, long double _mass);  //calculate gravitational acceleration to point
 	void gravitate (physical_t &targ), detectCollision (physical_t &targ);  //gravitate towards/detect collision with target
 
@@ -150,7 +151,7 @@ struct ship_t : physical_t {  //stores information about a pilotable ship, in ad
 
 	ship_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long double _mass, unsigned long _radius, unsigned _fillColor, unsigned _engineColor, unsigned short _engineRadius, unsigned long _fuel) :
 		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, 0, _fuel),
-		engineColor (_engineColor), engineRadius (_engineRadius), enginePower (15e5), burnRate (.0444) {
+		engineColor (_engineColor), engineRadius (_engineRadius), enginePower (1e5), burnRate (.0444) {
 	}
 };
 
