@@ -58,16 +58,16 @@ struct physical_t {	//stores data about any physical physical, such as mass and 
 	long double x, y; //the center of the physical, compared to the origin (center of solar system)
 	long double a(), b();  //on-screen position of physical
 	float turnRadians;	//radians physical is rotated from right
-	long double distance (long double targX, long double targY), stepDistance (long double targX, long double targY), thetaToObject (physical_t &target);	//distance to point, theta between physical and object
+	long double distance (long double targX, long double targY), stepDistance (long double targX, long double targY), thetaToObject (physical_t &target);	//distance squared to point, distance squared next cycle, theta between physical and object
 	virtual void move() {
 		x += Vx, y -= Vy;    //moves physical
 	}
 
 	long double acceleration;    //total acceleration, no calculations are actually performed on this, just for printing purposes
-	void acc (long double radians, long double acc),	//just calls accX and accY, and converts from m/s/ms to m/s/s
-	accX (long double radians, long double acc), accY (long double radians, long double acc);
-	long double Vx, Vy;   //the physical's speed (m/s) along each axis
-	long double Vcen (physical_t &targ), Vtan (physical_t &targ), Vtarg (physical_t &targ), thetaV();	//gets the vcen and vtan relative to a target, velocity relative to target, as well as the theta of the velocity vector
+	void acc (long double force, long double radians),	//just calls accX and accY, and converts from m/s/ms to m/s/s
+	accX (long double force, long double radians), accY (long double force, long double radians);
+	long double Vx, Vy, V(), thetaV();   //the physical's speed (m/s) along each axis and magnitude/theta of velocity vector
+	long double Vcen (physical_t &targ), Vtan (physical_t &targ), Vtarg (physical_t &targ);	//gets the vcen and vtan relative to a target, and velocity relative to target
 	long double orbitV (physical_t &targ);	//calculates the relative velocity needed to orbit at current height around target, NOT TAKING INTO ACCOUNT TARGET MASS
 	long double gravity (long double _x, long double _y, long double _mass);  //calculate gravitational acceleration to point
 	void gravitate (physical_t &targ), detectCollision (physical_t &targ);  //gravitate towards/detect collision with target

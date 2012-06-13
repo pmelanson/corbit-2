@@ -183,12 +183,18 @@ vector <physical_t*> entity;
 vector <physical_t*>::iterator it = entity.begin(), itX = entity.begin(), itY = entity.begin();	//it stands for iterator
 
 ///prototypes///
+long double dot (long double x, long double y, long double a, long double b);	//calculates dot product of two 2D vectors
 void CYCLE(), FPS(), INPUT();   //timer functions for running calculations, getting FPS, and getting input, respectively
 void input(), drawBuffer(), drawDisplay(), debug();	//gets input, draws buffer to screen, draw stuff to buffer, draws debug information, respectively
 void changeTimeStep (float step);	//changes how many calculations are performed per second (60 default)
 void calculate();	//calculates velocities, accelerations, new positions, turn, etc. for all objects
 void initialize(), initializeAllegro(), initializeFromFile();
 void cleanup();
+
+long double dot (long double x, long double y, long double a, long double b) {
+
+	return (x * a) + (y * b);
+}
 
 void CYCLE() {
 
@@ -263,13 +269,13 @@ void input() {
 		/*if (key_shifts & KB_ALT_FLAG)
 			changeTimeStep (1.1);
 		else*/
-			camera.zoom (1);
+		camera.zoom (1);
 
 	if (key[KEY_MINUS_PAD])	//ditto, zooming out, decreases calculations
 		/*if (key_shifts & KB_ALT_FLAG)
 			changeTimeStep (0.9);
 		else*/
-			camera.zoom (-1);
+		camera.zoom (-1);
 
 	if (key[KEY_TILDE])
 		HUD.display = !HUD.display;
@@ -465,6 +471,10 @@ void viewpoint_t::updateSpeed() {
 	Vy = target->Vy;
 }
 
+long double physical_t::V() {	//total magnitude of velocity vector
+
+	return sqrtf( (Vx * Vx) + (Vy * Vy));	//basic pythagorean theorem here
+}
 
 long double physical_t::a() { //on-screen x position of physical
 
@@ -580,7 +590,7 @@ void display_t::drawHUD () {
 		textprintf_ex (buffer, font, 240, 9 * lineSpace, makecol (50, 255, 50), -1, ">");
 	else if (craft->turnRate < 0)
 		textprintf_ex (buffer, font, 200, 9 * lineSpace, makecol (50, 255, 50), -1, "<");
-	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->distance (target->x, target->y) / 1000);
+	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", sqrtf((craft->distance (target->x, target->y) - (craft->radius + target->radius) )) / 1000);
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
 	        craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
@@ -624,19 +634,19 @@ long double ship_t::totalMass() {
 	return (mass + fuel);
 }
 
-void physical_t::acc (long double radians, long double force) {
+void physical_t::acc (long double force, long double radians) {
 
-	accX (radians, force / totalMass() / 60);
-	accY (radians, -force / totalMass() / 60);	//negative acceleration because of the way the computer draws on the screen
+	accX (force / totalMass() / 60, radians);
+	accY (-force / totalMass() / 60, radians);	//negative acceleration because of the way the computer draws on the screen
 	acceleration += fabs(force) / totalMass() / 60;
 }
 
-void physical_t::accX (long double radians, long double force) {	//takes angle at which to accelerate, and takes F/m for force
+void physical_t::accX (long double force, long double radians) {	//takes angle at which to accelerate, and takes F/m for force
 
 	Vx += cos (radians) * force;
 }
 
-void physical_t::accY (long double radians, long double force) {	//takes angle at which to accelerate, and takes F/m for force
+void physical_t::accY (long double force, long double radians) {	//takes angle at which to accelerate, and takes F/m for force
 
 	Vy += sin (radians) * force;
 }
@@ -682,14 +692,14 @@ long double physical_t::thetaToObject (physical_t &targ) {	//returns theta of an
 	return (atan2f( -(y - targ.y), -(x - targ.x)) );
 }
 
-long double physical_t::distance (long double targX, long double targY) {	//finds distance from physical to target
+long double physical_t::distance (long double targX, long double targY) {	//finds squared distance from physical to target
 
-	return (sqrtf( ((x - targX) * (x - targX)) + ((y - targY) * (y - targY)) ));	//finds the distance between two entities next cycle, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
+	return ((x - targX) * (x - targX)) + ((y - targY) * (y - targY));	//finds the distance between two entities, not squared
 }
 
-long double physical_t::stepDistance (long double targX, long double targY) {	//finds distance from physical to target next step, takes targ.pos + targ.v as parameters
+long double physical_t::stepDistance (long double targX, long double targY) {	//finds distance squared from physical to target next step, takes targ.pos + targ.v as parameters
 
-	return (sqrtf( (((x + Vx) - targX) * ((x + Vx) - targX)) + (((y + Vy) - targY) * ((y + Vy) - targY)) ));	//finds the distance between two entities next cycle, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
+	return (((x + Vx) - targX) * ((x + Vx) - targX)) + (((y + Vy) - targY) * ((y + Vy) - targY));	//finds the distance squared between two entities next cycle, using d = sqrt ( (x1 - x2)^2 + (y1 - y2) )
 }
 
 long double physical_t::gravity (long double targX, long double targY, long double targMass) {
@@ -699,18 +709,17 @@ long double physical_t::gravity (long double targX, long double targY, long doub
 
 void physical_t::gravitate (physical_t &targ) { //calculates gravitational acceleration, calling and target entity, then accelerates them
 
-	long double force = (G * totalMass() * targ.totalMass()) / (distance (targ.x, targ.y) * distance (targ.x, targ.y));	//G(m1)(m2) / r^2
-	long double theta = atan2f( -(y - targ.y), -(x - targ.x) );	//direction in which to accelerate
+	long double force = G * ( (totalMass() * targ.totalMass()) / distance (targ.x, targ.y) );	//G((m1)(m2) / r^2)
 
-	acc (force, theta);
-	targ.acc (-force, theta);
+	acc (force, thetaToObject (targ));
+	targ.acc (-force, thetaToObject (targ));
 }
 
 void physical_t::detectCollision (physical_t &targ) {
 
-	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < radius + targ.radius) {	//I get the implementation and math, if not so much the concept. But at least I learnt vector manipulation from this.
-//		Vx = targ.Vx;
-//		Vy = targ.Vy;
+	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < (radius + targ.radius) * (radius + targ.radius) ) {	//I get the implementation and math, if not so much the concept. But at least I learnt vector manipulation from this.
+
+		/*
 		cout << name << ", " << targ.name << endl;
 
 		long double
@@ -722,23 +731,52 @@ void physical_t::detectCollision (physical_t &targ) {
 		impulse[1] /= sqrtf (impulse[0] * impulse[0] + impulse[1] * impulse[1]);
 
 		impactSpeed = -impulse[0] * impact[0] + impulse[0] * impact[1];	//dot product(impulse, impact)
-//		cout << "impactspeed: " << impactSpeed << endl;
-//		cout << "sqrtf" << impactSpeed << " * " << mass << " * " << targ.mass << endl;
-		impulse[0] *= sqrtf(impactSpeed * mass * targ.mass);	//impulse *= sqrt(impactSpeed * this.mass * targ.mss)
-		impulse[1] *= sqrtf(impactSpeed * mass * targ.mass);
-//		cout << "impulse: " << impulse[0] << ", " << impulse[1] << endl;
+		//		cout << "impactspeed: " << impactSpeed << endl;
+		//		cout << "sqrtf" << impactSpeed << " * " << mass << " * " << targ.mass << endl;
+		impulse[0] *= sqrtf(impactSpeed);	//impulse *= sqrt(impactSpeed)
+		impulse[1] *= sqrtf(impactSpeed);
+		//		cout << "impulse: " << impulse[0] << ", " << impulse[1] << endl;
 
-		cout << name << "V: " << Vx << ", " << Vy << endl;
+		cout << name << ".V: " << Vx << ", " << Vy << endl;
 		cout << targ.name << ".V: " << targ.Vx << ", " << targ.Vy << endl;
 
-		Vx = impulse[0] / totalMass();	//this.Vx += impulse / this.mass
-		Vy = impulse[1] / totalMass();
-		targ.Vx = impulse[0] / targ.totalMass();	//targ.Vx += impulse / targ.mass
-		targ.Vy = impulse[1] / targ.totalMass();
+		Vx += impulse[0] / totalMass();	//this.Vx += impulse / this.mass
+		Vy += impulse[1] / totalMass();
+		targ.Vx += impulse[0] / targ.totalMass();	//targ.Vx += impulse / targ.mass
+		targ.Vy += impulse[1] / targ.totalMass();
 
 		cout << "new\n";
 		cout << name << "V: " << Vx << ", " << Vy << endl;
 		cout << targ.name << ".V: " << targ.Vx << ", " << targ.Vy << endl;
+
+		first prototype, didn't work as intended (when hab collided with earth, it was accelerated at ridiculous speeds to the top left)
+		*/
+
+		cout << endl << name << "/" << targ.name << " collision" << endl;
+//		http://www.mathsisfun.com/polar-cartesian-coordinates.html
+//		long double Vx1 = Vx, Vy1 = Vy
+//		                 Vx2 = targ.Vx, Vy2 = targ.Vy;
+//		Vx = 0;
+//		Vy = 0;
+//		targ.Vx = 0;
+//		targ.Vy = 0;
+
+		Vx = (Vx * (mass - targ.mass) + 2 * targ.mass * targ.Vx) /
+			(mass + targ.mass),
+		Vy = (Vy * (mass - targ.mass) + 2 * targ.mass * targ.Vy) /
+			(mass + targ.mass);
+
+		targ.Vx = (targ.Vx * (targ.mass - mass) + 2 * mass * Vx) /
+			(mass + targ.mass),
+		targ.Vy = (targ.Vy * (targ.mass - mass) + 2 * mass * Vy) /
+			(mass + targ.mass);
+
+		/*acc ((V1 * (mass - targ.mass) + 2 * targ.mass * V2) /
+		     (mass + targ.mass),
+			thetaV());
+		targ.acc ((V2 * (targ.mass - mass) + 2 * mass * V1) /
+		     (mass + targ.mass),
+			thetaV());*/
 	}
 }
 
@@ -753,7 +791,7 @@ void ship_t::move() {
 void ship_t::fireEngine() {
 
 	if (fuel > 0) {
-		acc (turnRadians, engine * enginePower);
+		acc (engine * enginePower, turnRadians);
 		fuel -= (fabs(engine) * burnRate) / 60;
 	}
 }
