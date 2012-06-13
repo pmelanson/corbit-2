@@ -151,7 +151,7 @@ struct ship_t : physical_t {  //stores information about a pilotable ship, in ad
 
 	ship_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long double _mass, unsigned long _radius, unsigned _fillColor, unsigned _engineColor, unsigned short _engineRadius, unsigned long _fuel) :
 		physical_t (_name, _x, _y, _Vx, _Vy, _mass, _radius, _fillColor, 0, _fuel),
-		engineColor (_engineColor), engineRadius (_engineRadius), enginePower (1e5), burnRate (.0444) {
+		engineColor (_engineColor), engineRadius (_engineRadius), enginePower (1e7), burnRate (.0444) {
 	}
 };
 
