@@ -43,8 +43,8 @@ Also a pretty good guy to bounce ideas off of. My int main is only 9 lines becau
 
 -Mrs. Odecki
 One of the most chill teachers I've had.
-Gotten me through some of my silly moments (eg array[x][y] array[y][x] mixups)
-This project wouldn't've been able to be started without her
+Gotten me through some of my silly moments (eg array[x][y] array[y][x] mixups), as well as some opaque vector manipulation
+Corbit wouldn't exist without her giving me time to complete it, and lots of it
 
 -Dr. Admiral Magwood
 The Admiral of OCESS. Can't get much better than that. Maybe Robert Thirsk.
@@ -717,7 +717,7 @@ void physical_t::gravitate (physical_t &targ) { //calculates gravitational accel
 
 void physical_t::detectCollision (physical_t &targ) {
 
-	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < (radius + targ.radius) * (radius + targ.radius) ) {	//I get the implementation and math, if not so much the concept. But at least I learnt vector manipulation from this.
+	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < (radius + targ.radius) * (radius + targ.radius) ) {
 
 		/*
 		cout << name << ", " << targ.name << endl;
@@ -753,15 +753,8 @@ void physical_t::detectCollision (physical_t &targ) {
 		*/
 
 		cout << endl << name << "/" << targ.name << " collision" << endl;
-//		http://www.mathsisfun.com/polar-cartesian-coordinates.html
-//		long double Vx1 = Vx, Vy1 = Vy
-//		                 Vx2 = targ.Vx, Vy2 = targ.Vy;
-//		Vx = 0;
-//		Vy = 0;
-//		targ.Vx = 0;
-//		targ.Vy = 0;
 
-		Vx = (Vx * (mass - targ.mass) + 2 * targ.mass * targ.Vx) /
+		/*Vx = (Vx * (mass - targ.mass) + 2 * targ.mass * targ.Vx) /
 			(mass + targ.mass),
 		Vy = (Vy * (mass - targ.mass) + 2 * targ.mass * targ.Vy) /
 			(mass + targ.mass);
@@ -770,13 +763,23 @@ void physical_t::detectCollision (physical_t &targ) {
 			(mass + targ.mass),
 		targ.Vy = (targ.Vy * (targ.mass - mass) + 2 * mass * Vy) /
 			(mass + targ.mass);
+		second prototype, was actually 1 dimensional collision, didn't work*/
+		//http://www.vobarian.com/collisions/2dcollisions2.pdf
 
-		/*acc ((V1 * (mass - targ.mass) + 2 * targ.mass * V2) /
-		     (mass + targ.mass),
-			thetaV());
-		targ.acc ((V2 * (targ.mass - mass) + 2 * mass * V1) /
-		     (mass + targ.mass),
-			thetaV());*/
+		long double tangent[0], normalUnit[2] = {x - targ.x, y - targ.y};
+		normalUnit[0] /= sqrtf (normalUnit[0] * normalUnit[0] + normalUnit[1] * normalUnit[1]),	//finds unit vector of normal
+		normalUnit[1] /= sqrtf (normalUnit[0] * normalUnit[0] + normalUnit[1] * normalUnit[1]);
+
+		long double normalV[2] = {	//here, normalV[0] is the velocity along the normal for this object, normalV[1] is for targ
+			(Vcen (targ) * (mass - targ.mass) + 2 * targ.mass * targ.Vcen (this) )
+				/ (mass + targ.mass),
+			(targ.Vcen (this) * (targ.mass - mass) + 2 * mass * Vcen (targ))
+				/ (mass + targ.mass)}
+
+		tangentV[2] = Vtan (targ);
+
+		long double normV[2] = {normalV * normalUnit[0], normalV * normalUnit[1]},
+					tanV[2] = {tangentV * normalUnit[0], tangentV * normalUnit[0]};
 	}
 }
 
