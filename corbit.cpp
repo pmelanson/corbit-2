@@ -719,6 +719,8 @@ void physical_t::detectCollision (physical_t &targ) {
 
 	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < (radius + targ.radius) * (radius + targ.radius) ) {
 
+		//I'll keep my previous attempts at this, just so that I don't end up having to rewrite all of this, even if I just keep it for a bit
+
 		/*
 		cout << name << ", " << targ.name << endl;
 
@@ -766,7 +768,7 @@ void physical_t::detectCollision (physical_t &targ) {
 
 		second prototype, was actually 1 dimensional collision, didn't work
 		*/
-
+		/*
 		//http://www.vobarian.com/collisions/2dcollisions2.pdf for how I got this algorithm
 
 		//find normalUnit and tangentUnit between the two physicals
@@ -835,6 +837,19 @@ void physical_t::detectCollision (physical_t &targ) {
 
 		targ.Vx = VnormPrime[1][0] + VtanPrime[1][0],
 		targ.Vy = VnormPrime[1][1] + VtanPrime[1][1];
+		another prototype, using projections and 1D collisions for JUST Vcen. Slowed down hab, but didn't bounce it
+		*/
+
+		//just gets the Vcen and Vtan, then projects the new velocities onto the Vx and Vy axes
+		Vx = Vcen (targ) * cos (thetaToObject(targ)) +	//Vx = Vcen projected onto x axis + Vtan projected onto x axis
+			Vtan (targ) * cos (thetaToObject(targ));
+		Vx = Vcen (targ) * sin (thetaToObject(targ)) +	//'', but for Vy and y axis
+			Vtan (targ) * sin (thetaToObject(targ));
+
+		targ.Vx = targ.Vcen (*this) * cos (targ.thetaToObject(*this)) +	//same as above, but for target
+			targ.Vtan (*this) * cos (targ.thetaToObject(*this));
+		targ.Vx = targ.Vcen (*this) * sin (targ.thetaToObject(*this)) +
+			targ.Vtan (*this) * sin (targ.thetaToObject(*this));
 	}
 }
 
