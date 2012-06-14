@@ -471,11 +471,6 @@ void viewpoint_t::updateSpeed() {
 	Vy = target->Vy;
 }
 
-long double physical_t::V() {	//total magnitude of velocity vector
-
-	return sqrtf( (Vx * Vx) + (Vy * Vy));	//basic pythagorean theorem here
-}
-
 long double physical_t::a() { //on-screen x position of physical
 
 	return ( (x - camera.x) * camera.actualZoom() + SCREEN_W / 2);
@@ -590,7 +585,7 @@ void display_t::drawHUD () {
 		textprintf_ex (buffer, font, 240, 9 * lineSpace, makecol (50, 255, 50), -1, ">");
 	else if (craft->turnRate < 0)
 		textprintf_ex (buffer, font, 200, 9 * lineSpace, makecol (50, 255, 50), -1, "<");
-	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", sqrtf((craft->distance (target->x, target->y) - (craft->radius + target->radius) )) / 1000);
+	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", sqrtf(fabs(craft->distance (target->x, target->y) - (craft->radius + target->radius) )) / 1000);
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
 	        craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
@@ -637,7 +632,7 @@ long double ship_t::totalMass() {
 void physical_t::acc (long double force, long double radians) {
 
 	accX (force / totalMass() / 60, radians);
-	accY (-force / totalMass() / 60, radians);	//negative acceleration because of the way the computer draws on the screen
+	accY (force / totalMass() / 60, radians);	//negative acceleration because of the way the computer draws on the screen
 	acceleration += fabs(force) / totalMass() / 60;
 }
 
@@ -648,10 +643,10 @@ void physical_t::accX (long double force, long double radians) {	//takes angle a
 
 void physical_t::accY (long double force, long double radians) {	//takes angle at which to accelerate, and takes F/m for force
 
-	Vy += sin (radians) * force;
+	Vy -= sin (radians) * force;
 }
 
-long double physical_t::orbitV (physical_t &targ) {
+long double physical_t::orbitV (const physical_t &targ) {
 
 	return sqrtf(
 	           (G * targ.mass) /
@@ -659,27 +654,16 @@ long double physical_t::orbitV (physical_t &targ) {
 	       );
 }
 
-long double physical_t::Vtarg (physical_t &targ) {	//velocity relative to target
+long double physical_t::Vtarg (const physical_t &targ) {	//velocity relative to target
 
 	return sqrtf(	//basic pythagorean theorem to find magnitude of relative velocity vector
 	           (Vx - targ.Vx) * (Vx - targ.Vx) +
 	           (Vy - targ.Vy) * (Vy - targ.Vy) );
 }
 
-long double physical_t::Vcen (physical_t &targ) {	//centripetal force
+long double physical_t::V() {	//total magnitude of velocity vector
 
-	return sqrtf(   //sqrt (V) * cos(theta)
-	           (Vx - targ.Vx) * (Vx - targ.Vx) +
-	           (Vy - targ.Vy) * (Vy - targ.Vy) )
-	       * -sin(thetaToObject(targ) );
-}
-
-long double physical_t::Vtan (physical_t &targ) {
-
-	return fabs(sqrtf(   //sqrt (V) * sin(theta)
-	                (Vx - targ.Vx) * (Vx - targ.Vx) +
-	                (Vy - targ.Vy) * (Vy - targ.Vy) )
-	            * cos(thetaToObject(targ) ) );
+	return sqrtf( (Vx * Vx) + (Vy * Vy));	//basic pythagorean theorem here
 }
 
 long double physical_t::thetaV() {	//returns theta of velocity vector
@@ -687,7 +671,23 @@ long double physical_t::thetaV() {	//returns theta of velocity vector
 	return (-atan2f(Vy, Vx));
 }
 
-long double physical_t::thetaToObject (physical_t &targ) {	//returns theta of angle made by the physical and the target
+long double physical_t::Vcen (const physical_t &targ) {	//centripetal force
+
+	return sqrtf(   //sqrt (V) * cos(theta)
+	           (Vx - targ.Vx) * (Vx - targ.Vx) +
+	           (Vy - targ.Vy) * (Vy - targ.Vy) )
+	       * -sin(thetaToObject(targ) );
+}
+
+long double physical_t::Vtan (const physical_t &targ) {
+
+	return fabs(sqrtf(   //sqrt (V) * sin(theta)
+	                (Vx - targ.Vx) * (Vx - targ.Vx) +
+	                (Vy - targ.Vy) * (Vy - targ.Vy) )
+	            * cos(thetaToObject(targ) ) );
+}
+
+long double physical_t::thetaToObject (const physical_t &targ) {	//returns theta of angle made by the intersection of a line from the physical and the x axis, at the target
 
 	return (atan2f( -(y - targ.y), -(x - targ.x)) );
 }
@@ -763,23 +763,78 @@ void physical_t::detectCollision (physical_t &targ) {
 			(mass + targ.mass),
 		targ.Vy = (targ.Vy * (targ.mass - mass) + 2 * mass * Vy) /
 			(mass + targ.mass);
-		second prototype, was actually 1 dimensional collision, didn't work*/
-		//http://www.vobarian.com/collisions/2dcollisions2.pdf
 
-		long double tangent[0], normalUnit[2] = {x - targ.x, y - targ.y};
+		second prototype, was actually 1 dimensional collision, didn't work
+		*/
+
+		//http://www.vobarian.com/collisions/2dcollisions2.pdf for how I got this algorithm
+
+		//find normalUnit and tangentUnit between the two physicals
+		long double normalUnit[2] = {x - targ.x, y - targ.y};
 		normalUnit[0] /= sqrtf (normalUnit[0] * normalUnit[0] + normalUnit[1] * normalUnit[1]),	//finds unit vector of normal
-		normalUnit[1] /= sqrtf (normalUnit[0] * normalUnit[0] + normalUnit[1] * normalUnit[1]);
+		                 normalUnit[1] /= sqrtf (normalUnit[0] * normalUnit[0] + normalUnit[1] * normalUnit[1]);
+		long double tangentUnit[2] = {-normalUnit[1], normalUnit[0]};	//tangent unit is just the negative reciprocal of normal unit
 
-		long double normalV[2] = {	//here, normalV[0] is the velocity along the normal for this object, normalV[1] is for targ
-			(Vcen (targ) * (mass - targ.mass) + 2 * targ.mass * targ.Vcen (this) )
+		long double Vprojected[2][2] = {	//the velocity of each object, projected onto the tangentV and normalUnit vectors (scalar)
+			{
+				normalUnit[0] * Vx + normalUnit[1] * Vy,	//normal velocity for calling physical
+				tangentUnit[0] * Vx + tangentUnit[1] * Vy
+			},	//tangent velocity for calling physical
+			{
+				normalUnit[0] * targ.Vx + normalUnit[1] * targ.Vy,	//'' for targ physical, just doing the dot product between the respective unit here
+				tangentUnit[0] * targ.Vx + tangentUnit[1] * Vy
+			}
+		};
+
+		long double Vprime[2][2] = {	//the resulting velocity along the normal for each mass (scalar)
+
+			{
+				(Vprojected[0][0] * (mass - targ.mass) + 2 * targ.mass * Vprojected[1][0])	//calculates prime normal velocity, using 1D collision maths (wikipedia)
 				/ (mass + targ.mass),
-			(targ.Vcen (this) * (targ.mass - mass) + 2 * mass * Vcen (targ))
-				/ (mass + targ.mass)}
+				Vprojected[0][1]
+			},	//prime tangent velocity is the same
 
-		tangentV[2] = Vtan (targ);
+			{
+				(Vprojected[1][0] * (targ.mass - mass) + 2 * mass * Vprojected[0][0])	//'', but for the targ physical
+				/ (targ.mass + mass),
+				Vprojected[1][1]
+			}	//prime tangent velocity is still the same
 
-		long double normV[2] = {normalV * normalUnit[0], normalV * normalUnit[1]},
-					tanV[2] = {tangentV * normalUnit[0], tangentV * normalUnit[0]};
+		};
+
+		Vprime[0][1] *= 0.8;	//prime tangent velocity shouldn't change with a perfectly elastic collision, but temporarily I'm going to approximate this degree of elasticity, for extra realism
+		Vprime[1][1] *= 0.8;
+
+		//calculate the final normal and tangential velocity vectors for both physicals, by multiplying the normalV (scalar) with normalUnit (vector), and same thing for tangent
+		long double VnormPrime[2][2] = {
+			{
+				Vprime[0][0] * normalUnit[0],
+				Vprime[0][0] * normalUnit[1]
+			},
+			{
+				Vprime[1][0] * normalUnit[0],
+				Vprime[1][0] * normalUnit[1]
+			}
+
+		},
+
+			VtanPrime[2][2] = {
+			{
+				Vprime[0][1] * tangentUnit[0],
+				Vprime[0][1] * tangentUnit[1]
+			},
+			{
+				Vprime[1][1] * tangentUnit[0],
+				Vprime[1][1] * tangentUnit[1]
+			}
+		};
+
+		//get final velocities of each vector, by V = Vnorm + Vtan (which are all vectors)
+		Vx = VnormPrime[0][0] + VtanPrime[0][0],
+		Vy = VnormPrime[0][1] + VtanPrime[0][1];
+
+		targ.Vx = VnormPrime[1][0] + VtanPrime[1][0],
+		targ.Vy = VnormPrime[1][1] + VtanPrime[1][1];
 	}
 }
 
@@ -788,7 +843,7 @@ void ship_t::move() {
 	fireEngine();
 
 	x += Vx;
-	y -= Vy;
+	y -= Vy;	//since the larger a y value is, the lower on the screen it appears
 }
 
 void ship_t::fireEngine() {
@@ -799,7 +854,7 @@ void ship_t::fireEngine() {
 	}
 }
 
-long double ship_t::eccentricity (physical_t &targ) {
+long double physical_t::eccentricity (const physical_t &targ) {
 
 	/*long double e, E, h, u;
 	E = total energy / targ.mass;
