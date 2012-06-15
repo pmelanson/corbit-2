@@ -162,7 +162,7 @@ using namespace std;
 
 ///global and constant declarations///
 const unsigned short int screenWidth = 1280, screenHeight = 980;    //my computer's resolution
-bool printDebug = true;
+bool printDebug = false;
 
 BITMAP *buffer = NULL;
 volatile unsigned int cycle = 0, cps = 0, cycleCounter = 0,	//used for running calculation loop and getting calculations performed per second
@@ -580,12 +580,13 @@ void display_t::drawHUD () {
 	else
 		textprintf_ex (buffer, font, 200, 7 * lineSpace, makecol (255, 255, 255), -1, "%-10.1f", craft->engine);
 	textprintf_ex (buffer, font, lineSpace, 8 * lineSpace, makecol (200, 200, 200), -1, "Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 8 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lf", craft->acceleration);
-	textprintf_ex (buffer, font, lineSpace, 9 * lineSpace, makecol (200, 200, 200), -1, "Turning (degrees/s):"), textprintf_ex (buffer, font, 210, 9 * lineSpace, makecol (255, 255, 255), -1, "%.1Lf", fabs(craft->turnRate) * 180 / PI);
+	textprintf_ex (buffer, font, lineSpace, 9 * lineSpace, makecol (200, 200, 200), -1, "Turning (degrees/s):"), textprintf_ex (buffer, font, 210, 9 * lineSpace, makecol (255, 255, 255), -1, "%.1Lf", fabs(craft->turnRate) * 180/PI);
 	if (craft->turnRate > 0)
 		textprintf_ex (buffer, font, 240, 9 * lineSpace, makecol (50, 255, 50), -1, ">");
 	else if (craft->turnRate < 0)
 		textprintf_ex (buffer, font, 200, 9 * lineSpace, makecol (50, 255, 50), -1, "<");
-	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", sqrtf(fabs(craft->distance (target->x, target->y) - (craft->radius + target->radius) )) / 1000);
+	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.9g",
+	        (sqrtf(craft->distance (target->x, target->y)) - (craft->radius + target->radius) )/ 1000);
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
 	        craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
@@ -687,7 +688,7 @@ long double physical_t::Vtan (const physical_t &targ) {
 	            * cos(thetaToObject(targ) ) );
 }
 
-long double physical_t::thetaToObject (const physical_t &targ) {	//returns theta of angle made by the intersection of a line from the physical and the x axis, at the target
+long double physical_t::thetaToObject (const physical_t &targ) {	//returns theta of angle made by the intersection of a line from the physical and the -x axis, at the target (e.g. when calling physical is directly to the right of targ, this will return PI)
 
 	return (atan2f( -(y - targ.y), -(x - targ.x)) );
 }
@@ -841,15 +842,36 @@ void physical_t::detectCollision (physical_t &targ) {
 		*/
 
 		//just gets the Vcen and Vtan, then projects the new velocities onto the Vx and Vy axes
-		Vx = Vcen (targ) * cos (thetaToObject(targ)) +	//Vx = Vcen projected onto x axis + Vtan projected onto x axis
+		/*Vx = -Vcen (targ) * cos (thetaToObject(targ)) +	//Vx = Vcen projected onto x axis + Vtan projected onto x axis
 			Vtan (targ) * cos (thetaToObject(targ));
-		Vx = Vcen (targ) * sin (thetaToObject(targ)) +	//'', but for Vy and y axis
+		Vy = -Vcen (targ) * sin (thetaToObject(targ)) +	//'', but for Vy and y axis
 			Vtan (targ) * sin (thetaToObject(targ));
 
-		targ.Vx = targ.Vcen (*this) * cos (targ.thetaToObject(*this)) +	//same as above, but for target
+		targ.Vx = -targ.Vcen (*this) * cos (targ.thetaToObject(*this)) +	//same as above, but for target
 			targ.Vtan (*this) * cos (targ.thetaToObject(*this));
-		targ.Vx = targ.Vcen (*this) * sin (targ.thetaToObject(*this)) +
-			targ.Vtan (*this) * sin (targ.thetaToObject(*this));
+		targ.Vy = -targ.Vcen (*this) * sin (targ.thetaToObject(*this)) +
+			targ.Vtan (*this) * sin (targ.thetaToObject(*this));*/
+
+
+		//there is a 'bug' in this wherein if you are on the earth, you cannot fire your engines, but in the real world you're not going to be firing your engines when you're sitting on them, or you'll explode
+		engine = 0,
+		         targ.engine = 0;
+
+		long double normV = Vcen (targ),
+		                    tanV = Vtan (targ),
+		                           thetaNorm = thetaToObject (targ) - PI,	//theta component of polar normal vector
+		                                       thetaTan = thetaNorm + PI/2;	//perpindicular to thetaNorm
+
+		cout << "normV: " << normV << endl;
+		cout << "tanV: " << tanV << endl;
+		cout << "thetaNorm: " << thetaNorm << endl;
+		cout << "thetaTan: " << thetaTan << endl;
+
+		Vx = normV * cos (thetaNorm) + tanV * cos (thetaTan);
+		Vy = normV * sin (thetaNorm) + tanV * sin (thetaTan);
+
+		targ.Vx = normV * cos (thetaNorm) + tanV * cos (thetaTan);
+		targ.Vy = normV * sin (thetaNorm) + tanV * sin (thetaTan);
 	}
 }
 
@@ -938,6 +960,12 @@ void debug() {
 
 void calculate() {
 
+	for (itX = entity.begin(); itX != entity.end(); ++itX)
+		for (itY = itX, ++itY; itY != entity.end(); ++itY) {
+			(*itX)->gravitate (**itY);
+			(*itX)->detectCollision (**itY);
+		}
+
 	for (it = entity.begin(); it != entity.end(); ++it) {
 		(*it)->turn();
 		(*it)->acceleration = 0;
@@ -945,12 +973,6 @@ void calculate() {
 		if (camera.track == true)
 			camera.updateSpeed();
 	}
-
-	for (itX = entity.begin(); itX != entity.end(); ++itX)
-		for (itY = itX, ++itY; itY != entity.end(); ++itY) {
-			(*itX)->gravitate (**itY);
-			(*itX)->detectCollision (**itY);
-		}
 
 	camera.shift();
 
