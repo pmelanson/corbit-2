@@ -159,7 +159,7 @@ Pluto
 
 !craft
 Habitat
-1.01662
+1.0168
 0
 2
 -29.6e3
