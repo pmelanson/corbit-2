@@ -674,23 +674,31 @@ long double physical_t::thetaV() {	//returns theta of velocity vector
 
 long double physical_t::Vcen (const physical_t &targ) {	//centripetal force
 
-	return sqrtf(   //sqrt (V) * cos(theta)
+	/*return sqrtf(   //sqrt (V) * cos(theta)
 	           (Vx - targ.Vx) * (Vx - targ.Vx) +
 	           (Vy - targ.Vy) * (Vy - targ.Vy) )
 	       * -sin(thetaToObject(targ) );
+	first prototype, used expensive square roots, as well as two taylor polynomials
+	*/
+
+	return Vx * cos (thetaToObject(targ)) + Vy * sin (thetaToObject(targ));
 }
 
 long double physical_t::Vtan (const physical_t &targ) {
 
-	return fabs(sqrtf(   //sqrt (V) * sin(theta)
+	/*return fabs(sqrtf(   //sqrt (V) * sin(theta)
 	                (Vx - targ.Vx) * (Vx - targ.Vx) +
 	                (Vy - targ.Vy) * (Vy - targ.Vy) )
-	            * cos(thetaToObject(targ) ) );
+	            * sin(thetaToObject(targ) ) );
+	first prototype, used expensive square roots, as well as two taylor polynomials
+	*/
+
+	return fabs(Vx * sin (thetaToObject(targ)) + Vy * cos (thetaToObject(targ)) );
 }
 
 long double physical_t::thetaToObject (const physical_t &targ) {	//returns theta of angle made by the intersection of a line from the physical and the -x axis, at the target (e.g. when calling physical is directly to the right of targ, this will return PI)
 
-	return (atan2f( -(y - targ.y), -(x - targ.x)) );
+	return  (atan2f( -(y - targ.y), -(x - targ.x)) );
 }
 
 long double physical_t::distance (long double targX, long double targY) {	//finds squared distance from physical to target
@@ -710,7 +718,7 @@ long double physical_t::gravity (long double targX, long double targY, long doub
 
 void physical_t::gravitate (physical_t &targ) { //calculates gravitational acceleration, calling and target entity, then accelerates them
 
-	long double force = G * ( (totalMass() * targ.totalMass()) / distance (targ.x, targ.y) );	//G((m1)(m2) / r^2)
+	long double force = G * totalMass() * targ.totalMass() / distance (targ.x, targ.y);	//G((m1)(m2) / r^2)
 
 	acc (force, thetaToObject (targ));
 	targ.acc (-force, thetaToObject (targ));
@@ -720,7 +728,7 @@ void physical_t::detectCollision (physical_t &targ) {
 
 	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < (radius + targ.radius) * (radius + targ.radius) ) {
 
-		//I'll keep my previous attempts at this, just so that I don't end up having to rewrite all of this, even if I just keep it for a bit
+		//I'll keep my previous attempts at this, just so that I don't end up having to rewrite all of this, even if I end up just keeping it for a bit
 
 		/*
 		cout << name << ", " << targ.name << endl;
@@ -852,7 +860,7 @@ void physical_t::detectCollision (physical_t &targ) {
 		targ.Vy = -targ.Vcen (*this) * sin (targ.thetaToObject(*this)) +
 			targ.Vtan (*this) * sin (targ.thetaToObject(*this));*/
 
-
+		/*
 		//there is a 'bug' in this wherein if you are on the earth, you cannot fire your engines, but in the real world you're not going to be firing your engines when you're sitting on them, or you'll explode
 		engine = 0,
 		         targ.engine = 0;
@@ -872,6 +880,13 @@ void physical_t::detectCollision (physical_t &targ) {
 
 		targ.Vx = normV * cos (thetaNorm) + tanV * cos (thetaTan);
 		targ.Vy = normV * sin (thetaNorm) + tanV * sin (thetaTan);
+
+		another prototype. I have a lot of prototypes.
+		*/
+
+
+
+
 	}
 }
 
@@ -1024,8 +1039,8 @@ void initializeFromFile() {
 	//data initializations
 	string container = "", name = "";
 	long double x = 1337, y = 1337, Vx = 0, Vy = 0;
-	long double mass = 1337, radius = 1337;
-	unsigned fillColor = 255, specialColor = 255, specialRadius = 413;
+	long double mass = 1337, radius = 1337, specialRadius = 413;
+	unsigned fillColor = 255, specialColor = 255;
 	short unsigned R = 255, G = 255, B = 255;
 	float specialFloat = 612;
 	string line = "";
@@ -1102,7 +1117,7 @@ void initializeFromFile() {
 			cout << "specialFloat read fail for " << name << endl;
 
 		if (container == "solarBody") {
-			specialRadius *= 100;
+//			specialRadius *= 100;
 
 //            body.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
 			entity.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );

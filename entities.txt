@@ -16,8 +16,8 @@ data		example		comments
 
 #SOLARBODY-ONLY VALUES
 [atmspherClr]	(255, 255, 255)	atmosphere color, in RGB values
-[atmspherHght]	(32)		height atmosphere extends beyond solar body's surface
-[atmspherDrag]	(56)		drag exerted by atmosphere
+[atmspherHght]	(32)		height atmosphere extends beyond solar body's surface, in km
+[atmspherDrag]	(0.6)		drag exerted by atmosphere (haven't implemented this yet, probably going to be something like the hab's velocity, times this
 
 #CRAFT-ONLY VALUES
 [engineColor]	(255, 255, 255)	engine color, in RGB values
@@ -51,8 +51,6 @@ Mercury
 0
 0
 
-original exp 6
-
 !solarBody
 Venus
 0.72823128
@@ -76,7 +74,7 @@ Earth
 6.3781e6
 34, 139, 34
 65, 105, 225
-12e4
+120000
 120000
 
 !solarBody
@@ -162,7 +160,7 @@ Habitat
 1.01662
 0
 2
--29.6e3
+-29.78e3
 300000
 30
 220, 220, 220
