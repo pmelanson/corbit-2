@@ -166,11 +166,11 @@ bool printDebug = false;
 
 BITMAP *buffer = NULL;
 volatile unsigned int cycle = 0, cps = 0, cycleCounter = 0,	//used for running calculation loop and getting calculations performed per second
-                                       fps = 0, fpsCounter = 0,	//used for getting frams per second
-                                               inputTimer = 0;	//used for getting input
+									   fps = 0, fpsCounter = 0,	//used for getting frams per second
+											   inputTimer = 0;	//used for getting input
 unsigned long long cycleRate = 60;	//how many times per second all calculations are performed
 const unsigned short int FPS_COUNT_BPS = 2,	//how many times per second FPS and CPS (cycles per second) are calculated. Larger numbers result in faster refresh rates, but also larger extrapolations
-        INPUT_BPS = 10;	//how many times per second keyboard is checked for input
+		INPUT_BPS = 10;	//how many times per second keyboard is checked for input
 
 const long double AU = 1495978707e2, G = 6.673e-11, PI = acos(-1.0L);
 
@@ -495,9 +495,9 @@ void ship_t::draw(unsigned int A, unsigned int B, long double zoom) {
 
 	circlefill (buffer, A, B, radius * zoom, fillColor);	//draws the picture to the buffer
 	line (buffer, A, B,	//draws the 'engine'
-	      A + radius * cos (turnRadians) * zoom,
-	      B + radius * sin (turnRadians) * zoom,
-	      engineColor);
+		  A + radius * cos (turnRadians) * zoom,
+		  B + radius * sin (turnRadians) * zoom,
+		  engineColor);
 }
 
 void habitat_t::draw(unsigned int A, unsigned int B, long double zoom) {
@@ -507,39 +507,39 @@ void habitat_t::draw(unsigned int A, unsigned int B, long double zoom) {
 	if (engine == 0) {
 
 		circlefill (buffer,	//draws the center 'engine'
-		            A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
-		            B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
-		            engineRadius * zoom,
-		            fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
+					A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
+					B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
+					engineRadius * zoom,
+					fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer,	//draws the left 'engine'
-		            A + radius * cos (turnRadians - (PI * .75) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * .75) ) * zoom,
-		            engineRadius * zoom,
-		            fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
+					A + radius * cos (turnRadians - (PI * .75) ) * zoom,
+					B + radius * sin (turnRadians - (PI * .75) ) * zoom,
+					engineRadius * zoom,
+					fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer,	//draws the right 'engine'
-		            A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
-		            engineRadius * zoom,
-		            fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
+					A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
+					B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
+					engineRadius * zoom,
+					fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
 	}
 
 	else {
 
 		circlefill (buffer,	//draws the center 'engine'
-		            A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
-		            B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
-		            engineRadius * zoom,
-		            engineColor);
+					A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
+					B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
+					engineRadius * zoom,
+					engineColor);
 		circlefill (buffer,	//draws the left 'engine'
-		            A + radius * cos (turnRadians - (PI * .75) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * .75) ) * zoom,
-		            engineRadius * zoom,
-		            engineColor);
+					A + radius * cos (turnRadians - (PI * .75) ) * zoom,
+					B + radius * sin (turnRadians - (PI * .75) ) * zoom,
+					engineRadius * zoom,
+					engineColor);
 		circlefill (buffer,	//draws the right 'engine'
-		            A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
-		            engineRadius * zoom,
-		            engineColor);
+					A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
+					B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
+					engineRadius * zoom,
+					engineColor);
 	}
 }
 
@@ -581,23 +581,24 @@ void display_t::drawHUD () {
 	else if (craft->turnRate < 0)
 		textprintf_ex (buffer, font, 200, 9 * lineSpace, makecol (50, 255, 50), -1, "<");
 	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.8g",
-	        (sqrtf(craft->distance (target->x, target->y)) - (craft->radius + target->radius) )/ 1000);
+			(sqrtf(craft->distance (target->x, target->y)) - (craft->radius + target->radius) )/ 1000);
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
-	        craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
-	textprintf_ex (buffer, font, lineSpace, 14 * lineSpace, makecol (200, 200, 200), -1, "Periapsis (m):");
-	textprintf_ex (buffer, font, lineSpace, 15 * lineSpace, makecol (200, 200, 200), -1, "Apoapsis (m):");
+			craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
+	craft->eccentricity(*target);
+	textprintf_ex (buffer, font, lineSpace, 14 * lineSpace, makecol (200, 200, 200), -1, "Periapsis (km):"), textprintf_ex (buffer, font, 200, 14 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lg", (craft->periapsis - (craft->radius + target->radius) )/1000);
+	textprintf_ex (buffer, font, lineSpace, 15 * lineSpace, makecol (200, 200, 200), -1, "Apoapsis (km):"), textprintf_ex (buffer, font, 200, 15 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lg", (craft->apoapsis - (craft->radius + target->radius) )/1000);
 
 	craft->draw (craftX, craftY, 1);	//draws the habitat onto the HUD
 
 	line (buffer, craftX, craftY,	//draws velocity vector on habitat
-	      craftX + (vVectorLength) * cos (craft->thetaV() - target->thetaV()),
-	      craftY + (vVectorLength) * sin (craft->thetaV() - target->thetaV()),
-	      makecol (255, 0, 0));
+		  craftX + (vVectorLength) * cos (craft->thetaV() - target->thetaV()),
+		  craftY + (vVectorLength) * sin (craft->thetaV() - target->thetaV()),
+		  makecol (255, 0, 0));
 	textprintf_ex (buffer, font,	//draws target location in respect to habitat
-	               craftX + (targVectorLength) * cos (craft->thetaToObject (*target)),
-	               craftY + (targVectorLength) * sin (craft->thetaToObject (*target)),
-	               makecol (255, 255, 255), -1, "%s", target->name.c_str());
+				   craftX + (targVectorLength) * cos (craft->thetaToObject (*target)),
+				   craftY + (targVectorLength) * sin (craft->thetaToObject (*target)),
+				   makecol (255, 255, 255), -1, "%s", target->name.c_str());
 
 	if (camera.track)
 		textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Center:"), textprintf_ex (buffer, font, 200, 31 * lineSpace, makecol (255, 255, 255), -1, "%s", camera.target->name.c_str());
@@ -645,9 +646,9 @@ void physical_t::accY (long double force, long double radians) {	//takes angle a
 long double physical_t::orbitV (const physical_t &targ) {
 
 	return sqrtf(
-	           (G * targ.mass) /
-	           distance (targ.x, targ.y)
-	       );
+			   (G * targ.mass) /
+			   distance (targ.x, targ.y)
+		   );
 }
 
 long double physical_t::V() {	//total magnitude of velocity vector
@@ -723,7 +724,7 @@ void physical_t::gravitate (physical_t &targ) { //calculates gravitational accel
 
 void physical_t::detectCollision (physical_t &targ) {
 
-	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < (radius + targ.radius) * (radius + targ.radius) ) {
+	if (distance (targ.x, targ.y) < (radius + targ.radius) * (radius + targ.radius) ) {
 
 		//I'll keep my previous attempts at this, just so that I don't end up having to rewrite all of this, even if I end up just keeping it for a bit
 
@@ -886,8 +887,8 @@ void physical_t::detectCollision (physical_t &targ) {
 		*/
 
 		cout << endl << name << "/" << targ.name << " collision" << endl;
-		engine = 0;
-		targ.engine = 0;
+//		engine = 0;
+//		targ.engine = 0;
 
 		//Here, I take the Vcen and Vtan unit vectors, then project the post-collision velocities onto them, after using 1D collision equation to find out post-collision Vcen
 		//note: instead of calling Vcen(targ) and targ.Vcen(*this), I instead call Vcen(targ) and -Vcen(targ), because that is the same thing, but more efficient as it is stored in the processor cache
@@ -910,18 +911,30 @@ void physical_t::detectCollision (physical_t &targ) {
 		cout << name << ": " << Vx << ", " << Vy << endl;
 		cout << targ.name << ": " << targ.Vx << ", " << targ.Vy << endl;
 
-		Vx = VcenPrime[0] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
-		Vy = VcenPrime[0] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ) + PI/2);
+		long double cenV[2] = {Vx * cos(thetaToObject(targ)), Vy * sin(thetaToObject(targ))};
+		long double tanV[2] = {Vx * cos(thetaToObject(targ)+PI/2), Vy * sin(thetaToObject(targ)+PI/2)};
+
+//		Vx = VcenPrime[0] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
+//		Vy = VcenPrime[0] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ) + PI/2);
 		//again, targ.Vtan(*this) == -Vtan(targ)
-		targ.Vx = VcenPrime[1] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
-		targ.Vy = VcenPrime[1] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ) + PI/2);
+//		targ.Vx = Vcen(targ) * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
+//		targ.Vy = Vcen(targ) * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ) + PI/2);
+
+//		targ.Vx = cenV[0] * -cos(thetaToObject(targ)) + tanV[0] * cos(thetaToObject(targ) + PI/2);
+//		targ.Vy = cenV[1] * -sin(thetaToObject(targ)) + tanV[1] * sin(thetaToObject(targ) + PI/2);
+
+		if (targ.name == "Habitat") {
+			targ.Vx = Vx;
+			targ.Vy = Vy;
+			targ.x += cos(thetaToObject(targ));
+			targ.y += sin(thetaToObject(targ));
+		}
+		//if you were to fire your engines while on earth (and not on the launchpad) you would blow up. I make sure you don't fire your engines here.
+		targ.engine = 0;
 
 		cout << "post-collision\n";
 		cout << name << ": " << Vx << ", " << Vy << endl;
 		cout << targ.name << ": " << targ.Vx << ", " << targ.Vy << endl;
-
-//		Vcen: (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ))
-//		Vtan: (Vx - targ.Vx) * sin (thetaToObject(targ)) + (Vy - targ.Vy) * cos (thetaToObject(targ))
 	}
 }
 
@@ -941,7 +954,7 @@ void ship_t::fireEngine() {
 	}
 }
 
-long double physical_t::eccentricity (const physical_t &targ) {
+long double physical_t::eccentricity (physical_t &targ) {
 
 	/*long double e, E, h, u;
 	E = total energy / targ.mass;
@@ -953,25 +966,24 @@ long double physical_t::eccentricity (const physical_t &targ) {
 	          (u * u));*/
 
 	long double
-	Ek = Vtarg (targ),
-	Ep = (-G * targ.mass) / distance(targ),
+	Ek = Vtarg (targ.V()),
+	Ep = (-G * targ.mass) / (distance(targ.x, targ.y)),
 	E = Ek + Ep,
 	N = ((targ.mass * G) / G) * G,	//if targ.mass == 0, this will set N to G, else it is equal to targ.mass * G
-	L2 = (distance(targ) * Vtan(targ)) * (distance(targ) * Vtan(targ)),	//(r*Vtan)^2
+	L2 = ((distance(targ.x, targ.y)) * Vtan(targ)) * ((distance(targ.x, targ.y)) * Vtan(targ)),	//(r*Vtan)^2
 	e = sqrtf(1+ (2*E * L2) / (N * N)),
-	A = distance(targ) / fabs(2 * E),
-	Apo
+	A = (distance(targ.x, targ.y)) / fabs(2 * E);
+
+	apoapsis = A * (1+e);
+
+	if (e == 1)
+		periapsis = A;
+	else if (e > 1)
+		periapsis = A * (e-1);
+	else
+		periapsis = A * (1-e);
 }
 
-long double physical_t::apoapsis (const physical_t &targ) {
-
-
-}
-
-long double physical_t::periapsis (const physical_t &targ) {
-
-
-}
 
 void initializeAllegro() {
 
