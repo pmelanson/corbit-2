@@ -678,7 +678,7 @@ long double physical_t::Vcen (const physical_t &targ) {	//centripetal force
 	first prototype, uses expensive square roots, as well as a taylor polynomial
 	*/
 
-	return -( (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ)) );	//how fast calling physical is moving away from targ, positive values mean moving away from target (it is really centripetal velocity, but it makes more sense like this)
+	return (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ));	//how fast calling physical is moving away from targ, positive values mean moving away from target (it is really centripetal velocity, but it makes more sense like this)
 }
 
 long double physical_t::Vtan (const physical_t &targ) {
@@ -690,7 +690,7 @@ long double physical_t::Vtan (const physical_t &targ) {
 	first prototype, uses expensive square roots, as well as a taylor polynomial
 	*/
 
-	return -( (Vx - targ.Vx) * cos (thetaToObject(targ) + PI/2) + (Vy - targ.Vy) * sin (thetaToObject(targ) + PI/2) );	//how fast calling physical is travelling tangentially, positive values mean CCW movement (normal orbit orientation for just about everything)
+	return (Vx - targ.Vx) * cos (thetaToObject(targ) + PI/2) + (Vy - targ.Vy) * sin (thetaToObject(targ) + PI/2);	//how fast calling physical is travelling tangentially, positive values mean CCW movement (normal orbit orientation for just about everything)
 }
 
 long double physical_t::thetaToObject (const physical_t &targ) {	//returns theta of angle made by the intersection of a line from the physical and the -x axis, at the target (e.g. when calling physical is directly to the right of targ, this will return PI)
@@ -759,8 +759,6 @@ void physical_t::detectCollision (physical_t &targ) {
 
 		first prototype, didn't work as intended (when hab collided with earth, it was accelerated at ridiculous speeds to the top left)
 		*/
-
-		cout << endl << name << "/" << targ.name << " collision" << endl;
 
 		/*Vx = (Vx * (mass - targ.mass) + 2 * targ.mass * targ.Vx) /
 			(mass + targ.mass),
@@ -854,11 +852,10 @@ void physical_t::detectCollision (physical_t &targ) {
 		targ.Vx = -targ.Vcen (*this) * cos (targ.thetaToObject(*this)) +	//same as above, but for target
 			targ.Vtan (*this) * cos (targ.thetaToObject(*this));
 		targ.Vy = -targ.Vcen (*this) * sin (targ.thetaToObject(*this)) +
-<<<<<<< HEAD
-			targ.Vtan (*this) * sin (targ.thetaToObject(*this));*/
-=======
 			targ.Vtan (*this) * sin (targ.thetaToObject(*this));
->>>>>>> d781a567a0c04d188604e64f1c13bf7eb2ee300b
+
+		another prototype. The material I got this from was obscure, and I didn't really like the math
+		*/
 
 		/*
 		//there is a 'bug' in this wherein if you are on the earth, you cannot fire your engines, but in the real world you're not going to be firing your engines when you're sitting on them, or you'll explode
@@ -879,20 +876,16 @@ void physical_t::detectCollision (physical_t &targ) {
 		long double primeNormV = (Vcen(targ) * (mass - targ.mass) + 2 * targ.mass * targ.Vcen(*this) ) /	//targ.Vcen(*this) = -Vcen(targ), but this looks more like the normal 1D collision equation
 						(mass + targ.mass);
 
-		Vx = -primeNormV * cos (thetaNorm) + tanV * cos (thetaTan);
+		Vx = -primeNormV * cos (thetaNorm) + tanV * cos (thetaTan);detectCollision
 		Vy = -primeNormV * sin (thetaNorm) + tanV * sin (thetaTan);
 
 		targ.Vx = primeNormV * cos (thetaNorm) + tanV * cos (thetaTan);
 		targ.Vy = primeNormV * sin (thetaNorm) + tanV * sin (thetaTan);
-		*/
-
-<<<<<<< HEAD
-		targ.Vx = normV * cos (thetaNorm) + tanV * cos (thetaTan);
-		targ.Vy = normV * sin (thetaNorm) + tanV * sin (thetaTan);
 
 		another prototype. I have a lot of prototypes. This one in particular didn't work.
 		*/
 
+		cout << endl << name << "/" << targ.name << " collision" << endl;
 		engine = 0;
 		targ.engine = 0;
 
@@ -902,10 +895,10 @@ void physical_t::detectCollision (physical_t &targ) {
 		//finding Vcen prime:
 		long double VcenPrime[2] = {	//VcenPrime[0] is attached to calling physical, VcenPrime[1] is for targ
 			//for calling physical...
-			(Vcen(targ) * (mass - targ.mass) + 2 * targ.mass * -Vcen(targ) )
+			(Vcen(targ) * (mass - targ.mass) + 2 * targ.mass * targ.Vcen(*this) )
 			/ (mass + targ.mass),
 			//for targ
-			(-Vcen(targ) * (targ.mass - mass) + 2 * mass * Vcen(targ) )
+			(targ.Vcen(*this) * (targ.mass - mass) + 2 * mass * Vcen(targ) )
 			/ (targ.mass + mass)
 		};
 
@@ -918,10 +911,10 @@ void physical_t::detectCollision (physical_t &targ) {
 		cout << targ.name << ": " << targ.Vx << ", " << targ.Vy << endl;
 
 		Vx = VcenPrime[0] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
-		Vy = VcenPrime[0] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ));
+		Vy = VcenPrime[0] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ) + PI/2);
 		//again, targ.Vtan(*this) == -Vtan(targ)
 		targ.Vx = VcenPrime[1] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
-		targ.Vy = VcenPrime[1] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ));
+		targ.Vy = VcenPrime[1] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ) + PI/2);
 
 		cout << "post-collision\n";
 		cout << name << ": " << Vx << ", " << Vy << endl;
@@ -929,8 +922,6 @@ void physical_t::detectCollision (physical_t &targ) {
 
 //		Vcen: (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ))
 //		Vtan: (Vx - targ.Vx) * sin (thetaToObject(targ)) + (Vy - targ.Vy) * cos (thetaToObject(targ))
-=======
->>>>>>> d781a567a0c04d188604e64f1c13bf7eb2ee300b
 	}
 }
 
@@ -960,6 +951,26 @@ long double physical_t::eccentricity (const physical_t &targ) {
 	e = sqrtf(++
 	          (2 * E * h * h) /
 	          (u * u));*/
+
+	long double
+	Ek = Vtarg (targ),
+	Ep = (-G * targ.mass) / distance(targ),
+	E = Ek + Ep,
+	N = ((targ.mass * G) / G) * G,	//if targ.mass == 0, this will set N to G, else it is equal to targ.mass * G
+	L2 = (distance(targ) * Vtan(targ)) * (distance(targ) * Vtan(targ)),	//(r*Vtan)^2
+	e = sqrtf(1+ (2*E * L2) / (N * N)),
+	A = distance(targ) / fabs(2 * E),
+	Apo
+}
+
+long double physical_t::apoapsis (const physical_t &targ) {
+
+
+}
+
+long double physical_t::periapsis (const physical_t &targ) {
+
+
 }
 
 void initializeAllegro() {

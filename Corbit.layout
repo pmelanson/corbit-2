@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="classDeclarations.h" open="0" top="0" tabpos="2">
-		<Cursor position="5257" topLine="23" />
+	<File name="classDeclarations.h" open="1" top="0" tabpos="2">
+		<Cursor position="6373" topLine="44" />
 	</File>
-<<<<<<< HEAD
-	<File name="corbit.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="34319" topLine="845" />
-=======
-<<<<<<< HEAD
-	<File name="corbit.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="40276" topLine="1037" />
-=======
-	<File name="corbit.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="34952" topLine="857" />
->>>>>>> d781a567a0c04d188604e64f1c13bf7eb2ee300b
->>>>>>> 06121d16db5e1f97a51a6a99b9c5123c230608be
+	<File name="corbit.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="38669" topLine="934" />
 	</File>
 	<File name="version.h" open="0" top="0" tabpos="0">
 		<Cursor position="65" topLine="0" />
