@@ -191,11 +191,6 @@ void calculate();	//calculates velocities, accelerations, new positions, turn, e
 void initialize(), initializeAllegro(), initializeFromFile();
 void cleanup();
 
-long double dot (long double x, long double y, long double a, long double b) {
-
-	return (x * a) + (y * b);
-}
-
 void CYCLE() {
 
 	cycle++;
@@ -567,10 +562,10 @@ void display_t::drawHUD () {
 	rectfill (buffer, 0, 0, 330, 37 * lineSpace, 0);	//draws background for HUD
 	rect (buffer, -1, -1, 330, 37 * lineSpace, makecol (255, 255, 255));	//draws outline for HUD
 
-	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbit V (m/s):"), textprintf_ex (buffer, font, 200, 1 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->orbitV(*target));
-	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Hab/Targ V (m/s):"), textprintf_ex (buffer, font, 200, 2 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->Vtarg(*target));	//velocity relative to target
-	textprintf_ex (buffer, font, lineSpace, 3 * lineSpace, makecol (200, 200, 200), -1, "Centripetal V (m/s):"), textprintf_ex (buffer, font, 200, 3 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->Vcen(*target));
-	textprintf_ex (buffer, font, lineSpace, 4 * lineSpace, makecol (200, 200, 200), -1, "Tangential V (m/s):"), textprintf_ex (buffer, font, 200, 4 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lg", craft->Vtan(*target));
+	textprintf_ex (buffer, font, lineSpace, 1 * lineSpace, makecol (200, 200, 200), -1, "Orbit V (m/s):"), textprintf_ex (buffer, font, 200, 1 * lineSpace, makecol (255, 255, 255), -1, "%-10.7Lg", craft->orbitV(*target));
+	textprintf_ex (buffer, font, lineSpace, 2 * lineSpace, makecol (200, 200, 200), -1, "Hab/Targ V (m/s):"), textprintf_ex (buffer, font, 200, 2 * lineSpace, makecol (255, 255, 255), -1, "%-10.7Lf", craft->Vtarg(target->V()));	//velocity relative to target
+	textprintf_ex (buffer, font, lineSpace, 3 * lineSpace, makecol (200, 200, 200), -1, "Centripetal V (m/s):"), textprintf_ex (buffer, font, 200, 3 * lineSpace, makecol (255, 255, 255), -1, "%-10.7Lf", craft->Vcen(*target));
+	textprintf_ex (buffer, font, lineSpace, 4 * lineSpace, makecol (200, 200, 200), -1, "Tangential V (m/s):"), textprintf_ex (buffer, font, 200, 4 * lineSpace, makecol (255, 255, 255), -1, "%-10.7Lf", craft->Vtan(*target));
 	textprintf_ex (buffer, font, lineSpace, 6 * lineSpace, makecol (200, 200, 200), -1, "Fuel (kg):"), textprintf_ex (buffer, font, 200, 6 * lineSpace, makecol (255, 255, 255), -1, "%li", craft->fuel);
 	textprintf_ex (buffer, font, lineSpace, 7 * lineSpace, makecol (200, 200, 200), -1, "Engines (kg/s):");
 	if (craft->engine > 0)
@@ -579,13 +574,13 @@ void display_t::drawHUD () {
 		textprintf_ex (buffer, font, 200, 7 * lineSpace, makecol (255, 150, 150), -1, "%-10.1f", fabs(craft->engine));
 	else
 		textprintf_ex (buffer, font, 200, 7 * lineSpace, makecol (255, 255, 255), -1, "%-10.1f", craft->engine);
-	textprintf_ex (buffer, font, lineSpace, 8 * lineSpace, makecol (200, 200, 200), -1, "Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 8 * lineSpace, makecol (255, 255, 255), -1, "%-10.9Lf", craft->acceleration);
+	textprintf_ex (buffer, font, lineSpace, 8 * lineSpace, makecol (200, 200, 200), -1, "Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 8 * lineSpace, makecol (255, 255, 255), -1, "%-10.8Lf", craft->acceleration);
 	textprintf_ex (buffer, font, lineSpace, 9 * lineSpace, makecol (200, 200, 200), -1, "Turning (degrees/s):"), textprintf_ex (buffer, font, 210, 9 * lineSpace, makecol (255, 255, 255), -1, "%.1Lf", fabs(craft->turnRate) * 180/PI);
 	if (craft->turnRate > 0)
 		textprintf_ex (buffer, font, 240, 9 * lineSpace, makecol (50, 255, 50), -1, ">");
 	else if (craft->turnRate < 0)
 		textprintf_ex (buffer, font, 200, 9 * lineSpace, makecol (50, 255, 50), -1, "<");
-	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.9g",
+	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.8g",
 	        (sqrtf(craft->distance (target->x, target->y)) - (craft->radius + target->radius) )/ 1000);
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
@@ -596,8 +591,8 @@ void display_t::drawHUD () {
 	craft->draw (craftX, craftY, 1);	//draws the habitat onto the HUD
 
 	line (buffer, craftX, craftY,	//draws velocity vector on habitat
-	      craftX + (vVectorLength) * cos (craft->thetaV()),
-	      craftY + (vVectorLength) * sin (craft->thetaV()),
+	      craftX + (vVectorLength) * cos (craft->thetaV() - target->thetaV()),
+	      craftY + (vVectorLength) * sin (craft->thetaV() - target->thetaV()),
 	      makecol (255, 0, 0));
 	textprintf_ex (buffer, font,	//draws target location in respect to habitat
 	               craftX + (targVectorLength) * cos (craft->thetaToObject (*target)),
@@ -655,42 +650,52 @@ long double physical_t::orbitV (const physical_t &targ) {
 	       );
 }
 
-long double physical_t::Vtarg (const physical_t &targ) {	//velocity relative to target
-
-	return sqrtf(	//basic pythagorean theorem to find magnitude of relative velocity vector
-	           (Vx - targ.Vx) * (Vx - targ.Vx) +
-	           (Vy - targ.Vy) * (Vy - targ.Vy) );
-}
-
 long double physical_t::V() {	//total magnitude of velocity vector
 
 	return sqrtf( (Vx * Vx) + (Vy * Vy));	//basic pythagorean theorem here
 }
 
-long double physical_t::thetaV() {	//returns theta of velocity vector
+long double physical_t::Vtarg (long double targV) {	//velocity relative to target, takes total velocity of target (i.e. when calling this, pass V() as the parameter)
+
+	/*return sqrtf(	//basic pythagorean theorem to find magnitude of relative velocity vector
+	           (Vx - targ.Vx) * (Vx - targ.Vx) +
+	           (Vy - targ.Vy) * (Vy - targ.Vy) );*/
+
+	return fabs(V() - targV);	//simple difference in velocities
+}
+
+long double physical_t::thetaV() {	//returns theta of velocity vector, relative to target's velocity
 
 	return (-atan2f(Vy, Vx));
 }
 
 long double physical_t::Vcen (const physical_t &targ) {	//centripetal force
 
-	return sqrtf(   //sqrt (V) * cos(theta)
+	/*return sqrtf(   //sqrt (V) * cos(theta)
 	           (Vx - targ.Vx) * (Vx - targ.Vx) +
 	           (Vy - targ.Vy) * (Vy - targ.Vy) )
-	       * -sin(thetaToObject(targ) );
+	       * cos(thetaToObject(targ) );
+	first prototype, uses expensive square roots, as well as a taylor polynomial
+	*/
+
+	return -( (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ)) );	//how fast calling physical is moving away from targ, positive values mean moving away from target (it is really centripetal velocity, but it makes more sense like this)
 }
 
 long double physical_t::Vtan (const physical_t &targ) {
 
-	return fabs(sqrtf(   //sqrt (V) * sin(theta)
+	/*return fabs(sqrtf(   //sqrt (V) * sin(theta)
 	                (Vx - targ.Vx) * (Vx - targ.Vx) +
 	                (Vy - targ.Vy) * (Vy - targ.Vy) )
-	            * cos(thetaToObject(targ) ) );
+	            * sin(thetaToObject(targ) ) );
+	first prototype, uses expensive square roots, as well as a taylor polynomial
+	*/
+
+	return -( (Vx - targ.Vx) * cos (thetaToObject(targ) + PI/2) + (Vy - targ.Vy) * sin (thetaToObject(targ) + PI/2) );	//how fast calling physical is travelling tangentially, positive values mean CCW movement (normal orbit orientation for just about everything)
 }
 
 long double physical_t::thetaToObject (const physical_t &targ) {	//returns theta of angle made by the intersection of a line from the physical and the -x axis, at the target (e.g. when calling physical is directly to the right of targ, this will return PI)
 
-	return (atan2f( -(y - targ.y), -(x - targ.x)) );
+	return  (atan2f( -(y - targ.y), -(x - targ.x)) );
 }
 
 long double physical_t::distance (long double targX, long double targY) {	//finds squared distance from physical to target
@@ -710,7 +715,7 @@ long double physical_t::gravity (long double targX, long double targY, long doub
 
 void physical_t::gravitate (physical_t &targ) { //calculates gravitational acceleration, calling and target entity, then accelerates them
 
-	long double force = G * ( (totalMass() * targ.totalMass()) / distance (targ.x, targ.y) );	//G((m1)(m2) / r^2)
+	long double force = G * totalMass() * targ.totalMass() / distance (targ.x, targ.y);	//G((m1)(m2) / r^2)
 
 	acc (force, thetaToObject (targ));
 	targ.acc (-force, thetaToObject (targ));
@@ -720,7 +725,7 @@ void physical_t::detectCollision (physical_t &targ) {
 
 	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < (radius + targ.radius) * (radius + targ.radius) ) {
 
-		//I'll keep my previous attempts at this, just so that I don't end up having to rewrite all of this, even if I just keep it for a bit
+		//I'll keep my previous attempts at this, just so that I don't end up having to rewrite all of this, even if I end up just keeping it for a bit
 
 		/*
 		cout << name << ", " << targ.name << endl;
@@ -849,7 +854,11 @@ void physical_t::detectCollision (physical_t &targ) {
 		targ.Vx = -targ.Vcen (*this) * cos (targ.thetaToObject(*this)) +	//same as above, but for target
 			targ.Vtan (*this) * cos (targ.thetaToObject(*this));
 		targ.Vy = -targ.Vcen (*this) * sin (targ.thetaToObject(*this)) +
+<<<<<<< HEAD
+			targ.Vtan (*this) * sin (targ.thetaToObject(*this));*/
+=======
 			targ.Vtan (*this) * sin (targ.thetaToObject(*this));
+>>>>>>> d781a567a0c04d188604e64f1c13bf7eb2ee300b
 
 		/*
 		//there is a 'bug' in this wherein if you are on the earth, you cannot fire your engines, but in the real world you're not going to be firing your engines when you're sitting on them, or you'll explode
@@ -877,6 +886,51 @@ void physical_t::detectCollision (physical_t &targ) {
 		targ.Vy = primeNormV * sin (thetaNorm) + tanV * sin (thetaTan);
 		*/
 
+<<<<<<< HEAD
+		targ.Vx = normV * cos (thetaNorm) + tanV * cos (thetaTan);
+		targ.Vy = normV * sin (thetaNorm) + tanV * sin (thetaTan);
+
+		another prototype. I have a lot of prototypes. This one in particular didn't work.
+		*/
+
+		engine = 0;
+		targ.engine = 0;
+
+		//Here, I take the Vcen and Vtan unit vectors, then project the post-collision velocities onto them, after using 1D collision equation to find out post-collision Vcen
+		//note: instead of calling Vcen(targ) and targ.Vcen(*this), I instead call Vcen(targ) and -Vcen(targ), because that is the same thing, but more efficient as it is stored in the processor cache
+
+		//finding Vcen prime:
+		long double VcenPrime[2] = {	//VcenPrime[0] is attached to calling physical, VcenPrime[1] is for targ
+			//for calling physical...
+			(Vcen(targ) * (mass - targ.mass) + 2 * targ.mass * -Vcen(targ) )
+			/ (mass + targ.mass),
+			//for targ
+			(-Vcen(targ) * (targ.mass - mass) + 2 * mass * Vcen(targ) )
+			/ (targ.mass + mass)
+		};
+
+		//and Vtan remains the same in a perfectly elastic collision, so we can leave that
+
+		cout << "pre-Vcen:\n" << name << ": " << Vcen(targ) << "\t" << targ.name << ": " << Vcen(targ) << endl;
+		cout << "post-Vcen:\n" << name << ": " << VcenPrime[0] << "\t" << targ.name << ": " << VcenPrime[1] << endl;
+		cout << "\npre-collision\n";
+		cout << name << ": " << Vx << ", " << Vy << endl;
+		cout << targ.name << ": " << targ.Vx << ", " << targ.Vy << endl;
+
+		Vx = VcenPrime[0] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
+		Vy = VcenPrime[0] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ));
+		//again, targ.Vtan(*this) == -Vtan(targ)
+		targ.Vx = VcenPrime[1] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
+		targ.Vy = VcenPrime[1] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ));
+
+		cout << "post-collision\n";
+		cout << name << ": " << Vx << ", " << Vy << endl;
+		cout << targ.name << ": " << targ.Vx << ", " << targ.Vy << endl;
+
+//		Vcen: (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ))
+//		Vtan: (Vx - targ.Vx) * sin (thetaToObject(targ)) + (Vy - targ.Vy) * cos (thetaToObject(targ))
+=======
+>>>>>>> d781a567a0c04d188604e64f1c13bf7eb2ee300b
 	}
 }
 
@@ -1029,8 +1083,8 @@ void initializeFromFile() {
 	//data initializations
 	string container = "", name = "";
 	long double x = 1337, y = 1337, Vx = 0, Vy = 0;
-	long double mass = 1337, radius = 1337;
-	unsigned fillColor = 255, specialColor = 255, specialRadius = 413;
+	long double mass = 1337, radius = 1337, specialRadius = 413;
+	unsigned fillColor = 255, specialColor = 255;
 	short unsigned R = 255, G = 255, B = 255;
 	float specialFloat = 612;
 	string line = "";
@@ -1107,7 +1161,7 @@ void initializeFromFile() {
 			cout << "specialFloat read fail for " << name << endl;
 
 		if (container == "solarBody") {
-			specialRadius *= 100;
+//			specialRadius *= 100;
 
 //            body.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
 			entity.push_back (new solarBody_t (name, x, y, Vx, Vy, mass, radius, fillColor, specialColor, specialRadius, specialFloat) );
