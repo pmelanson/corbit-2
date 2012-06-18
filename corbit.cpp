@@ -845,7 +845,6 @@ void physical_t::detectCollision (physical_t &targ) {
 		targ.Vy = VnormPrime[1][1] + VtanPrime[1][1];
 		another prototype, using projections and 1D collisions for JUST Vcen. Slowed down hab, but didn't bounce it
 		*/
-
 		//just gets the Vcen and Vtan, then projects the new velocities onto the Vx and Vy axes
 		/*Vx = -Vcen (targ) * cos (thetaToObject(targ)) +	//Vx = Vcen projected onto x axis + Vtan projected onto x axis
 			Vtan (targ) * cos (thetaToObject(targ));
@@ -855,7 +854,11 @@ void physical_t::detectCollision (physical_t &targ) {
 		targ.Vx = -targ.Vcen (*this) * cos (targ.thetaToObject(*this)) +	//same as above, but for target
 			targ.Vtan (*this) * cos (targ.thetaToObject(*this));
 		targ.Vy = -targ.Vcen (*this) * sin (targ.thetaToObject(*this)) +
+<<<<<<< HEAD
 			targ.Vtan (*this) * sin (targ.thetaToObject(*this));*/
+=======
+			targ.Vtan (*this) * sin (targ.thetaToObject(*this));
+>>>>>>> d781a567a0c04d188604e64f1c13bf7eb2ee300b
 
 		/*
 		//there is a 'bug' in this wherein if you are on the earth, you cannot fire your engines, but in the real world you're not going to be firing your engines when you're sitting on them, or you'll explode
@@ -864,7 +867,7 @@ void physical_t::detectCollision (physical_t &targ) {
 
 		long double normV = Vcen (targ),
 		                    tanV = Vtan (targ),
-		                           thetaNorm = thetaToObject (targ) - PI,	//theta component of polar normal vector
+		                           thetaNorm = thetaToObject (targ),	//theta component of polar normal vector
 		                                       thetaTan = thetaNorm + PI/2;	//perpindicular to thetaNorm
 
 		cout << "normV: " << normV << endl;
@@ -872,9 +875,18 @@ void physical_t::detectCollision (physical_t &targ) {
 		cout << "thetaNorm: " << thetaNorm << endl;
 		cout << "thetaTan: " << thetaTan << endl;
 
-		Vx = normV * cos (thetaNorm) + tanV * cos (thetaTan);
-		Vy = normV * sin (thetaNorm) + tanV * sin (thetaTan);
+		//find prime normV, using 1D collision equations
+		long double primeNormV = (Vcen(targ) * (mass - targ.mass) + 2 * targ.mass * targ.Vcen(*this) ) /	//targ.Vcen(*this) = -Vcen(targ), but this looks more like the normal 1D collision equation
+						(mass + targ.mass);
 
+		Vx = -primeNormV * cos (thetaNorm) + tanV * cos (thetaTan);
+		Vy = -primeNormV * sin (thetaNorm) + tanV * sin (thetaTan);
+
+		targ.Vx = primeNormV * cos (thetaNorm) + tanV * cos (thetaTan);
+		targ.Vy = primeNormV * sin (thetaNorm) + tanV * sin (thetaTan);
+		*/
+
+<<<<<<< HEAD
 		targ.Vx = normV * cos (thetaNorm) + tanV * cos (thetaTan);
 		targ.Vy = normV * sin (thetaNorm) + tanV * sin (thetaTan);
 
@@ -917,6 +929,8 @@ void physical_t::detectCollision (physical_t &targ) {
 
 //		Vcen: (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ))
 //		Vtan: (Vx - targ.Vx) * sin (thetaToObject(targ)) + (Vy - targ.Vy) * cos (thetaToObject(targ))
+=======
+>>>>>>> d781a567a0c04d188604e64f1c13bf7eb2ee300b
 	}
 }
 
