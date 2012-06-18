@@ -67,7 +67,7 @@ struct physical_t {	//stores data about any physical physical, such as mass and 
 	void acc (long double force, long double radians),	//just calls accX and accY, and converts from m/s/ms to m/s/s
 	accX (long double force, long double radians), accY (long double force, long double radians);
 	long double Vx, Vy, V(), thetaV();   //the physical's speed (m/s) along each axis and magnitude/theta of velocity vector
-	long double Vcen (const physical_t &targ), Vtan (const physical_t &targ), Vtarg (const physical_t &targ);	//gets the vcen and vtan relative to a target, and velocity relative to target
+	long double Vcen (const physical_t &targ), Vtan (const physical_t &targ), Vtarg (long double targV);	//gets the vcen and vtan relative to a target, and velocity relative to target
 	long double orbitV (const physical_t &targ);	//calculates the relative velocity needed to orbit at current height around target, NOT TAKING INTO ACCOUNT MASS OF CALLING PHYSICAL
 	long double gravity (long double targX, long double targY, long double targMass), eccentricity (const physical_t &targ);  //calculate gravitational acceleration to object, and eccentricity of orbit around object NOT ACCOUNTING FOR MASS OF CALLING PHYSICAL
 	void gravitate (physical_t &targ), detectCollision (physical_t &targ);  //gravitate towards/detect collision with target

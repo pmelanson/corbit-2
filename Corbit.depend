@@ -43,7 +43,7 @@
 
 1338165393 4cb72a93a9f0cdf2f87e4c7ff4176f30b1169
 
-1339901383 source:c:\users\melanson\corbit\corbit.cpp
+1339984973 source:c:\users\melanson\corbit\corbit.cpp
 	<allegro.h>
 	<math.h>
 	<vector>
@@ -69,7 +69,7 @@
 	<iostream>
 	<sstream>
 
-1339622753 c:\users\melanson\corbit\classdeclarations.h
+1339962023 c:\users\melanson\corbit\classdeclarations.h
 	<iostream>
 
 1339699807 source:d:\zoosmell\corbit\corbit.cpp
