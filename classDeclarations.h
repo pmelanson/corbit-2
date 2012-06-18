@@ -69,7 +69,8 @@ struct physical_t {	//stores data about any physical physical, such as mass and 
 	long double Vx, Vy, V(), thetaV();   //the physical's speed (m/s) along each axis and magnitude/theta of velocity vector
 	long double Vcen (const physical_t &targ), Vtan (const physical_t &targ), Vtarg (long double targV);	//gets the vcen and vtan relative to a target, and velocity relative to target
 	long double orbitV (const physical_t &targ);	//calculates the relative velocity needed to orbit at current height around target, NOT TAKING INTO ACCOUNT MASS OF CALLING PHYSICAL
-	long double gravity (long double targX, long double targY, long double targMass), eccentricity (const physical_t &targ);  //calculate gravitational acceleration to object, and eccentricity of orbit around object NOT ACCOUNTING FOR MASS OF CALLING PHYSICAL
+	long double gravity (long double targX, long double targY, long double targMass), eccentricity (physical_t &targ),  //calculate gravitational acceleration to object, and eccentricity of orbit around object NOT ACCOUNTING FOR MASS OF CALLING PHYSICAL
+	apoapsis, periapsis;	//stores periapsis and apoapsis around targ, updated by calling eccentricity
 	void gravitate (physical_t &targ), detectCollision (physical_t &targ);  //gravitate towards/detect collision with target
 
 	void turn();   //turns the physical
@@ -98,13 +99,13 @@ struct physical_t {	//stores data about any physical physical, such as mass and 
 	union { //declares either engine or atmosphereHeight
 
 		float engine;	//percentage of engines that is engaged. In orbit, and in corbit (this program) there is no upper limit, and engines can go negative
-		unsigned long long int atmosphereHeight;	//height of atmosphere, in m
+		const unsigned long long atmosphereHeight;	//height of atmosphere, in m
 	};
 
 	union { //declares either fuel or atmosphereDrag
 
 		unsigned long fuel;	//fuel in kg
-		unsigned atmosphereDrag;	//I'm going to get around to implementing this after exams
+		const unsigned atmosphereDrag;	//I'm going to get around to implementing this after exams
 	};
 
 	physical_t (string _name, long double _x, long double _y, long double _Vx, long double _Vy, long double _mass, unsigned long _radius, unsigned _fillColor, float _engine_atmosphereHeight, unsigned long long int _fuel_atmosphereDrag) :
@@ -115,7 +116,7 @@ struct physical_t {	//stores data about any physical physical, such as mass and 
 
 struct solarBody_t : physical_t {   //stores information about an astronomical body, in addition to information already stored by an physical
 
-	unsigned atmosphereColor;	//color of atmosphere
+	const unsigned atmosphereColor;	//color of atmosphere
 
 	virtual void draw(unsigned A, unsigned B, long double zoom);	//draws planet with atmosphere
 
@@ -143,9 +144,9 @@ struct ship_t : physical_t {  //stores information about a pilotable ship, in ad
 	void move(), fireEngine();	//updated move function, includes fireEngine, which fires engines
 	long double totalMass();	//finds eccentricity of orbit around target, NOT accounting for other objects
 
-	unsigned engineColor;	//color of engine
-	unsigned short engineRadius;
-	float enginePower, burnRate;	//how powerful an engine is, in m/s/s, and how much fuel it burns
+	const unsigned engineColor;	//color of engine
+	const unsigned short engineRadius;
+	const float enginePower, burnRate;	//how powerful an engine is, in m/s/s, and how much fuel it burns
 
 	virtual void draw(unsigned A, unsigned B, long double zoom);	//draws a circle with a line pointing the direction the ship is facing
 

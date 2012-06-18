@@ -143,11 +143,11 @@ bool printDebug = false;
 
 BITMAP *buffer = NULL;
 volatile unsigned int cycle = 0, cps = 0, cycleCounter = 0,	//used for running calculation loop and getting calculations performed per second
-                                       fps = 0, fpsCounter = 0,	//used for getting frams per second
-                                               inputTimer = 0;	//used for getting input
+									   fps = 0, fpsCounter = 0,	//used for getting frams per second
+											   inputTimer = 0;	//used for getting input
 unsigned long long cycleRate = 60;	//how many times per second all calculations are performed
 const unsigned short int FPS_COUNT_BPS = 2,	//how many times per second FPS and CPS (cycles per second) are calculated. Larger numbers result in faster refresh rates, but also larger extrapolations
-        INPUT_BPS = 10;	//how many times per second keyboard is checked for input
+		INPUT_BPS = 10;	//how many times per second keyboard is checked for input
 
 const long double AU = 1495978707e2, G = 6.673e-11, PI = acos(-1.0L);
 
@@ -472,9 +472,9 @@ void ship_t::draw(unsigned int A, unsigned int B, long double zoom) {
 
 	circlefill (buffer, A, B, radius * zoom, fillColor);	//draws the picture to the buffer
 	line (buffer, A, B,	//draws the 'engine'
-	      A + radius * cos (turnRadians) * zoom,
-	      B + radius * sin (turnRadians) * zoom,
-	      engineColor);
+		  A + radius * cos (turnRadians) * zoom,
+		  B + radius * sin (turnRadians) * zoom,
+		  engineColor);
 }
 
 void habitat_t::draw(unsigned int A, unsigned int B, long double zoom) {
@@ -484,39 +484,39 @@ void habitat_t::draw(unsigned int A, unsigned int B, long double zoom) {
 	if (engine == 0) {
 
 		circlefill (buffer,	//draws the center 'engine'
-		            A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
-		            B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
-		            engineRadius * zoom,
-		            fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
+					A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
+					B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
+					engineRadius * zoom,
+					fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer,	//draws the left 'engine'
-		            A + radius * cos (turnRadians - (PI * .75) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * .75) ) * zoom,
-		            engineRadius * zoom,
-		            fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
+					A + radius * cos (turnRadians - (PI * .75) ) * zoom,
+					B + radius * sin (turnRadians - (PI * .75) ) * zoom,
+					engineRadius * zoom,
+					fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
 		circlefill (buffer,	//draws the right 'engine'
-		            A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
-		            engineRadius * zoom,
-		            fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
+					A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
+					B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
+					engineRadius * zoom,
+					fillColor - 1052688);	//the inactive engine color is fillColor - hex(101010)
 	}
 
 	else {
 
 		circlefill (buffer,	//draws the center 'engine'
-		            A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
-		            B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
-		            engineRadius * zoom,
-		            engineColor);
+					A + (radius - engineRadius) * cos (turnRadians - (PI) ) * zoom,
+					B + (radius - engineRadius) * sin (turnRadians - (PI) ) * zoom,
+					engineRadius * zoom,
+					engineColor);
 		circlefill (buffer,	//draws the left 'engine'
-		            A + radius * cos (turnRadians - (PI * .75) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * .75) ) * zoom,
-		            engineRadius * zoom,
-		            engineColor);
+					A + radius * cos (turnRadians - (PI * .75) ) * zoom,
+					B + radius * sin (turnRadians - (PI * .75) ) * zoom,
+					engineRadius * zoom,
+					engineColor);
 		circlefill (buffer,	//draws the right 'engine'
-		            A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
-		            B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
-		            engineRadius * zoom,
-		            engineColor);
+					A + radius * cos (turnRadians - (PI * 1.25) ) * zoom,
+					B + radius * sin (turnRadians - (PI * 1.25) ) * zoom,
+					engineRadius * zoom,
+					engineColor);
 	}
 }
 
@@ -558,10 +558,14 @@ void display_t::drawHUD () {
 	else if (craft->turnRate < 0)
 		textprintf_ex (buffer, font, 200, 9 * lineSpace, makecol (50, 255, 50), -1, "<");
 	textprintf_ex (buffer, font, lineSpace, 11 * lineSpace, makecol (200, 200, 200), -1, "Altitude (km):"), textprintf_ex (buffer, font, 200, 11 * lineSpace, makecol (255, 255, 255), -1, "%-10.8g",
-	        (sqrtf(craft->distance (target->x, target->y)) - (craft->radius + target->radius) )/ 1000);
+			(sqrtf(craft->distance (target->x, target->y)) - (craft->radius + target->radius) )/ 1000);
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
+<<<<<<< HEAD
 	        craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
+=======
+			craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
+>>>>>>> 43c5aa2ce84bbc88def3de5bf287413cd1943ef2
 	craft->eccentricity(*target);
 	textprintf_ex (buffer, font, lineSpace, 14 * lineSpace, makecol (200, 200, 200), -1, "Periapsis (km):"), textprintf_ex (buffer, font, 200, 14 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lg", (craft->periapsis - (craft->radius + target->radius) )/1000);
 	textprintf_ex (buffer, font, lineSpace, 15 * lineSpace, makecol (200, 200, 200), -1, "Apoapsis (km):"), textprintf_ex (buffer, font, 200, 15 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lg", (craft->apoapsis - (craft->radius + target->radius) )/1000);
@@ -569,13 +573,13 @@ void display_t::drawHUD () {
 	craft->draw (craftX, craftY, 1);	//draws the habitat onto the HUD
 
 	line (buffer, craftX, craftY,	//draws velocity vector on habitat
-	      craftX + (vVectorLength) * cos (craft->thetaV() - target->thetaV()),
-	      craftY + (vVectorLength) * sin (craft->thetaV() - target->thetaV()),
-	      makecol (255, 0, 0));
+		  craftX + (vVectorLength) * cos (craft->thetaV() - target->thetaV()),
+		  craftY + (vVectorLength) * sin (craft->thetaV() - target->thetaV()),
+		  makecol (255, 0, 0));
 	textprintf_ex (buffer, font,	//draws target location in respect to habitat
-	               craftX + (targVectorLength) * cos (craft->thetaToObject (*target)),
-	               craftY + (targVectorLength) * sin (craft->thetaToObject (*target)),
-	               makecol (255, 255, 255), -1, "%s", target->name.c_str());
+				   craftX + (targVectorLength) * cos (craft->thetaToObject (*target)),
+				   craftY + (targVectorLength) * sin (craft->thetaToObject (*target)),
+				   makecol (255, 255, 255), -1, "%s", target->name.c_str());
 
 	if (camera.track)
 		textprintf_ex (buffer, font, lineSpace, 31 * lineSpace, makecol (200, 200, 200), -1, "Center:"), textprintf_ex (buffer, font, 200, 31 * lineSpace, makecol (255, 255, 255), -1, "%s", camera.target->name.c_str());
@@ -623,9 +627,9 @@ void physical_t::accY (long double force, long double radians) {	//takes angle a
 long double physical_t::orbitV (const physical_t &targ) {
 
 	return sqrtf(
-	           (G * targ.mass) /
-	           distance (targ.x, targ.y)
-	       );
+			   (G * targ.mass) /
+			   distance (targ.x, targ.y)
+		   );
 }
 
 long double physical_t::V() {	//total magnitude of velocity vector
@@ -944,12 +948,21 @@ long double physical_t::eccentricity (physical_t &targ) {
 
 	long double
 	Ek = Vtarg (targ.V()),
+<<<<<<< HEAD
 	     Ep = (-G * targ.mass) / (distance(targ.x, targ.y)),
 	          E = Ek + Ep,
 	              N = ((targ.mass * G) / G) * G,	//if targ.mass == 0, this will set N to G, else it is equal to targ.mass * G
 	                  L2 = ((distance(targ.x, targ.y)) * Vtan(targ)) * ((distance(targ.x, targ.y)) * Vtan(targ)),	//(r*Vtan)^2
 	                       e = sqrtf(1+ (2*E * L2) / (N * N)),
 	                           A = (distance(targ.x, targ.y)) / fabs(2 * E);
+=======
+	Ep = (-G * targ.mass) / (distance(targ.x, targ.y)),
+	E = Ek + Ep,
+	N = ((targ.mass * G) / G) * G,	//if targ.mass == 0, this will set N to G, else it is equal to targ.mass * G
+	L2 = ((distance(targ.x, targ.y)) * Vtan(targ)) * ((distance(targ.x, targ.y)) * Vtan(targ)),	//(r*Vtan)^2
+	e = sqrtf(1+ (2*E * L2) / (N * N)),
+	A = (distance(targ.x, targ.y)) / fabs(2 * E);
+>>>>>>> 43c5aa2ce84bbc88def3de5bf287413cd1943ef2
 
 	apoapsis = A * (1+e);
 
