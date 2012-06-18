@@ -60,29 +60,6 @@ Without spacesim, there would be no space simulation, and thus this project woul
 
 /*******************
 
-       CONTROLS
-
-    CAMERA CONTROLS
-
-ARROW KEYS     NUMPAD +/-
-move camera    zoom in/out
-
-
-     SHIP CONTROLS
-
-W/S
-engine up/down
-
-A/D            ENTER
-spin ccw/cw    set engines to 100
-
-BACKSPACE      SHIFT+BACKSPACE
-cut engines    stop turning
-
-*******************/
-
-/*******************
-
 Copyright (C) 2012 Patrick Melanson <patrick.melanstone@gmail.com>
 
 This software is licensed under the WTFPL license 2012, as follows:
@@ -585,8 +562,9 @@ void display_t::drawHUD () {
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
 	        craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
-	textprintf_ex (buffer, font, lineSpace, 14 * lineSpace, makecol (200, 200, 200), -1, "Periapsis (m):");
-	textprintf_ex (buffer, font, lineSpace, 15 * lineSpace, makecol (200, 200, 200), -1, "Apoapsis (m):");
+	craft->eccentricity(*target);
+	textprintf_ex (buffer, font, lineSpace, 14 * lineSpace, makecol (200, 200, 200), -1, "Periapsis (km):"), textprintf_ex (buffer, font, 200, 14 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lg", (craft->periapsis - (craft->radius + target->radius) )/1000);
+	textprintf_ex (buffer, font, lineSpace, 15 * lineSpace, makecol (200, 200, 200), -1, "Apoapsis (km):"), textprintf_ex (buffer, font, 200, 15 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lg", (craft->apoapsis - (craft->radius + target->radius) )/1000);
 
 	craft->draw (craftX, craftY, 1);	//draws the habitat onto the HUD
 
@@ -678,7 +656,7 @@ long double physical_t::Vcen (const physical_t &targ) {	//centripetal force
 	first prototype, uses expensive square roots, as well as a taylor polynomial
 	*/
 
-	return -( (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ)) );	//how fast calling physical is moving away from targ, positive values mean moving away from target (it is really centripetal velocity, but it makes more sense like this)
+	return (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ));	//how fast calling physical is moving away from targ, positive values mean moving away from target (it is really centripetal velocity, but it makes more sense like this)
 }
 
 long double physical_t::Vtan (const physical_t &targ) {
@@ -690,7 +668,7 @@ long double physical_t::Vtan (const physical_t &targ) {
 	first prototype, uses expensive square roots, as well as a taylor polynomial
 	*/
 
-	return -( (Vx - targ.Vx) * cos (thetaToObject(targ) + PI/2) + (Vy - targ.Vy) * sin (thetaToObject(targ) + PI/2) );	//how fast calling physical is travelling tangentially, positive values mean CCW movement (normal orbit orientation for just about everything)
+	return (Vx - targ.Vx) * cos (thetaToObject(targ) + PI/2) + (Vy - targ.Vy) * sin (thetaToObject(targ) + PI/2);	//how fast calling physical is travelling tangentially, positive values mean CCW movement (normal orbit orientation for just about everything)
 }
 
 long double physical_t::thetaToObject (const physical_t &targ) {	//returns theta of angle made by the intersection of a line from the physical and the -x axis, at the target (e.g. when calling physical is directly to the right of targ, this will return PI)
@@ -723,7 +701,7 @@ void physical_t::gravitate (physical_t &targ) { //calculates gravitational accel
 
 void physical_t::detectCollision (physical_t &targ) {
 
-	if (stepDistance (targ.x + targ.Vx, targ.y + targ.Vy) < (radius + targ.radius) * (radius + targ.radius) ) {
+	if (distance (targ.x, targ.y) < (radius + targ.radius) * (radius + targ.radius) ) {
 
 		//I'll keep my previous attempts at this, just so that I don't end up having to rewrite all of this, even if I end up just keeping it for a bit
 
@@ -759,8 +737,6 @@ void physical_t::detectCollision (physical_t &targ) {
 
 		first prototype, didn't work as intended (when hab collided with earth, it was accelerated at ridiculous speeds to the top left)
 		*/
-
-		cout << endl << name << "/" << targ.name << " collision" << endl;
 
 		/*Vx = (Vx * (mass - targ.mass) + 2 * targ.mass * targ.Vx) /
 			(mass + targ.mass),
@@ -854,11 +830,10 @@ void physical_t::detectCollision (physical_t &targ) {
 		targ.Vx = -targ.Vcen (*this) * cos (targ.thetaToObject(*this)) +	//same as above, but for target
 			targ.Vtan (*this) * cos (targ.thetaToObject(*this));
 		targ.Vy = -targ.Vcen (*this) * sin (targ.thetaToObject(*this)) +
-<<<<<<< HEAD
-			targ.Vtan (*this) * sin (targ.thetaToObject(*this));*/
-=======
 			targ.Vtan (*this) * sin (targ.thetaToObject(*this));
->>>>>>> d781a567a0c04d188604e64f1c13bf7eb2ee300b
+
+		another prototype. The material I got this from was obscure, and I didn't really like the math
+		*/
 
 		/*
 		//there is a 'bug' in this wherein if you are on the earth, you cannot fire your engines, but in the real world you're not going to be firing your engines when you're sitting on them, or you'll explode
@@ -879,22 +854,18 @@ void physical_t::detectCollision (physical_t &targ) {
 		long double primeNormV = (Vcen(targ) * (mass - targ.mass) + 2 * targ.mass * targ.Vcen(*this) ) /	//targ.Vcen(*this) = -Vcen(targ), but this looks more like the normal 1D collision equation
 						(mass + targ.mass);
 
-		Vx = -primeNormV * cos (thetaNorm) + tanV * cos (thetaTan);
+		Vx = -primeNormV * cos (thetaNorm) + tanV * cos (thetaTan);detectCollision
 		Vy = -primeNormV * sin (thetaNorm) + tanV * sin (thetaTan);
 
 		targ.Vx = primeNormV * cos (thetaNorm) + tanV * cos (thetaTan);
 		targ.Vy = primeNormV * sin (thetaNorm) + tanV * sin (thetaTan);
-		*/
-
-<<<<<<< HEAD
-		targ.Vx = normV * cos (thetaNorm) + tanV * cos (thetaTan);
-		targ.Vy = normV * sin (thetaNorm) + tanV * sin (thetaTan);
 
 		another prototype. I have a lot of prototypes. This one in particular didn't work.
 		*/
 
-		engine = 0;
-		targ.engine = 0;
+		cout << endl << name << "/" << targ.name << " collision" << endl;
+//		engine = 0;
+//		targ.engine = 0;
 
 		//Here, I take the Vcen and Vtan unit vectors, then project the post-collision velocities onto them, after using 1D collision equation to find out post-collision Vcen
 		//note: instead of calling Vcen(targ) and targ.Vcen(*this), I instead call Vcen(targ) and -Vcen(targ), because that is the same thing, but more efficient as it is stored in the processor cache
@@ -902,10 +873,10 @@ void physical_t::detectCollision (physical_t &targ) {
 		//finding Vcen prime:
 		long double VcenPrime[2] = {	//VcenPrime[0] is attached to calling physical, VcenPrime[1] is for targ
 			//for calling physical...
-			(Vcen(targ) * (mass - targ.mass) + 2 * targ.mass * -Vcen(targ) )
+			(Vcen(targ) * (mass - targ.mass) + 2 * targ.mass * targ.Vcen(*this) )
 			/ (mass + targ.mass),
 			//for targ
-			(-Vcen(targ) * (targ.mass - mass) + 2 * mass * Vcen(targ) )
+			(targ.Vcen(*this) * (targ.mass - mass) + 2 * mass * Vcen(targ) )
 			/ (targ.mass + mass)
 		};
 
@@ -917,20 +888,30 @@ void physical_t::detectCollision (physical_t &targ) {
 		cout << name << ": " << Vx << ", " << Vy << endl;
 		cout << targ.name << ": " << targ.Vx << ", " << targ.Vy << endl;
 
-		Vx = VcenPrime[0] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
-		Vy = VcenPrime[0] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ));
+		long double cenV[2] = {Vx * cos(thetaToObject(targ)), Vy * sin(thetaToObject(targ))};
+		long double tanV[2] = {Vx * cos(thetaToObject(targ)+PI/2), Vy * sin(thetaToObject(targ)+PI/2)};
+
+//		Vx = VcenPrime[0] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
+//		Vy = VcenPrime[0] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ) + PI/2);
 		//again, targ.Vtan(*this) == -Vtan(targ)
-		targ.Vx = VcenPrime[1] * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
-		targ.Vy = VcenPrime[1] * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ));
+//		targ.Vx = Vcen(targ) * cos(thetaToObject(targ)) + Vtan(targ) * cos(thetaToObject(targ) + PI/2);
+//		targ.Vy = Vcen(targ) * sin(thetaToObject(targ)) + Vtan(targ) * sin(thetaToObject(targ) + PI/2);
+
+//		targ.Vx = cenV[0] * -cos(thetaToObject(targ)) + tanV[0] * cos(thetaToObject(targ) + PI/2);
+//		targ.Vy = cenV[1] * -sin(thetaToObject(targ)) + tanV[1] * sin(thetaToObject(targ) + PI/2);
+
+		if (targ.name == "Habitat") {
+			targ.Vx = Vx;
+			targ.Vy = Vy;
+			targ.x += cos(thetaToObject(targ));
+			targ.y += sin(thetaToObject(targ));
+		}
+		//if you were to fire your engines while on earth (and not on the launchpad) you would blow up. I make sure you don't fire your engines here.
+		targ.engine = 0;
 
 		cout << "post-collision\n";
 		cout << name << ": " << Vx << ", " << Vy << endl;
 		cout << targ.name << ": " << targ.Vx << ", " << targ.Vy << endl;
-
-//		Vcen: (Vx - targ.Vx) * cos (thetaToObject(targ)) + (Vy - targ.Vy) * sin (thetaToObject(targ))
-//		Vtan: (Vx - targ.Vx) * sin (thetaToObject(targ)) + (Vy - targ.Vy) * cos (thetaToObject(targ))
-=======
->>>>>>> d781a567a0c04d188604e64f1c13bf7eb2ee300b
 	}
 }
 
@@ -950,7 +931,7 @@ void ship_t::fireEngine() {
 	}
 }
 
-long double physical_t::eccentricity (const physical_t &targ) {
+long double physical_t::eccentricity (physical_t &targ) {
 
 	/*long double e, E, h, u;
 	E = total energy / targ.mass;
@@ -960,7 +941,26 @@ long double physical_t::eccentricity (const physical_t &targ) {
 	e = sqrtf(++
 	          (2 * E * h * h) /
 	          (u * u));*/
+
+	long double
+	Ek = Vtarg (targ.V()),
+	     Ep = (-G * targ.mass) / (distance(targ.x, targ.y)),
+	          E = Ek + Ep,
+	              N = ((targ.mass * G) / G) * G,	//if targ.mass == 0, this will set N to G, else it is equal to targ.mass * G
+	                  L2 = ((distance(targ.x, targ.y)) * Vtan(targ)) * ((distance(targ.x, targ.y)) * Vtan(targ)),	//(r*Vtan)^2
+	                       e = sqrtf(1+ (2*E * L2) / (N * N)),
+	                           A = (distance(targ.x, targ.y)) / fabs(2 * E);
+
+	apoapsis = A * (1+e);
+
+	if (e == 1)
+		periapsis = A;
+	else if (e > 1)
+		periapsis = A * (e-1);
+	else
+		periapsis = A * (1-e);
 }
+
 
 void initializeAllegro() {
 
