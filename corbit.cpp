@@ -60,29 +60,6 @@ Without spacesim, there would be no space simulation, and thus this project woul
 
 /*******************
 
-       CONTROLS
-
-    CAMERA CONTROLS
-
-ARROW KEYS     NUMPAD +/-
-move camera    zoom in/out
-
-
-     SHIP CONTROLS
-
-W/S
-engine up/down
-
-A/D            ENTER
-spin ccw/cw    set engines to 100
-
-BACKSPACE      SHIFT+BACKSPACE
-cut engines    stop turning
-
-*******************/
-
-/*******************
-
 Copyright (C) 2012 Patrick Melanson <patrick.melanstone@gmail.com>
 
 This software is licensed under the WTFPL license 2012, as follows:
@@ -954,25 +931,16 @@ void ship_t::fireEngine() {
 	}
 }
 
-long double physical_t::eccentricity (physical_t &targ) {
-
-	/*long double e, E, h, u;
-	E = total energy / targ.mass;
-
-	term2 = 2 * orbEnergy * AngularVelocity^2 / (G * targ.mass)^2
-
-	e = sqrtf(++
-	          (2 * E * h * h) /
-	          (u * u));*/
+void physical_t::eccentricity (physical_t &targ) {
 
 	long double
 	Ek = Vtarg (targ.V()),
-	Ep = (-G * targ.mass) / (distance(targ.x, targ.y)),
+	Ep = (-G * targ.mass) / sqrtf(distance(targ.x, targ.y)),
 	E = Ek + Ep,
 	N = ((targ.mass * G) / G) * G,	//if targ.mass == 0, this will set N to G, else it is equal to targ.mass * G
-	L2 = ((distance(targ.x, targ.y)) * Vtan(targ)) * ((distance(targ.x, targ.y)) * Vtan(targ)),	//(r*Vtan)^2
+	L2 = (sqrtf(distance(targ.x, targ.y)) * Vtan(targ)) * (sqrtf(distance(targ.x, targ.y)) * Vtan(targ)),	//(r*Vtan)^2
 	e = sqrtf(1+ (2*E * L2) / (N * N)),
-	A = (distance(targ.x, targ.y)) / fabs(2 * E);
+	A = sqrtf(distance(targ.x, targ.y)) / fabs(2 * E);
 
 	apoapsis = A * (1+e);
 
