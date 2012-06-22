@@ -561,11 +561,7 @@ void display_t::drawHUD () {
 			(sqrtf(craft->distance (target->x, target->y)) - (craft->radius + target->radius) )/ 1000);
 	textprintf_ex (buffer, font, lineSpace, 12 * lineSpace, makecol (200, 200, 200), -1, "Pitch (radians):");
 	textprintf_ex (buffer, font, lineSpace, 13 * lineSpace, makecol (200, 200, 200), -1, "Stopping Acc (m/s/s):"), textprintf_ex (buffer, font, 200, 13 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lf",
-<<<<<<< HEAD
-	        craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
-=======
 			craft->distance (target->x, target->y) / (2 * craft->distance (target->x, target->y) - target->radius) * cos (craft->thetaV() - craft->thetaToObject (*target)));
->>>>>>> 43c5aa2ce84bbc88def3de5bf287413cd1943ef2
 	craft->eccentricity(*target);
 	textprintf_ex (buffer, font, lineSpace, 14 * lineSpace, makecol (200, 200, 200), -1, "Periapsis (km):"), textprintf_ex (buffer, font, 200, 14 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lg", (craft->periapsis - (craft->radius + target->radius) )/1000);
 	textprintf_ex (buffer, font, lineSpace, 15 * lineSpace, makecol (200, 200, 200), -1, "Apoapsis (km):"), textprintf_ex (buffer, font, 200, 15 * lineSpace, makecol (255, 255, 255), -1, "%-10.5Lg", (craft->apoapsis - (craft->radius + target->radius) )/1000);
@@ -935,34 +931,16 @@ void ship_t::fireEngine() {
 	}
 }
 
-long double physical_t::eccentricity (physical_t &targ) {
-
-	/*long double e, E, h, u;
-	E = total energy / targ.mass;
-
-	term2 = 2 * orbEnergy * AngularVelocity^2 / (G * targ.mass)^2
-
-	e = sqrtf(++
-	          (2 * E * h * h) /
-	          (u * u));*/
+void physical_t::eccentricity (physical_t &targ) {
 
 	long double
 	Ek = Vtarg (targ.V()),
-<<<<<<< HEAD
-	     Ep = (-G * targ.mass) / (distance(targ.x, targ.y)),
-	          E = Ek + Ep,
-	              N = ((targ.mass * G) / G) * G,	//if targ.mass == 0, this will set N to G, else it is equal to targ.mass * G
-	                  L2 = ((distance(targ.x, targ.y)) * Vtan(targ)) * ((distance(targ.x, targ.y)) * Vtan(targ)),	//(r*Vtan)^2
-	                       e = sqrtf(1+ (2*E * L2) / (N * N)),
-	                           A = (distance(targ.x, targ.y)) / fabs(2 * E);
-=======
-	Ep = (-G * targ.mass) / (distance(targ.x, targ.y)),
+	Ep = (-G * targ.mass) / sqrtf(distance(targ.x, targ.y)),
 	E = Ek + Ep,
 	N = ((targ.mass * G) / G) * G,	//if targ.mass == 0, this will set N to G, else it is equal to targ.mass * G
-	L2 = ((distance(targ.x, targ.y)) * Vtan(targ)) * ((distance(targ.x, targ.y)) * Vtan(targ)),	//(r*Vtan)^2
+	L2 = (sqrtf(distance(targ.x, targ.y)) * Vtan(targ)) * (sqrtf(distance(targ.x, targ.y)) * Vtan(targ)),	//(r*Vtan)^2
 	e = sqrtf(1+ (2*E * L2) / (N * N)),
-	A = (distance(targ.x, targ.y)) / fabs(2 * E);
->>>>>>> 43c5aa2ce84bbc88def3de5bf287413cd1943ef2
+	A = sqrtf(distance(targ.x, targ.y)) / fabs(2 * E);
 
 	apoapsis = A * (1+e);
 
