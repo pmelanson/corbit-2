@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-<<<<<<< HEAD
-	<File name="classDeclarations.h" open="1" top="1" tabpos="2">
-		<Cursor position="8493" topLine="93" />
+	<File name="classDeclarations.h" open="1" top="0" tabpos="2">
+		<Cursor position="7468" topLine="55" />
 	</File>
-	<File name="corbit.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="21457" topLine="523" />
+	<File name="corbit.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="47478" topLine="1175" />
 	</File>
 	<File name="parseDeclarations.h" open="0" top="0" tabpos="0">
 		<Cursor position="1799" topLine="63" />
-=======
-	<File name="classDeclarations.h" open="1" top="0" tabpos="2">
-		<Cursor position="9954" topLine="133" />
-	</File>
-	<File name="corbit.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="21730" topLine="567" />
->>>>>>> 06681dc5153fb0b246d078e92cc9f6211a52971c
 	</File>
 	<File name="version.h" open="0" top="0" tabpos="0">
 		<Cursor position="65" topLine="0" />
