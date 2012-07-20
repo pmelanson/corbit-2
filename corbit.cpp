@@ -1,20 +1,3 @@
-/*union entity_t {
-
-    struct physical_t {
-    ...
-    } ph;
-    struct ship_t {
-    ...
-    } sh;
-    struct solarBody_t {
-    ...
-    } sB;
-};
-
-union entity_t foobar = {.ph = whatever};
-
-whatever = foobar.ph;*/
-
 /*******************
 
  .d8888b.                   888      d8b 888
@@ -111,7 +94,6 @@ Isn't that an awesome license? I like it.
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string.h>
 using namespace std;
 
 //globals
@@ -171,8 +153,8 @@ public:
 	viewpoint_t (const int _zoomMagnitude, const float _zoomStep, const float _maxZoom, const double _minZoom, const unsigned short int _panSpeed, const long double _zoomLevel) :
 		zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), minZoom (_minZoom), panSpeed (_panSpeed), x (0), y (0), zoomLevel (_zoomLevel), track (true)
 	{}
-} camera (  22,             0.01,       0.5,    1e-11, 10,         0);   //constructor initializes consts in the order they are declared, which is...
-//          zoomMagnitude   zoomStep    maxZoom minZoom panSpeed    zoomLevel;
+} camera (  22,             0.01,       0.5,    1e-11, 	10,         0);   //constructor initializes consts in the order they are declared, which is...
+//          zoomMagnitude   zoomStep    maxZoom minZoom	panSpeed    zoomLevel;
 
 class display_t {
 
