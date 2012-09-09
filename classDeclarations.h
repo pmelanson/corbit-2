@@ -21,7 +21,7 @@ public:
 
 	void zoom (short direction), panX (short direction), panY (short direction);	//zoom function, and panning functions
 
-	viewpoint_t::viewpoint_t (int _zoomMagnitude, float _zoomStep, float _maxZoom, double _minZoom, float _panSpeed, long double _zoomLevel) :
+	viewpoint_t (int _zoomMagnitude, float _zoomStep, float _maxZoom, double _minZoom, float _panSpeed, long double _zoomLevel) :
 		zoomMagnitude (_zoomMagnitude), zoomStep (_zoomStep), maxZoom (_maxZoom), panSpeed (_panSpeed), minZoom (_minZoom), x (0), y (0), Vx (0), Vy (0), zoomLevel (_zoomLevel), track (true) {
 	}
 

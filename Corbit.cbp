@@ -30,7 +30,7 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wall" />
+			<Add option="-w" />
 		</Compiler>
 		<Unit filename="classDeclarations.h" />
 		<Unit filename="corbit.cpp" />
@@ -38,9 +38,9 @@
 		<Unit filename="version.h" />
 		<Extensions>
 			<AutoVersioning>
-				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
-				<Settings autoincrement="1" date_declarations="1" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
-				<Changes_Log generate_log="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
+				<Scheme minor_max="9999999" build_max="0" rev_max="0" rev_rand_max="99999999" build_times_to_increment_minor="2147483647" />
+				<Settings autoincrement="0" date_declarations="1" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
+				<Changes_Log generate_log="1" app_title="%p v%M%m%" changeslog_path="ChangesLog.txt" />
 			</AutoVersioning>
 			<code_completion />
 			<debugger />

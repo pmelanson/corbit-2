@@ -95,3 +95,24 @@
 	<iostream>
 	<sstream>
 
+1347030391 source:c:\corbit\corbit\corbit.cpp
+	<allegro.h>
+	<math.h>
+	<vector>
+	"version.h"
+	<iostream>
+	<fstream>
+	<sstream>
+	<string.h>
+	"classDeclarations.h"
+	"parseDeclarations.h"
+
+1347017921 c:\corbit\corbit\version.h
+
+1340301630 c:\corbit\corbit\classdeclarations.h
+	<iostream>
+
+1339356900 c:\corbit\corbit\parsedeclarations.h
+	<iostream>
+	<sstream>
+
