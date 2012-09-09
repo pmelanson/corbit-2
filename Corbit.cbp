@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\Corbit" prefix_auto="1" extension_auto="1" />
+				<Option output="bin\Debug\CorbitFixed" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -17,7 +17,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\Corbit" prefix_auto="1" extension_auto="1" />
+				<Option output="bin\Release\CorbitFixed" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Release\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -30,16 +30,17 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wall" />
+			<Add option="-w" />
 		</Compiler>
+		<Unit filename="classDeclarations.h" />
 		<Unit filename="corbit.cpp" />
+		<Unit filename="parseDeclarations.h" />
 		<Unit filename="version.h" />
 		<Extensions>
 			<AutoVersioning>
-				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
-				<Settings autoincrement="1" date_declarations="1" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
-				<Changes_Log show_changes_editor="0" app_title="%p %T v%M.%m.%b:" changeslog_path="ChangesLog.txt" />
-				<Code header_guard="VERSION_H" namespace="AutoVersion" prefix="" />
+				<Scheme minor_max="9999999" build_max="0" rev_max="0" rev_rand_max="99999999" build_times_to_increment_minor="2147483647" />
+				<Settings autoincrement="0" date_declarations="1" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
+				<Changes_Log generate_log="1" app_title="%p v%M%m%" changeslog_path="ChangesLog.txt" />
 			</AutoVersioning>
 			<code_completion />
 			<debugger />

@@ -1,3 +1,33 @@
+10 June 2012
+   Corbit Beta v1.0.29:
+
+     Change log:
+        -Cleaned: Split main file into several different files, for easier maintenance
+
+09 June 2012
+   Corbit Beta v1.0.28:
+
+     Change log:
+        -Fixed: free camera pan speeds. now operates based on a velocity basis, instead of just moving with arrow keys
+
+07 June 2012
+   Corbit Beta v1.0.27:
+
+     Change log:
+        -Cleaned: Finally gave up on trying to make a vector of smart pointers to hold ships and solarBodies, just made a single vector (entity) of dumb pointers. Not bad though.
+
+06 June 2012
+   Corbit Beta v1.0.26:
+
+     Change log:
+        -Cleaned: int main is now only 10 lines, and is therefore much simpler.
+
+05 June 2012
+   Corbit Beta v1.0.25:
+
+     Change log:
+        -Applied: boost::shared_ptrs. I still have some syntax to work out, but this will allow me to put all entities into one entity vector. Also smart pointers. Just how cool.
+
 29 May 2012
    Corbit Beta v1.0.22:
 

@@ -1,4 +1,6 @@
-format goes like this (all entity datasets are preceded by an exclamation mark, before [containter]
+an exclamation mark tells corbit to start reading data in
+angle brackets denotes a set of background stars (i.e. stars that have no effect on anything, essentially just a pixel) to read in
+format for normal entity reading goes like this
 
 data		example		comments
 
@@ -14,11 +16,13 @@ data		example		comments
 
 #SOLARBODY-ONLY VALUES
 [atmspherClr]	(255, 255, 255)	atmosphere color, in RGB values
-[atmspherHght]	(32)		height atmosphere extends beyond solar body's surface
+[atmspherHght]	(32)		height atmosphere extends beyond solar body's surface, in km
+[atmspherDrag]	(0.6)		drag exerted by atmosphere (haven't implemented this yet, probably going to be something like the hab's velocity, times this
 
 #CRAFT-ONLY VALUES
 [engineColor]	(255, 255, 255)	engine color, in RGB values
 [engineRadius]	(10)		engine radius, in meters
+[fuel]		(100000)	kgs of fuel on the craft
 
 
 !solarBody
@@ -32,6 +36,7 @@ Sun
 255, 140, 0
 255, 185, 0
 7
+0
 
 !solarBody
 Mercury
@@ -39,11 +44,12 @@ Mercury
 0
 1
 -47.87e3
-2.4397e6
+2.4397e1
 2.4397e6
 169, 169, 169
-169, 169, 169
-1
+0, 0, 0
+0
+0
 
 !solarBody
 Venus
@@ -55,7 +61,8 @@ Venus
 6.0518e6
 250, 235, 215
 250, 235, 215
-7
+25e4
+600000
 
 !solarBody
 Earth
@@ -67,7 +74,8 @@ Earth
 6.3781e6
 34, 139, 34
 65, 105, 225
-7
+120000
+120000
 
 !solarBody
 Mars
@@ -80,6 +88,7 @@ Mars
 255, 164, 96
 255, 164, 96
 7
+160000
 
 !solarBody
 Jupiter
@@ -92,6 +101,7 @@ Jupiter
 240, 184, 135
 240, 184, 135
 7
+100
 
 !solarBody
 Saturn
@@ -104,6 +114,7 @@ Saturn
 240, 230, 140
 240, 230, 140
 7
+150
 
 !solarBody
 Uranus
@@ -116,6 +127,7 @@ Uranus
 176, 224, 230
 176, 224, 230
 7
+150
 
 !solarBody
 Neptune
@@ -128,6 +140,7 @@ Neptune
 30, 144, 255
 30, 144, 255
 10
+120
 
 !solarBody
 Pluto
@@ -140,15 +153,17 @@ Pluto
 222, 184, 135
 256, 235, 215
 7
+0
 
-!ship
+!craft
 Habitat
-1.11671388
+1.0168
 0
 1
--50.5e4
-5.0e3
+-29.78e3
+300000
 30
 220, 220, 220
 180, 0, 0
-8
+6
+100000
