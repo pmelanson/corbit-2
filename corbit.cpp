@@ -15,7 +15,7 @@ Started on 23/03/2012
 
 
 This program provides a realistic space flight simulation
-The player's ship_t is called the "Hab"
+The player's ship is called the "Hab"
 Forces are as realistic as possible
 Each pixel at camera.actualzoomLevel() = 0 level is equivalent the distance light travels in a vacumn in 1/299,792,458th of a second (one metre)
 See changelog.txt for changelog past 31/03/2012
