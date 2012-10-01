@@ -2,10 +2,13 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="classDeclarations.h" open="0" top="0" tabpos="2">
-		<Cursor position="3716" topLine="3" />
+		<Cursor position="9213" topLine="0" />
 	</File>
-	<File name="corbit.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="20001" topLine="515" />
+	<File name="corbit.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="7752" topLine="176" />
+	</File>
+	<File name="parseDeclarations.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="2239" topLine="0" />
 	</File>
 	<File name="version.h" open="0" top="0" tabpos="2">
 		<Cursor position="452" topLine="0" />

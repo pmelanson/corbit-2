@@ -130,7 +130,7 @@ It looks like sticky keys, probably an Allegro thing. No fix, just press another
 #include <sstream>
 #include <string.h>
 #include "classDeclarations.h"
-#include "parseDeclarations.h"
+#include "parseDeclarations.cpp"
 #include "version.h"
 using namespace std;
 
@@ -401,7 +401,7 @@ void input() {
     }
 
 
-    inputTimer--;
+    --inputTimer;
 }
 
 

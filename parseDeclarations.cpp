@@ -2,6 +2,7 @@
 #include <sstream>
 using namespace std;
 
+/*
 bool parse (istream &stream, long double &data) {
 
 	string line;
@@ -81,8 +82,10 @@ bool parse (istream &stream, unsigned long &data) {
 
 	return true;
 }
+*/
 
-bool parse (istream &stream, unsigned long long int &data) {
+template <class T>
+bool parse (istream &stream, T &data) {
 
 	string line;
 
@@ -98,7 +101,8 @@ bool parse (istream &stream, unsigned long long int &data) {
 	return true;
 }
 
-bool parseColor (istream &stream, unsigned short int &R, unsigned short int &G, unsigned short int &B) { //takes input in the form of [RRR, GGG, BBB], default color is fuschia (if color cannot be read)
+template <class T>
+bool parseColor (istream &stream, T &R, T &G, T &B) { //takes input in the form of [RRR, GGG, BBB], default color is fuschia (if color cannot be read)
 
 	string line;
 
