@@ -1,8 +1,9 @@
 # depslib dependency file v1.0
-1352262012 source:c:\users\melanson\corbit\main.cpp
+1352289014 source:c:\users\melanson\corbit\main.cpp
 	<iostream>
 	<allegro5/allegro.h>
 	<corbit/object.h>
+	<corbit/version.h>
 
 1289821322 c:\users\melanson\corbit\include\allegro5\allegro.h
 	"allegro5/base.h"
@@ -209,10 +210,12 @@
 
 1289821322 c:\users\melanson\corbit\include\allegro5\alcompat.h
 
-1352261947 source:c:\users\melanson\corbit\include\corbit\object.cpp
+1352289122 source:c:\users\melanson\corbit\include\corbit\object.cpp
 	"object.h"
 	<cmath>
 
-1352261221 c:\users\melanson\corbit\include\corbit\object.h
+1352289138 c:\users\melanson\corbit\include\corbit\object.h
 	<string>
+
+1352262232 c:\users\melanson\corbit\include\corbit\version.h
 

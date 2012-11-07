@@ -9,7 +9,7 @@
 using namespace std;
 
 
-int				FPS				=30;
+const unsigned short	FPS				=30;
 
 ALLEGRO_DISPLAY*		display			=NULL;
 ALLEGRO_EVENT_QUEUE*	event_queue		=NULL;
@@ -74,7 +74,7 @@ bool initAllegro() {
 
 bool initialize() {
 
-	cout << "Corbit v" << AutoVersion::MAJOR << '.' << AutoVersion::MINOR;
+	cout << "Corbit " << AutoVersion::STATUS << " v" << AutoVersion::MAJOR << '.' << AutoVersion::MINOR;
 
 	if(!initAllegro())
 		return false;

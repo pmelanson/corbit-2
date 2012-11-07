@@ -1,6 +1,5 @@
 #include "object.h"
 #include <cmath>
-extern int FPS;
 
 long double object_t::totalmass() const {
 	return mass;

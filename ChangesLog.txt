@@ -1,5 +1,5 @@
 06 November 2012
-   Corbit Beta v1.0:
+   Corbit Beta v2.0:
 
      Change log:
         -Ported: Began the move from Allegro 4 to Allegro 5

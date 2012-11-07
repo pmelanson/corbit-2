@@ -2,6 +2,7 @@
 #define OBJECT_H
 
 #include <string>
+extern const unsigned short FPS;
 
 class object_t {
 	struct pos_t {
