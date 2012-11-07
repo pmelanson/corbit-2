@@ -1,126 +1,218 @@
 # depslib dependency file v1.0
-1338404283 
-
-1334453559 source:c:\users\melanson\hax\summative\trying again.cpp
-	<allegro.h>
-	<math.h>
-	"version.h"
-
-1334183823 c:\users\melanson\hax\summative\version.h
-
-1334852750 source:d:\zoosmell\hax\summative\trying again.cpp
-	<allegro.h>
-	<math.h>
-	"version.h"
-
-1334164120 d:\zoosmell\hax\summative\version.h
-
-1339416207 D
-
-1335031850 source:c:\users\melanson\corbit\trying again.cpp
-	<allegro.h>
-	<math.h>
-	<vector>
-	<memory>
-	"version.h"
-	<allegro.h>
-	<math.h>
-	<vector>
-	"version.h"
-
-1347143986 c:\users\melanson\corbit\version.h
-
-1338773519 fbb96cf7ad378bb345c5d4d529d462808fdd6
-
-1335293026 source:d:\zoosmell\corbit\trying again.cpp
-	<allegro.h>
-	<math.h>
-	<vector>
-	<memory>
-	"version.h"
-
-1339431729 d:\zoosmell\corbit\version.h
-
-1338165393 4cb72a93a9f0cdf2f87e4c7ff4176f30b1169
-
-1349033837 source:c:\users\melanson\corbit\corbit.cpp
+1352262012 source:c:\users\melanson\corbit\main.cpp
 	<iostream>
-	<allegro.h>
-	<vector>
-	<math.h>
-	<fstream>
-	<sstream>
+	<allegro5/allegro.h>
+	<corbit/object.h>
+
+1289821322 c:\users\melanson\corbit\include\allegro5\allegro.h
+	"allegro5/base.h"
+	"allegro5/system.h"
+	"allegro5/memory.h"
+	"allegro5/debug.h"
+	"allegro5/error.h"
+	"allegro5/utf8.h"
+	"allegro5/altime.h"
+	"allegro5/events.h"
+	"allegro5/mouse.h"
+	"allegro5/timer.h"
+	"allegro5/keyboard.h"
+	"allegro5/joystick.h"
+	"allegro5/threads.h"
+	"allegro5/display.h"
+	"allegro5/transformations.h"
+	"allegro5/bitmap_io.h"
+	"allegro5/bitmap.h"
+	"allegro5/tls.h"
+	"allegro5/file.h"
+	"allegro5/fshook.h"
+	"allegro5/path.h"
+	"allegro5/fmaths.h"
+	"allegro5/config.h"
+	"allegro5/alcompat.h"
+
+1340561280 c:\users\melanson\corbit\include\allegro5\base.h
+	<errno.h>
+	<limits.h>
+	<limits.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<time.h>
 	<string.h>
-	"classDeclarations.h"
-	"parseDeclarations.cpp"
-	"version.h"
+	<sys/types.h>
+	<fortify/fortify.h>
+	<dmalloc.h>
+	"allegro5/internal/alconfig.h"
 
-1339387499 89e0b3ffe36e99488d39edd1f59f923b3278f
-	<allegro.h>
-	<math.h>
-	<vector>
-	"version.h"
-	<iostream>
-	<fstream>
-	<sstream>
-	<string.h>
-	"classDeclarations.h"
-	"parseDeclarations.h"
-	<iostream>
-	<sstream>
+1340561280 c:\users\melanson\corbit\include\allegro5\internal\alconfig.h
+	"allegro5/platform/alplatf.h"
+	"allegro5/platform/aldjgpp.h"
+	"allegro5/platform/alwatcom.h"
+	"allegro5/platform/almngw32.h"
+	"allegro5/platform/aldmc.h"
+	"allegro5/platform/albcc32.h"
+	"allegro5/platform/almsvc.h"
+	"allegro5/platform/albecfg.h"
+	"allegro5/platform/aliphonecfg.h"
+	"allegro5/platform/alosxcfg.h"
+	"allegro5/platform/alqnxcfg.h"
+	"allegro5/platform/alwizcfg.h"
+	"allegro5/platform/alucfg.h"
+	"allegro5/platform/astdint.h"
+	"allegro5/platform/astdbool.h"
 
-1347143986 c:\users\melanson\corbit\classdeclarations.h
-	<iostream>
+1300083318 c:\users\melanson\corbit\include\allegro5\platform\alplatf.h
 
-1340118719 source:d:\zoosmell\corbit\corbit.cpp
-	<allegro.h>
-	<math.h>
-	<vector>
-	"version.h"
-	<iostream>
-	<fstream>
-	<sstream>
-	<string.h>
-	"classDeclarations.h"
-	"parseDeclarations.h"
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\alwatcom.h
+	<io.h>
+	<i86.h>
+	<conio.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
 
-1339090628 "
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\almngw32.h
+	<io.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+	"allegro5/platform/alplatf.h"
 
-1339387499 c:\users\melanson\corbit\parsedeclarations.h
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\aldmc.h
+	<io.h>
+	<fcntl.h>
+	<stdint.h>
 
-1340043460 d:\zoosmell\corbit\classdeclarations.h
-	<iostream>
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\albcc32.h
+	<io.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
 
-1339431729 d:\zoosmell\corbit\parsedeclarations.h
-	<iostream>
-	<sstream>
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\almsvc.h
+	<io.h>
+	<fcntl.h>
+	<direct.h>
+	<malloc.h>
+	"allegro5/platform/alplatf.h"
 
-1347030391 source:c:\corbit\corbit\corbit.cpp
-	<allegro.h>
-	<math.h>
-	<vector>
-	"version.h"
-	<iostream>
-	<fstream>
-	<sstream>
-	<string.h>
-	"classDeclarations.h"
-	"parseDeclarations.h"
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\aliphonecfg.h
+	<fcntl.h>
+	<unistd.h>
 
-1347017921 c:\corbit\corbit\version.h
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\alosxcfg.h
+	"allegro5/platform/alplatf.h"
 
-1340301630 c:\corbit\corbit\classdeclarations.h
-	<iostream>
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\alwizcfg.h
+	<fcntl.h>
+	<unistd.h>
+	"allegro5/platform/alplatf.h"
 
-1339356900 c:\corbit\corbit\parsedeclarations.h
-	<iostream>
-	<sstream>
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\alucfg.h
+	<fcntl.h>
+	<unistd.h>
+	"alunix.h"
+	"allegro5/platform/alplatf.h"
 
-1349035199 source:c:\users\melanson\corbit\parsedeclarations.cpp
-	<iostream>
-	<sstream>
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\alunix.h
 
-1349035199 c:\users\melanson\corbit\parsedeclarations.cpp
-	<iostream>
-	<sstream>
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\astdint.h
+	<inttypes.h>
+	<stdint.h>
+
+1289821322 c:\users\melanson\corbit\include\allegro5\platform\astdbool.h
+	<stdbool.h>
+
+1340561280 c:\users\melanson\corbit\include\allegro5\system.h
+	"allegro5/config.h"
+	"allegro5/path.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\config.h
+	"allegro5/file.h"
+
+1330878968 c:\users\melanson\corbit\include\allegro5\file.h
+	"allegro5/base.h"
+	"allegro5/path.h"
+	"allegro5/utf8.h"
+
+1340561278 c:\users\melanson\corbit\include\allegro5\path.h
+	"allegro5/base.h"
+
+1340561280 c:\users\melanson\corbit\include\allegro5\utf8.h
+	"allegro5/base.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\memory.h
+
+1340561280 c:\users\melanson\corbit\include\allegro5\debug.h
+	<assert.h>
+	"allegro5/base.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\error.h
+	"allegro5/base.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\altime.h
+	"allegro5/base.h"
+
+1300083172 c:\users\melanson\corbit\include\allegro5\events.h
+	"allegro5/base.h"
+
+1296196912 c:\users\melanson\corbit\include\allegro5\mouse.h
+	"allegro5/base.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\timer.h
+	"allegro5/base.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\keyboard.h
+	"allegro5/base.h"
+	"allegro5/keycodes.h"
+
+1296196912 c:\users\melanson\corbit\include\allegro5\keycodes.h
+
+1289821322 c:\users\melanson\corbit\include\allegro5\joystick.h
+	"allegro5/base.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\threads.h
+	"allegro5/altime.h"
+
+1340561280 c:\users\melanson\corbit\include\allegro5\display.h
+	"allegro5/color.h"
+	"allegro5/bitmap.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\color.h
+
+1330878968 c:\users\melanson\corbit\include\allegro5\bitmap.h
+	"allegro5/color.h"
+
+1292536930 c:\users\melanson\corbit\include\allegro5\transformations.h
+
+1289821322 c:\users\melanson\corbit\include\allegro5\bitmap_io.h
+	"allegro5/bitmap.h"
+	"allegro5/file.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\tls.h
+	"allegro5/base.h"
+
+1340561278 c:\users\melanson\corbit\include\allegro5\fshook.h
+	"allegro5/base.h"
+	"allegro5/path.h"
+	<sys/types.h>
+
+1289821322 c:\users\melanson\corbit\include\allegro5\fmaths.h
+	"allegro5/base.h"
+	"allegro5/fixed.h"
+	"allegro5/inline/fmaths.inl"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\fixed.h
+	"allegro5/base.h"
+
+1289821322 c:\users\melanson\corbit\include\allegro5\inline\fmaths.inl
+
+1289821322 c:\users\melanson\corbit\include\allegro5\alcompat.h
+
+1352261947 source:c:\users\melanson\corbit\include\corbit\object.cpp
+	"object.h"
+	<cmath>
+
+1352261221 c:\users\melanson\corbit\include\corbit\object.h
+	<string>
 
