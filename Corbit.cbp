@@ -71,6 +71,10 @@
 			<Add library="lib\mingw\libws2_32.a" />
 			<Add library="lib\mingw\libshlwapi.a" />
 		</Linker>
+		<Unit filename="include\corbit\camera.cpp" />
+		<Unit filename="include\corbit\camera.h" />
+		<Unit filename="include\corbit\hud.cpp" />
+		<Unit filename="include\corbit\hud.h" />
 		<Unit filename="include\corbit\object.cpp" />
 		<Unit filename="include\corbit\object.h" />
 		<Unit filename="include\corbit\version.h" />

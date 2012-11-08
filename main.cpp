@@ -4,6 +4,8 @@
 #include <allegro5/allegro.h>
 
 #include <corbit/object.h>
+#include <corbit/camera.h>
+#include <corbit/hud.h>
 #include <corbit/version.h>
 
 using namespace std;
@@ -74,7 +76,7 @@ bool initAllegro() {
 
 bool initialize() {
 
-	cout << "Corbit " << AutoVersion::STATUS << " v" << AutoVersion::MAJOR << '.' << AutoVersion::MINOR;
+	cout << "Corbit " << AutoVersion::STATUS << " v" << AutoVersion::MAJOR << '.' << AutoVersion::MINOR << endl;
 
 	if(!initAllegro())
 		return false;
@@ -84,12 +86,12 @@ bool initialize() {
 
 bool cleanup() {
 
+	if(event_queue)
+		al_destroy_event_queue(event_queue);
 	if(timer)
 		al_destroy_timer(timer);
 	if(display)
 		al_destroy_display(display);
-	if(event_queue)
-		al_destroy_event_queue(event_queue);
 
 	return true;
 }

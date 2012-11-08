@@ -1,8 +1,10 @@
 # depslib dependency file v1.0
-1352289014 source:c:\users\melanson\corbit\main.cpp
+1352341463 source:c:\users\melanson\corbit\main.cpp
 	<iostream>
 	<allegro5/allegro.h>
 	<corbit/object.h>
+	<corbit/camera.h>
+	<corbit/hud.h>
 	<corbit/version.h>
 
 1289821322 c:\users\melanson\corbit\include\allegro5\allegro.h
@@ -210,12 +212,22 @@
 
 1289821322 c:\users\melanson\corbit\include\allegro5\alcompat.h
 
-1352289122 source:c:\users\melanson\corbit\include\corbit\object.cpp
+1352341220 source:c:\users\melanson\corbit\include\corbit\object.cpp
 	"object.h"
 	<cmath>
 
-1352289138 c:\users\melanson\corbit\include\corbit\object.h
+1352336810 c:\users\melanson\corbit\include\corbit\object.h
 	<string>
 
-1352262232 c:\users\melanson\corbit\include\corbit\version.h
+1352289338 c:\users\melanson\corbit\include\corbit\version.h
+
+1352341174 source:c:\users\melanson\corbit\include\corbit\camera.cpp
+	"camera.h"
+
+1352342540 c:\users\melanson\corbit\include\corbit\camera.h
+
+1352341426 source:c:\users\melanson\corbit\include\corbit\hud.cpp
+	"hud.h"
+
+1352343459 c:\users\melanson\corbit\include\corbit\hud.h
 
