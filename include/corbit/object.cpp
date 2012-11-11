@@ -1,4 +1,4 @@
-#include "object.h"
+#include "object.hpp"
 #include <cmath>
 
 long double object_c::totalmass() const {
@@ -54,9 +54,11 @@ object_c::v_t::v_t (long double _Vx, long double _Vy)
 
 object_c::object_c
 (std::string _name, long double _mass, long long _radius,
- long double _x, long double _y, long double _Vx, long double _Vy)
+ long double _x, long double _y, long double _Vx, long double _Vy,
+ ALLEGRO_COLOR _color)
 	: pos (_x, _y), v (_Vx, _Vy),
-	name (_name), mass (_mass), radius (_radius) {
+	name (_name), mass (_mass), radius (_radius),
+	color (_color) {
 
 }
 object_c::~object_c() {

@@ -1,11 +1,10 @@
 # depslib dependency file v1.0
-1352341463 source:c:\users\melanson\corbit\main.cpp
+1352670059 source:c:\users\melanson\corbit\main.cpp
 	<iostream>
 	<allegro5/allegro.h>
-	<corbit/object.h>
-	<corbit/camera.h>
-	<corbit/hud.h>
-	<corbit/version.h>
+	<allegro5/allegro_primitives.h>
+	<boost/intrusive/list.hpp>
+	<corbit/corbit.hpp>
 
 1289821322 c:\users\melanson\corbit\include\allegro5\allegro.h
 	"allegro5/base.h"
@@ -212,22 +211,1409 @@
 
 1289821322 c:\users\melanson\corbit\include\allegro5\alcompat.h
 
-1352341220 source:c:\users\melanson\corbit\include\corbit\object.cpp
-	"object.h"
+1352653833 source:c:\users\melanson\corbit\include\corbit\object.cpp
+	"object.hpp"
 	<cmath>
 
-1352336810 c:\users\melanson\corbit\include\corbit\object.h
+1352603034 c:\users\melanson\corbit\include\corbit\object.h
 	<string>
+	<allegro5/allegro_color.h>
 
-1352289338 c:\users\melanson\corbit\include\corbit\version.h
+1352602357 c:\users\melanson\corbit\include\corbit\version.h
 
-1352341174 source:c:\users\melanson\corbit\include\corbit\camera.cpp
-	"camera.h"
+1352653830 source:c:\users\melanson\corbit\include\corbit\camera.cpp
+	"camera.hpp"
 
-1352342540 c:\users\melanson\corbit\include\corbit\camera.h
+1352600125 c:\users\melanson\corbit\include\corbit\camera.h
 
-1352341426 source:c:\users\melanson\corbit\include\corbit\hud.cpp
+1352653832 source:c:\users\melanson\corbit\include\corbit\hud.cpp
+	"hud.hpp"
+
+1352601837 c:\users\melanson\corbit\include\corbit\hud.h
+
+1352601768 c:\users\melanson\corbit\include\corbit\corbit.h
+	"object.h"
 	"hud.h"
+	"camera.h"
+	"version.h"
 
-1352343459 c:\users\melanson\corbit\include\corbit\hud.h
+1289821332 c:\users\melanson\corbit\include\allegro5\allegro_color.h
+	"allegro5/allegro.h"
+
+1340561286 c:\users\melanson\corbit\include\allegro5\allegro_primitives.h
+	<allegro5/allegro.h>
+
+1352653887 c:\users\melanson\corbit\include\corbit\hud.hpp
+
+1352653886 c:\users\melanson\corbit\include\corbit\object.hpp
+	<string>
+	<allegro5/allegro_color.h>
+
+1352653853 c:\users\melanson\corbit\include\corbit\camera.hpp
+
+1351216557 c:\users\melanson\corbit\include\boost\intrusive\list.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/assert.hpp>
+	<boost/intrusive/intrusive_fwd.hpp>
+	<boost/intrusive/list_hook.hpp>
+	<boost/intrusive/circular_list_algorithms.hpp>
+	<boost/intrusive/pointer_traits.hpp>
+	<boost/intrusive/detail/clear_on_destructor_base.hpp>
+	<boost/intrusive/detail/mpl.hpp>
+	<boost/intrusive/link_mode.hpp>
+	<boost/static_assert.hpp>
+	<boost/intrusive/options.hpp>
+	<boost/intrusive/pointer_traits.hpp>
+	<boost/intrusive/detail/utilities.hpp>
+	<iterator>
+	<algorithm>
+	<functional>
+	<cstddef>
+	<boost/move/move.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\config_begin.hpp
+	<boost/config.hpp>
+
+1348853652 c:\users\melanson\corbit\include\boost\config.hpp
+	<boost/config/select_compiler_config.hpp>
+	<boost/config/select_stdlib_config.hpp>
+	<boost/config/select_platform_config.hpp>
+	<boost/config/suffix.hpp>
+
+1318243855 c:\users\melanson\corbit\include\boost\config\select_compiler_config.hpp
+
+1303729848 c:\users\melanson\corbit\include\boost\config\select_stdlib_config.hpp
+	<cstddef>
+	<stddef.h>
+	<boost/config/no_tr1/utility.hpp>
+
+1129736320 c:\users\melanson\corbit\include\boost\config\no_tr1\utility.hpp
+	<utility>
+
+1318243855 c:\users\melanson\corbit\include\boost\config\select_platform_config.hpp
+	<boost/config/posix_features.hpp>
+
+1129295786 c:\users\melanson\corbit\include\boost\config\posix_features.hpp
+	<unistd.h>
+
+1348853652 c:\users\melanson\corbit\include\boost\config\suffix.hpp
+	<limits.h>
+	<cstddef>
+	"boost/type.hpp"
+	"boost/non_type.hpp"
+	<typeinfo>
+
+1090798332 c:\users\melanson\corbit\include\boost\type.hpp
+
+1084695475 c:\users\melanson\corbit\include\boost\non_type.hpp
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\assert.hpp
+	<boost/assert.hpp>
+	<boost/assert.hpp>
+	<boost/assert.hpp>
+
+1297786731 c:\users\melanson\corbit\include\boost\assert.hpp
+	<boost/current_function.hpp>
+	<assert.h>
+	<boost/current_function.hpp>
+	<cstdlib>
+	<iostream>
+	<boost/current_function.hpp>
+
+1348853652 c:\users\melanson\corbit\include\boost\current_function.hpp
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\intrusive_fwd.hpp
+	<cstddef>
+	<boost/intrusive/link_mode.hpp>
+	<boost/intrusive/detail/workaround.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\link_mode.hpp
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\workaround.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\config_end.hpp
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\list_hook.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/intrusive_fwd.hpp>
+	<boost/intrusive/detail/utilities.hpp>
+	<boost/intrusive/detail/list_node.hpp>
+	<boost/intrusive/circular_list_algorithms.hpp>
+	<boost/intrusive/options.hpp>
+	<boost/intrusive/detail/generic_hook.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1348485454 c:\users\melanson\corbit\include\boost\intrusive\detail\utilities.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/pointer_traits.hpp>
+	<boost/intrusive/detail/parent_from_member.hpp>
+	<boost/intrusive/detail/ebo_functor_holder.hpp>
+	<boost/intrusive/link_mode.hpp>
+	<boost/intrusive/detail/mpl.hpp>
+	<boost/intrusive/detail/assert.hpp>
+	<boost/intrusive/detail/is_stateful_value_traits.hpp>
+	<boost/intrusive/pointer_traits.hpp>
+	<boost/cstdint.hpp>
+	<cstddef>
+	<climits>
+	<iterator>
+	<boost/cstdint.hpp>
+	<boost/static_assert.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1348485454 c:\users\melanson\corbit\include\boost\intrusive\pointer_traits.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/workaround.hpp>
+	<boost/intrusive/detail/memory_util.hpp>
+	<boost/type_traits/integral_constant.hpp>
+	<cstddef>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\memory_util.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/workaround.hpp>
+	<boost/intrusive/detail/mpl.hpp>
+	<boost/intrusive/detail/preprocessor.hpp>
+	<boost/intrusive/detail/has_member_function_callable_with.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\mpl.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<cstddef>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\preprocessor.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/workaround.hpp>
+	<boost/preprocessor/iteration/local.hpp>
+	<boost/preprocessor/punctuation/paren_if.hpp>
+	<boost/preprocessor/punctuation/comma_if.hpp>
+	<boost/preprocessor/control/expr_if.hpp>
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/repetition/enum.hpp>
+	<boost/preprocessor/repetition/enum_params.hpp>
+	<boost/preprocessor/repetition/enum_trailing_params.hpp>
+	<boost/preprocessor/repetition/enum_trailing.hpp>
+	<boost/preprocessor/repetition/enum_shifted_params.hpp>
+	<boost/preprocessor/repetition/enum_shifted.hpp>
+	<boost/preprocessor/repetition/repeat.hpp>
+	<boost/preprocessor/logical/not.hpp>
+	<boost/preprocessor/arithmetic/sub.hpp>
+	<boost/preprocessor/arithmetic/add.hpp>
+	<boost/preprocessor/iteration/iterate.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\has_member_function_callable_with.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/workaround.hpp>
+	<boost/intrusive/detail/preprocessor.hpp>
+	<boost/static_assert.hpp>
+	<boost/move/move.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1348853652 c:\users\melanson\corbit\include\boost\static_assert.hpp
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+
+1274198038 c:\users\melanson\corbit\include\boost\detail\workaround.hpp
+	<boost/config.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\parent_from_member.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<cstddef>
+	<boost/cstdint.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1348853652 c:\users\melanson\corbit\include\boost\cstdint.hpp
+	<boost/config.hpp>
+	<inttypes.h>
+	<inttypes.h>
+	<stdint.h>
+	<inttypes.h>
+	<boost/limits.hpp>
+	<limits.h>
+	<limits.h>
+
+1237739402 c:\users\melanson\corbit\include\boost\limits.hpp
+	<boost/config.hpp>
+	<boost/detail/limits.hpp>
+	<limits>
+	<climits>
+
+1165053877 c:\users\melanson\corbit\include\boost\detail\limits.hpp
+	<climits>
+	<cfloat>
+	<boost/config.hpp>
+	<boost/detail/endian.hpp>
+	<cwchar>
+
+1301432328 c:\users\melanson\corbit\include\boost\detail\endian.hpp
+	<endian.h>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\ebo_functor_holder.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/mpl.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\is_stateful_value_traits.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/mpl.hpp>
+	<boost/intrusive/detail/function_detector.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\function_detector.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1348485454 c:\users\melanson\corbit\include\boost\intrusive\detail\list_node.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<iterator>
+	<boost/intrusive/detail/assert.hpp>
+	<boost/intrusive/pointer_traits.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\circular_list_algorithms.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/intrusive_fwd.hpp>
+	<cstddef>
+	<boost/intrusive/detail/config_end.hpp>
+
+1348485454 c:\users\melanson\corbit\include\boost\intrusive\options.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/intrusive_fwd.hpp>
+	<boost/intrusive/link_mode.hpp>
+	<boost/intrusive/detail/mpl.hpp>
+	<boost/intrusive/detail/utilities.hpp>
+	<boost/static_assert.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\generic_hook.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/intrusive_fwd.hpp>
+	<boost/intrusive/pointer_traits.hpp>
+	<boost/intrusive/link_mode.hpp>
+	<boost/intrusive/detail/utilities.hpp>
+	<boost/intrusive/detail/mpl.hpp>
+	<boost/intrusive/pointer_traits.hpp>
+	<boost/static_assert.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1342424362 c:\users\melanson\corbit\include\boost\intrusive\detail\clear_on_destructor_base.hpp
+	<boost/intrusive/detail/config_begin.hpp>
+	<boost/intrusive/detail/config_end.hpp>
+
+1352653823 c:\users\melanson\corbit\include\corbit\corbit.hpp
+	"object.hpp"
+	"hud.hpp"
+	"camera.hpp"
+	"version.hpp"
+
+1352653876 c:\users\melanson\corbit\include\corbit\version.hpp
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\iteration\local.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/slot/slot.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\config\config.hpp
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\slot\slot.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/slot/detail/def.hpp>
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\cat.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\slot\detail\def.hpp
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\tuple\elem.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/facilities/overload.hpp>
+	<boost/preprocessor/tuple/rem.hpp>
+	<boost/preprocessor/variadic/elem.hpp>
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\facilities\overload.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/variadic/size.hpp>
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\variadic\size.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\tuple\rem.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/facilities/overload.hpp>
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\variadic\elem.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\punctuation\paren_if.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/control/if.hpp>
+	<boost/preprocessor/facilities/empty.hpp>
+	<boost/preprocessor/punctuation/paren.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\control\if.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/control/iif.hpp>
+	<boost/preprocessor/logical/bool.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\control\iif.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\logical\bool.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\facilities\empty.hpp
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\punctuation\paren.hpp
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\punctuation\comma_if.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/control/if.hpp>
+	<boost/preprocessor/facilities/empty.hpp>
+	<boost/preprocessor/punctuation/comma.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\punctuation\comma.hpp
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\control\expr_if.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/control/expr_iif.hpp>
+	<boost/preprocessor/logical/bool.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\control\expr_iif.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\enum.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/debug/error.hpp>
+	<boost/preprocessor/detail/auto_rec.hpp>
+	<boost/preprocessor/punctuation/comma_if.hpp>
+	<boost/preprocessor/repetition/repeat.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+	<boost/preprocessor/tuple/rem.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\debug\error.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+
+1091341466 c:\users\melanson\corbit\include\boost\preprocessor\detail\auto_rec.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/detail/dmc/auto_rec.hpp>
+	<boost/preprocessor/control/iif.hpp>
+
+1091341466 c:\users\melanson\corbit\include\boost\preprocessor\detail\dmc\auto_rec.hpp
+	<boost/preprocessor/control/iif.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\repeat.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/debug/error.hpp>
+	<boost/preprocessor/detail/auto_rec.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\tuple\eat.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\enum_params.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/punctuation/comma_if.hpp>
+	<boost/preprocessor/repetition/repeat.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\repetition\enum_trailing_params.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/repetition/repeat.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\repetition\enum_trailing.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/debug/error.hpp>
+	<boost/preprocessor/detail/auto_rec.hpp>
+	<boost/preprocessor/repetition/repeat.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+	<boost/preprocessor/tuple/rem.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\enum_shifted_params.hpp
+	<boost/preprocessor/arithmetic/dec.hpp>
+	<boost/preprocessor/arithmetic/inc.hpp>
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/punctuation/comma_if.hpp>
+	<boost/preprocessor/repetition/repeat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\arithmetic\dec.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\arithmetic\inc.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\enum_shifted.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/arithmetic/dec.hpp>
+	<boost/preprocessor/arithmetic/inc.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/debug/error.hpp>
+	<boost/preprocessor/detail/auto_rec.hpp>
+	<boost/preprocessor/punctuation/comma_if.hpp>
+	<boost/preprocessor/repetition/repeat.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+	<boost/preprocessor/tuple/rem.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\logical\not.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/logical/bool.hpp>
+	<boost/preprocessor/logical/compl.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\logical\compl.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\arithmetic\sub.hpp
+	<boost/preprocessor/arithmetic/dec.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/control/while.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\control\while.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/debug/error.hpp>
+	<boost/preprocessor/detail/auto_rec.hpp>
+	<boost/preprocessor/list/fold_left.hpp>
+	<boost/preprocessor/list/fold_right.hpp>
+	<boost/preprocessor/logical/bitand.hpp>
+	<boost/preprocessor/control/detail/edg/while.hpp>
+	<boost/preprocessor/control/detail/msvc/while.hpp>
+	<boost/preprocessor/control/detail/dmc/while.hpp>
+	<boost/preprocessor/control/detail/while.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\fold_left.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/control/while.hpp>
+	<boost/preprocessor/debug/error.hpp>
+	<boost/preprocessor/detail/auto_rec.hpp>
+	<boost/preprocessor/list/detail/edg/fold_left.hpp>
+	<boost/preprocessor/list/detail/dmc/fold_left.hpp>
+	<boost/preprocessor/list/detail/fold_left.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\detail\edg\fold_left.hpp
+	<boost/preprocessor/control/expr_iif.hpp>
+	<boost/preprocessor/control/iif.hpp>
+	<boost/preprocessor/list/adt.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\adt.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/detail/is_binary.hpp>
+	<boost/preprocessor/logical/compl.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\detail\is_binary.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/detail/check.hpp>
+
+1196014039 c:\users\melanson\corbit\include\boost\preprocessor\detail\check.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\detail\dmc\fold_left.hpp
+	<boost/preprocessor/control/expr_iif.hpp>
+	<boost/preprocessor/control/iif.hpp>
+	<boost/preprocessor/list/adt.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\detail\fold_left.hpp
+	<boost/preprocessor/control/expr_iif.hpp>
+	<boost/preprocessor/control/iif.hpp>
+	<boost/preprocessor/list/adt.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\fold_right.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/control/while.hpp>
+	<boost/preprocessor/debug/error.hpp>
+	<boost/preprocessor/detail/auto_rec.hpp>
+	<boost/preprocessor/list/detail/edg/fold_right.hpp>
+	<boost/preprocessor/list/detail/fold_right.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\detail\edg\fold_right.hpp
+	<boost/preprocessor/control/iif.hpp>
+	<boost/preprocessor/list/adt.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\detail\fold_right.hpp
+	<boost/preprocessor/list/fold_left.hpp>
+	<boost/preprocessor/list/reverse.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\reverse.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/list/fold_left.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\logical\bitand.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\control\detail\edg\while.hpp
+	<boost/preprocessor/control/if.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\control\detail\msvc\while.hpp
+	<boost/preprocessor/control/if.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\control\detail\dmc\while.hpp
+	<boost/preprocessor/control/iif.hpp>
+	<boost/preprocessor/logical/bool.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\control\detail\while.hpp
+	<boost/preprocessor/control/iif.hpp>
+	<boost/preprocessor/logical/bool.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\arithmetic\add.hpp
+	<boost/preprocessor/arithmetic/dec.hpp>
+	<boost/preprocessor/arithmetic/inc.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/control/while.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\iteration\iterate.hpp
+	<boost/preprocessor/arithmetic/dec.hpp>
+	<boost/preprocessor/arithmetic/inc.hpp>
+	<boost/preprocessor/array/elem.hpp>
+	<boost/preprocessor/array/size.hpp>
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/slot/slot.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\array\elem.hpp
+	<boost/preprocessor/array/data.hpp>
+	<boost/preprocessor/array/size.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\array\data.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\array\size.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+
+1342425933 c:\users\melanson\corbit\include\boost\move\move.hpp
+	<boost/config.hpp>
+	<algorithm>
+	<memory>
+	<iterator>
+	<boost/utility/enable_if.hpp>
+	<boost/utility/addressof.hpp>
+	<boost/mpl/if.hpp>
+	<boost/mpl/bool.hpp>
+	<boost/mpl/and.hpp>
+	<boost/mpl/not.hpp>
+	<boost/mpl/identity.hpp>
+	<boost/type_traits/is_class.hpp>
+	<boost/type_traits/is_convertible.hpp>
+	<boost/type_traits/has_trivial_destructor.hpp>
+	<boost/type_traits/integral_constant.hpp>
+	<utility>
+	<boost/type_traits/remove_reference.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\if.hpp
+	<boost/mpl/aux_/value_wknd.hpp>
+	<boost/mpl/aux_/static_cast.hpp>
+	<boost/mpl/aux_/na_spec.hpp>
+	<boost/mpl/aux_/lambda_support.hpp>
+	<boost/mpl/aux_/config/integral.hpp>
+	<boost/mpl/aux_/config/ctps.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\value_wknd.hpp
+	<boost/mpl/aux_/static_cast.hpp>
+	<boost/mpl/aux_/config/integral.hpp>
+	<boost/mpl/aux_/config/eti.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+	<boost/mpl/int.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\static_cast.hpp
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\workaround.hpp
+	<boost/detail/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\integral.hpp
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\msvc.hpp
+	<boost/config.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\eti.hpp
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\int.hpp
+	<boost/mpl/int_fwd.hpp>
+	<boost/mpl/aux_/integral_wrapper.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\int_fwd.hpp
+	<boost/mpl/aux_/adl_barrier.hpp>
+	<boost/mpl/aux_/nttp_decl.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\adl_barrier.hpp
+	<boost/mpl/aux_/config/adl.hpp>
+	<boost/mpl/aux_/config/gcc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\adl.hpp
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/intel.hpp>
+	<boost/mpl/aux_/config/gcc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\intel.hpp
+	<boost/config.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\gcc.hpp
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\nttp_decl.hpp
+	<boost/mpl/aux_/config/nttp.hpp>
+	<boost/preprocessor/cat.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\nttp.hpp
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\integral_wrapper.hpp
+	<boost/mpl/integral_c_tag.hpp>
+	<boost/mpl/aux_/static_cast.hpp>
+	<boost/mpl/aux_/nttp_decl.hpp>
+	<boost/mpl/aux_/config/static_constant.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+	<boost/preprocessor/cat.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\integral_c_tag.hpp
+	<boost/mpl/aux_/adl_barrier.hpp>
+	<boost/mpl/aux_/config/static_constant.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\static_constant.hpp
+	<boost/config.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\na_spec.hpp
+	<boost/mpl/lambda_fwd.hpp>
+	<boost/mpl/int.hpp>
+	<boost/mpl/bool.hpp>
+	<boost/mpl/aux_/na.hpp>
+	<boost/mpl/aux_/arity.hpp>
+	<boost/mpl/aux_/template_arity_fwd.hpp>
+	<boost/mpl/aux_/preprocessor/params.hpp>
+	<boost/mpl/aux_/preprocessor/enum.hpp>
+	<boost/mpl/aux_/preprocessor/def_params_tail.hpp>
+	<boost/mpl/aux_/lambda_arity_param.hpp>
+	<boost/mpl/aux_/config/dtp.hpp>
+	<boost/mpl/aux_/config/eti.hpp>
+	<boost/mpl/aux_/nttp_decl.hpp>
+	<boost/mpl/aux_/config/ttp.hpp>
+	<boost/mpl/aux_/config/lambda.hpp>
+	<boost/mpl/aux_/config/overload_resolution.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\lambda_fwd.hpp
+	<boost/mpl/void_fwd.hpp>
+	<boost/mpl/aux_/na.hpp>
+	<boost/mpl/aux_/config/lambda.hpp>
+	<boost/mpl/int.hpp>
+	<boost/mpl/aux_/lambda_arity_param.hpp>
+	<boost/mpl/aux_/template_arity_fwd.hpp>
+	<boost/mpl/bool.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\void_fwd.hpp
+	<boost/mpl/aux_/adl_barrier.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\na.hpp
+	<boost/mpl/bool.hpp>
+	<boost/mpl/aux_/na_fwd.hpp>
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/ctps.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\bool.hpp
+	<boost/mpl/bool_fwd.hpp>
+	<boost/mpl/integral_c_tag.hpp>
+	<boost/mpl/aux_/config/static_constant.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\bool_fwd.hpp
+	<boost/mpl/aux_/adl_barrier.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\na_fwd.hpp
+	<boost/mpl/aux_/adl_barrier.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\ctps.hpp
+	<boost/mpl/aux_/config/workaround.hpp>
+	<boost/config.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\lambda.hpp
+	<boost/mpl/aux_/config/ttp.hpp>
+	<boost/mpl/aux_/config/ctps.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\ttp.hpp
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/gcc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\lambda_arity_param.hpp
+	<boost/mpl/aux_/config/ttp.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\template_arity_fwd.hpp
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\arity.hpp
+	<boost/mpl/aux_/config/dtp.hpp>
+	<boost/mpl/aux_/nttp_decl.hpp>
+	<boost/mpl/aux_/config/static_constant.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\dtp.hpp
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\preprocessor\params.hpp
+	<boost/mpl/aux_/config/preprocessor.hpp>
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/comma_if.hpp>
+	<boost/preprocessor/repeat.hpp>
+	<boost/preprocessor/inc.hpp>
+	<boost/preprocessor/cat.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\preprocessor.hpp
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\comma_if.hpp
+	<boost/preprocessor/punctuation/comma_if.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\repeat.hpp
+	<boost/preprocessor/repetition/repeat.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\inc.hpp
+	<boost/preprocessor/arithmetic/inc.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\preprocessor\enum.hpp
+	<boost/mpl/aux_/config/preprocessor.hpp>
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/comma_if.hpp>
+	<boost/preprocessor/repeat.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\preprocessor\def_params_tail.hpp
+	<boost/mpl/limits/arity.hpp>
+	<boost/mpl/aux_/config/dtp.hpp>
+	<boost/mpl/aux_/config/preprocessor.hpp>
+	<boost/preprocessor/comma_if.hpp>
+	<boost/preprocessor/logical/and.hpp>
+	<boost/preprocessor/identity.hpp>
+	<boost/preprocessor/empty.hpp>
+	<boost/mpl/aux_/preprocessor/filter_params.hpp>
+	<boost/mpl/aux_/preprocessor/sub.hpp>
+	<boost/preprocessor/arithmetic/add.hpp>
+	<boost/preprocessor/arithmetic/sub.hpp>
+	<boost/preprocessor/inc.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+	<boost/preprocessor/repeat.hpp>
+	<boost/preprocessor/cat.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\limits\arity.hpp
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\logical\and.hpp
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/logical/bool.hpp>
+	<boost/preprocessor/logical/bitand.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\identity.hpp
+	<boost/preprocessor/facilities/identity.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\facilities\identity.hpp
+	<boost/preprocessor/facilities/empty.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\empty.hpp
+	<boost/preprocessor/facilities/empty.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\preprocessor\filter_params.hpp
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\preprocessor\sub.hpp
+	<boost/mpl/aux_/config/preprocessor.hpp>
+	<boost/mpl/aux_/preprocessor/tuple.hpp>
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/arithmetic/sub.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\preprocessor\tuple.hpp
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\overload_resolution.hpp
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\lambda_support.hpp
+	<boost/mpl/aux_/config/lambda.hpp>
+	<boost/mpl/int_fwd.hpp>
+	<boost/mpl/aux_/yes_no.hpp>
+	<boost/mpl/aux_/na_fwd.hpp>
+	<boost/mpl/aux_/preprocessor/params.hpp>
+	<boost/mpl/aux_/preprocessor/enum.hpp>
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+	<boost/preprocessor/tuple/to_list.hpp>
+	<boost/preprocessor/list/for_each_i.hpp>
+	<boost/preprocessor/inc.hpp>
+	<boost/preprocessor/cat.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\yes_no.hpp
+	<boost/mpl/aux_/nttp_decl.hpp>
+	<boost/mpl/aux_/config/arrays.hpp>
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\arrays.hpp
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1323694364 c:\users\melanson\corbit\include\boost\preprocessor\tuple\to_list.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/facilities/overload.hpp>
+	<boost/preprocessor/variadic/size.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\list\for_each_i.hpp
+	<boost/preprocessor/arithmetic/inc.hpp>
+	<boost/preprocessor/config/config.hpp>
+	<boost/preprocessor/list/adt.hpp>
+	<boost/preprocessor/repetition/for.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+	<boost/preprocessor/tuple/rem.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\for.hpp
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/debug/error.hpp>
+	<boost/preprocessor/detail/auto_rec.hpp>
+	<boost/preprocessor/repetition/detail/edg/for.hpp>
+	<boost/preprocessor/repetition/detail/msvc/for.hpp>
+	<boost/preprocessor/repetition/detail/dmc/for.hpp>
+	<boost/preprocessor/repetition/detail/for.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\detail\edg\for.hpp
+	<boost/preprocessor/control/if.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\detail\msvc\for.hpp
+	<boost/preprocessor/control/if.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\detail\dmc\for.hpp
+	<boost/preprocessor/control/expr_iif.hpp>
+	<boost/preprocessor/control/iif.hpp>
+	<boost/preprocessor/logical/bool.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1095087089 c:\users\melanson\corbit\include\boost\preprocessor\repetition\detail\for.hpp
+	<boost/preprocessor/control/expr_iif.hpp>
+	<boost/preprocessor/control/iif.hpp>
+	<boost/preprocessor/logical/bool.hpp>
+	<boost/preprocessor/tuple/eat.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\and.hpp
+	<boost/mpl/aux_/config/use_preprocessed.hpp>
+	<boost/mpl/bool.hpp>
+	<boost/mpl/aux_/nested_type_wknd.hpp>
+	<boost/mpl/aux_/na_spec.hpp>
+	<boost/mpl/aux_/lambda_support.hpp>
+	<boost/mpl/aux_/include_preprocessed.hpp>
+	<boost/mpl/aux_/logical_op.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\config\use_preprocessed.hpp
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\nested_type_wknd.hpp
+	<boost/mpl/aux_/config/gcc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\include_preprocessed.hpp
+	<boost/mpl/aux_/config/compiler.hpp>
+	<boost/mpl/aux_/config/preprocessor.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+	<boost/preprocessor/cat.hpp>
+	<boost/preprocessor/stringize.hpp>
+
+1243019275 c:\users\melanson\corbit\include\boost\mpl\aux_\config\compiler.hpp
+	<boost/mpl/aux_/config/dtp.hpp>
+	<boost/mpl/aux_/config/ttp.hpp>
+	<boost/mpl/aux_/config/ctps.hpp>
+	<boost/mpl/aux_/config/msvc.hpp>
+	<boost/mpl/aux_/config/gcc.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+
+1140523328 c:\users\melanson\corbit\include\boost\preprocessor\stringize.hpp
+	<boost/preprocessor/config/config.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\logical_op.hpp
+	<boost/mpl/bool.hpp>
+	<boost/mpl/aux_/nested_type_wknd.hpp>
+	<boost/mpl/aux_/na_spec.hpp>
+	<boost/mpl/aux_/lambda_support.hpp>
+	<boost/mpl/limits/arity.hpp>
+	<boost/mpl/aux_/preprocessor/params.hpp>
+	<boost/mpl/aux_/preprocessor/ext_params.hpp>
+	<boost/mpl/aux_/preprocessor/def_params_tail.hpp>
+	<boost/mpl/aux_/preprocessor/enum.hpp>
+	<boost/mpl/aux_/preprocessor/sub.hpp>
+	<boost/mpl/aux_/config/ctps.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+	<boost/preprocessor/dec.hpp>
+	<boost/preprocessor/inc.hpp>
+	<boost/preprocessor/cat.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\aux_\preprocessor\ext_params.hpp
+	<boost/mpl/aux_/config/preprocessor.hpp>
+	<boost/mpl/aux_/preprocessor/filter_params.hpp>
+	<boost/mpl/aux_/preprocessor/sub.hpp>
+	<boost/preprocessor/arithmetic/add.hpp>
+	<boost/preprocessor/arithmetic/sub.hpp>
+	<boost/preprocessor/comma_if.hpp>
+	<boost/preprocessor/repeat.hpp>
+	<boost/preprocessor/tuple/elem.hpp>
+	<boost/preprocessor/cat.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\dec.hpp
+	<boost/preprocessor/arithmetic/dec.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\not.hpp
+	<boost/mpl/bool.hpp>
+	<boost/mpl/aux_/nttp_decl.hpp>
+	<boost/mpl/aux_/nested_type_wknd.hpp>
+	<boost/mpl/aux_/na_spec.hpp>
+	<boost/mpl/aux_/lambda_support.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\identity.hpp
+	<boost/mpl/aux_/na_spec.hpp>
+	<boost/mpl/aux_/lambda_support.hpp>
+
+1231335886 c:\users\melanson\corbit\include\boost\type_traits\is_class.hpp
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/intrinsics.hpp>
+	<boost/type_traits/is_union.hpp>
+	<boost/type_traits/detail/ice_and.hpp>
+	<boost/type_traits/detail/ice_not.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/is_scalar.hpp>
+	<boost/type_traits/is_array.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_void.hpp>
+	<boost/type_traits/is_function.hpp>
+	<boost/type_traits/remove_cv.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1224059369 c:\users\melanson\corbit\include\boost\type_traits\config.hpp
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+
+1337848943 c:\users\melanson\corbit\include\boost\type_traits\intrinsics.hpp
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/is_same.hpp>
+	<algorithm>
+	<type_traits.h>
+	<msl_utility>
+	<boost/type_traits/is_same.hpp>
+	<cstddef>
+	<boost/type_traits/is_same.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_volatile.hpp>
+	<boost/type_traits/is_abstract.hpp>
+	<boost/type_traits/is_same.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_volatile.hpp>
+	<boost/type_traits/is_same.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_volatile.hpp>
+	<boost/type_traits/is_same.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_volatile.hpp>
+	<boost/type_traits/is_void.hpp>
+
+1278581278 c:\users\melanson\corbit\include\boost\type_traits\is_same.hpp
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/detail/ice_and.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1070458451 c:\users\melanson\corbit\include\boost\type_traits\detail\yes_no_type.hpp
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\detail\ice_and.hpp
+	<boost/config.hpp>
+
+1278253503 c:\users\melanson\corbit\include\boost\type_traits\is_reference.hpp
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/is_lvalue_reference.hpp>
+	<boost/type_traits/is_rvalue_reference.hpp>
+	<boost/type_traits/ice.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1278253503 c:\users\melanson\corbit\include\boost\type_traits\is_lvalue_reference.hpp
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/detail/wrap.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1070458451 c:\users\melanson\corbit\include\boost\type_traits\detail\wrap.hpp
+
+1318195713 c:\users\melanson\corbit\include\boost\type_traits\detail\bool_trait_def.hpp
+	<boost/type_traits/detail/template_arity_spec.hpp>
+	<boost/type_traits/integral_constant.hpp>
+	<boost/mpl/bool.hpp>
+	<boost/mpl/aux_/lambda_support.hpp>
+	<boost/config.hpp>
+
+1094136097 c:\users\melanson\corbit\include\boost\type_traits\detail\template_arity_spec.hpp
+	<boost/mpl/int.hpp>
+	<boost/mpl/aux_/template_arity_fwd.hpp>
+	<boost/mpl/aux_/preprocessor/params.hpp>
+	<boost/mpl/aux_/config/lambda.hpp>
+	<boost/mpl/aux_/config/overload_resolution.hpp>
+
+1206218755 c:\users\melanson\corbit\include\boost\type_traits\integral_constant.hpp
+	<boost/config.hpp>
+	<boost/mpl/bool.hpp>
+	<boost/mpl/integral_c.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\integral_c.hpp
+	<boost/mpl/integral_c_fwd.hpp>
+	<boost/mpl/aux_/config/ctps.hpp>
+	<boost/mpl/aux_/config/static_constant.hpp>
+	<boost/mpl/aux_/config/workaround.hpp>
+	<boost/mpl/aux_/integral_wrapper.hpp>
+
+1223702342 c:\users\melanson\corbit\include\boost\mpl\integral_c_fwd.hpp
+	<boost/mpl/aux_/config/workaround.hpp>
+	<boost/mpl/aux_/adl_barrier.hpp>
+
+1318195713 c:\users\melanson\corbit\include\boost\type_traits\detail\bool_trait_undef.hpp
+
+1278253503 c:\users\melanson\corbit\include\boost\type_traits\is_rvalue_reference.hpp
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\ice.hpp
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/detail/ice_or.hpp>
+	<boost/type_traits/detail/ice_and.hpp>
+	<boost/type_traits/detail/ice_not.hpp>
+	<boost/type_traits/detail/ice_eq.hpp>
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\detail\ice_or.hpp
+	<boost/config.hpp>
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\detail\ice_not.hpp
+	<boost/config.hpp>
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\detail\ice_eq.hpp
+	<boost/config.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_volatile.hpp
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+	<boost/type_traits/detail/cv_traits_impl.hpp>
+	<boost/type_traits/remove_bounds.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_array.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/detail/false_result.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\detail\cv_traits_impl.hpp
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+
+1224059369 c:\users\melanson\corbit\include\boost\type_traits\remove_bounds.hpp
+	<boost/config.hpp>
+	<cstddef>
+	<boost/detail/workaround.hpp>
+	<boost/type_traits/msvc/remove_bounds.hpp>
+	<boost/type_traits/detail/type_trait_def.hpp>
+	<boost/type_traits/detail/type_trait_undef.hpp>
+
+1278581278 c:\users\melanson\corbit\include\boost\type_traits\msvc\remove_bounds.hpp
+	<boost/type_traits/msvc/typeof.hpp>
+	<boost/type_traits/is_array.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\msvc\typeof.hpp
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+
+1224059369 c:\users\melanson\corbit\include\boost\type_traits\is_array.hpp
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/detail/wrap.hpp>
+	<cstddef>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\detail\type_trait_def.hpp
+	<boost/type_traits/detail/template_arity_spec.hpp>
+	<boost/mpl/aux_/lambda_support.hpp>
+
+1094136097 c:\users\melanson\corbit\include\boost\type_traits\detail\type_trait_undef.hpp
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\detail\false_result.hpp
+	<boost/config.hpp>
+
+1255101362 c:\users\melanson\corbit\include\boost\type_traits\is_abstract.hpp
+	<boost/type_traits/intrinsics.hpp>
+	<boost/static_assert.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/is_class.hpp>
+	<boost/type_traits/detail/ice_and.hpp>
+	<boost/type_traits/is_polymorphic.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1215767679 c:\users\melanson\corbit\include\boost\type_traits\is_polymorphic.hpp
+	<boost/type_traits/intrinsics.hpp>
+	<boost/type_traits/is_class.hpp>
+	<boost/type_traits/remove_cv.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/detail/workaround.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1314030152 c:\users\melanson\corbit\include\boost\type_traits\remove_cv.hpp
+	<boost/type_traits/broken_compiler_spec.hpp>
+	<boost/type_traits/detail/cv_traits_impl.hpp>
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+	<cstddef>
+	<boost/type_traits/msvc/remove_cv.hpp>
+	<boost/type_traits/detail/type_trait_def.hpp>
+	<boost/type_traits/detail/type_trait_undef.hpp>
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\broken_compiler_spec.hpp
+	<boost/mpl/aux_/lambda_support.hpp>
+	<boost/config.hpp>
+	<boost/type_traits/detail/type_trait_undef.hpp>
+
+1278581278 c:\users\melanson\corbit\include\boost\type_traits\msvc\remove_cv.hpp
+	<boost/type_traits/msvc/typeof.hpp>
+	<boost/type_traits/is_volatile.hpp>
+	<boost/type_traits/is_const.hpp>
+	<boost/type_traits/is_pointer.hpp>
+	<boost/type_traits/is_array.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_const.hpp
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+	<boost/type_traits/detail/cv_traits_impl.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/remove_bounds.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_array.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/detail/false_result.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_pointer.hpp
+	<boost/type_traits/is_member_pointer.hpp>
+	<boost/type_traits/detail/ice_and.hpp>
+	<boost/type_traits/detail/ice_not.hpp>
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/remove_cv.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_array.hpp>
+	<boost/type_traits/detail/is_function_ptr_tester.hpp>
+	<boost/type_traits/detail/false_result.hpp>
+	<boost/type_traits/detail/ice_or.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_member_pointer.hpp
+	<boost/type_traits/config.hpp>
+	<boost/detail/workaround.hpp>
+	<boost/type_traits/is_member_function_pointer.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_array.hpp>
+	<boost/type_traits/detail/is_mem_fun_pointer_tester.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/detail/false_result.hpp>
+	<boost/type_traits/detail/ice_or.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_member_function_pointer.hpp
+	<boost/type_traits/config.hpp>
+	<boost/detail/workaround.hpp>
+	<boost/type_traits/detail/is_mem_fun_pointer_impl.hpp>
+	<boost/type_traits/remove_cv.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_array.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/detail/false_result.hpp>
+	<boost/type_traits/detail/ice_or.hpp>
+	<boost/type_traits/detail/is_mem_fun_pointer_tester.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\detail\is_mem_fun_pointer_impl.hpp
+	<boost/config.hpp>
+	<boost/preprocessor/iterate.hpp>
+	<boost/preprocessor/enum_params.hpp>
+	<boost/preprocessor/comma_if.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\iterate.hpp
+	<boost/preprocessor/iteration/iterate.hpp>
+
+1090896214 c:\users\melanson\corbit\include\boost\preprocessor\enum_params.hpp
+	<boost/preprocessor/repetition/enum_params.hpp>
+
+1144236156 c:\users\melanson\corbit\include\boost\type_traits\detail\is_mem_fun_pointer_tester.hpp
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/config.hpp>
+	<boost/preprocessor/iterate.hpp>
+	<boost/preprocessor/enum_params.hpp>
+	<boost/preprocessor/comma_if.hpp>
+
+1144236156 c:\users\melanson\corbit\include\boost\type_traits\detail\is_function_ptr_tester.hpp
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/config.hpp>
+	<boost/preprocessor/iterate.hpp>
+	<boost/preprocessor/enum_params.hpp>
+	<boost/preprocessor/comma_if.hpp>
+
+1224059369 c:\users\melanson\corbit\include\boost\type_traits\is_void.hpp
+	<boost/config.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_union.hpp
+	<boost/type_traits/remove_cv.hpp>
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/intrinsics.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\is_scalar.hpp
+	<boost/type_traits/is_arithmetic.hpp>
+	<boost/type_traits/is_enum.hpp>
+	<boost/type_traits/is_pointer.hpp>
+	<boost/type_traits/is_member_pointer.hpp>
+	<boost/type_traits/detail/ice_or.hpp>
+	<boost/config.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1224059369 c:\users\melanson\corbit\include\boost\type_traits\is_arithmetic.hpp
+	<boost/type_traits/is_integral.hpp>
+	<boost/type_traits/is_float.hpp>
+	<boost/type_traits/detail/ice_or.hpp>
+	<boost/config.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1224059369 c:\users\melanson\corbit\include\boost\type_traits\is_integral.hpp
+	<boost/config.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\is_float.hpp
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_enum.hpp
+	<boost/type_traits/intrinsics.hpp>
+	<boost/type_traits/add_reference.hpp>
+	<boost/type_traits/is_arithmetic.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/is_convertible.hpp>
+	<boost/type_traits/is_array.hpp>
+	<boost/type_traits/is_function.hpp>
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/is_class.hpp>
+	<boost/type_traits/is_union.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1278253503 c:\users\melanson\corbit\include\boost\type_traits\add_reference.hpp
+	<boost/type_traits/is_reference.hpp>
+	<boost/detail/workaround.hpp>
+	<boost/config.hpp>
+	<boost/type_traits/detail/type_trait_def.hpp>
+	<boost/type_traits/detail/type_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_convertible.hpp
+	<boost/type_traits/intrinsics.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/is_array.hpp>
+	<boost/type_traits/add_reference.hpp>
+	<boost/type_traits/ice.hpp>
+	<boost/type_traits/is_arithmetic.hpp>
+	<boost/type_traits/is_void.hpp>
+	<boost/type_traits/is_abstract.hpp>
+	<boost/type_traits/add_rvalue_reference.hpp>
+	<boost/type_traits/is_function.hpp>
+	<boost/type_traits/remove_reference.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1314030152 c:\users\melanson\corbit\include\boost\type_traits\add_rvalue_reference.hpp
+	<boost/config.hpp>
+	<boost/type_traits/is_void.hpp>
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/detail/type_trait_def.hpp>
+	<boost/type_traits/detail/type_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_function.hpp
+	<boost/type_traits/is_reference.hpp>
+	<boost/type_traits/detail/false_result.hpp>
+	<boost/config.hpp>
+	<boost/type_traits/detail/is_function_ptr_helper.hpp>
+	<boost/type_traits/detail/is_function_ptr_tester.hpp>
+	<boost/type_traits/detail/yes_no_type.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1128691598 c:\users\melanson\corbit\include\boost\type_traits\detail\is_function_ptr_helper.hpp
+	<boost/type_traits/config.hpp>
+	<boost/preprocessor/iterate.hpp>
+	<boost/preprocessor/enum_params.hpp>
+	<boost/preprocessor/comma_if.hpp>
+
+1294337682 c:\users\melanson\corbit\include\boost\type_traits\remove_reference.hpp
+	<boost/type_traits/broken_compiler_spec.hpp>
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+	<boost/type_traits/msvc/remove_reference.hpp>
+	<boost/type_traits/detail/type_trait_def.hpp>
+	<boost/type_traits/detail/type_trait_undef.hpp>
+
+1278581278 c:\users\melanson\corbit\include\boost\type_traits\msvc\remove_reference.hpp
+	<boost/type_traits/msvc/typeof.hpp>
+	<boost/type_traits/is_reference.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\has_trivial_destructor.hpp
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/intrinsics.hpp>
+	<boost/type_traits/is_pod.hpp>
+	<boost/type_traits/detail/ice_or.hpp>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1303730808 c:\users\melanson\corbit\include\boost\type_traits\is_pod.hpp
+	<boost/type_traits/config.hpp>
+	<boost/type_traits/is_void.hpp>
+	<boost/type_traits/is_scalar.hpp>
+	<boost/type_traits/detail/ice_or.hpp>
+	<boost/type_traits/intrinsics.hpp>
+	<cstddef>
+	<boost/type_traits/detail/bool_trait_def.hpp>
+	<boost/type_traits/detail/bool_trait_undef.hpp>
 

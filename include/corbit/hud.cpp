@@ -1,4 +1,4 @@
-#include "hud.h"
+#include "hud.hpp"
 
 hud_c::hud_c (class object_c* _activeship, class object_c* _target, class object_c* _reference)
 : activeship (_activeship), target (_target), reference (_reference) {

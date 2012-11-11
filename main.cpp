@@ -2,11 +2,11 @@
 
 #define ALLEGRO_STATICLINK
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
 
-#include <corbit/object.h>
-#include <corbit/camera.h>
-#include <corbit/hud.h>
-#include <corbit/version.h>
+#include <boost/intrusive/list.hpp>
+
+#include <corbit/corbit.hpp>
 
 using namespace std;
 
@@ -18,6 +18,8 @@ ALLEGRO_EVENT_QUEUE*	event_queue		=NULL;
 ALLEGRO_TIMER*			timer			=NULL;
 bool					key[ALLEGRO_KEY_MAX];
 
+object_c poop ("poop", 100.32, 233, 1, 2, 11, 12, al_color_name("red"));
+
 
 bool initAllegro() {
 
@@ -26,6 +28,12 @@ bool initAllegro() {
 	///initializes allegro///
 	if(!al_init()) {
 		cerr << "Failed to initialize Allegro!" << endl;
+		success = false;
+	}
+
+	///initializes primitives addon///
+	if(!al_init_primitives_addon()) {
+		cerr << "Failed to initialize primitives addon!" << endl;
 		success = false;
 	}
 
@@ -45,7 +53,7 @@ bool initAllegro() {
 	///initializes display///
 	ALLEGRO_DISPLAY_MODE disp_data;
 	al_get_display_mode(al_get_num_display_modes()-1, &disp_data);
-	al_set_new_display_flags(ALLEGRO_WINDOWED);
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
 	display = al_create_display(disp_data.width, disp_data.height-50);
 	if(!display) {
 		cerr << "Failed to create display!" << endl;
@@ -99,14 +107,13 @@ bool cleanup() {
 
 void calculate() {
 
-	static int n;
+	static unsigned short n;
 	for (n = 0; n != ALLEGRO_KEY_MAX; n++)
 		if (key[n])
-			cout << n << endl;
+			cout << al_keycode_to_name(n) << endl;
 }
 
 void draw() {
-
 
 }
 
