@@ -1,9 +1,8 @@
 # depslib dependency file v1.0
-1352670059 source:c:\users\melanson\corbit\main.cpp
+1352687476 source:c:\users\melanson\corbit\main.cpp
 	<iostream>
 	<allegro5/allegro.h>
 	<allegro5/allegro_primitives.h>
-	<boost/intrusive/list.hpp>
 	<corbit/corbit.hpp>
 
 1289821322 c:\users\melanson\corbit\include\allegro5\allegro.h
@@ -211,7 +210,7 @@
 
 1289821322 c:\users\melanson\corbit\include\allegro5\alcompat.h
 
-1352653833 source:c:\users\melanson\corbit\include\corbit\object.cpp
+1352688745 source:c:\users\melanson\corbit\include\corbit\object.cpp
 	"object.hpp"
 	<cmath>
 
@@ -245,9 +244,10 @@
 
 1352653887 c:\users\melanson\corbit\include\corbit\hud.hpp
 
-1352653886 c:\users\melanson\corbit\include\corbit\object.hpp
+1352688773 c:\users\melanson\corbit\include\corbit\object.hpp
 	<string>
 	<allegro5/allegro_color.h>
+	<boost/intrusive/list.hpp>
 
 1352653853 c:\users\melanson\corbit\include\corbit\camera.hpp
 

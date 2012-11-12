@@ -1,10 +1,10 @@
 #include <iostream>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 #define ALLEGRO_STATICLINK
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
-
-#include <boost/intrusive/list.hpp>
 
 #include <corbit/corbit.hpp>
 
@@ -18,7 +18,11 @@ ALLEGRO_EVENT_QUEUE*	event_queue		=NULL;
 ALLEGRO_TIMER*			timer			=NULL;
 bool					key[ALLEGRO_KEY_MAX];
 
-object_c poop ("poop", 100.32, 233, 1, 2, 11, 12, al_color_name("red"));
+object_c poop ("poop", 100.32, 233, 1, 2, 0, 0, 0, 0, al_color_name("red"));
+object_c doober ("doober", 100.32, 233, 20, 2, 11, 12, 0, 0, al_color_name("green"));
+
+typedef boost::intrusive::list <object_c> objectlist;
+objectlist object;
 
 
 bool initAllegro() {
@@ -111,10 +115,18 @@ void calculate() {
 	for (n = 0; n != ALLEGRO_KEY_MAX; n++)
 		if (key[n])
 			cout << al_keycode_to_name(n) << endl;
+
+	if (key[ALLEGRO_KEY_RIGHT])
+		poop.accelerate (1, 0);
+	if (key[ALLEGRO_KEY_LEFT])
+		poop.accelerate (-1, 0);
+
+	poop.move();
 }
 
 void draw() {
 
+	al_draw_circle (poop.x(), poop.y(), poop.radius(), poop.color, 0);
 }
 
 void run() {
@@ -162,6 +174,13 @@ int main() {
 		cleanup();
 		return 1;
 	}
+
+	object.push_back(poop);
+	object.push_back(doober);
+
+	objectlist::iterator it(object.begin()), itend(object.end());
+
+	cout << it->x();
 
 	run();
 

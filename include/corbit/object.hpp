@@ -3,51 +3,60 @@
 
 #include <string>
 #include <allegro5/allegro_color.h>
+#include <boost/intrusive/list.hpp>
 extern const unsigned short FPS;
 
-class object_c {
+typedef long double data;
 
-	struct				pos_t {
+class object_c : public boost::intrusive::list_base_hook<> {
 
-		long double		x, y;
-						pos_t		(long double _x, long double _y);
+	const data			_mass,
+						_radius;
+
+	struct				pos_s {
+		data			x, y;
+						pos_s		(data X, data Y);
 	} pos;
-	struct				v_t : pos_t {
 
-						v_t			(long double _Vx, long double _Vy);
+	struct				v_s : pos_s {
+						v_s			(data Vx, data Vy);
 	} v;
 
-	const long double	mass;
-	long double			x			() const,
-						y			() const;
-	long double			Vx			() const,
-						Vy			() const;
+	struct				acc_s : pos_s {
+						acc_s		(data accX, data accY);
+	} acc;
 
 public:
 	//properties
 	const std::string	name;
-	virtual long double	totalmass	() const;
-	const long long		radius;
 
-	void				acc			(long double force, long double radians),
+	void				accelerate	(data force, data radians),
 						move		();
-	long double			distance2	(const object_c& targ) const,
-						distance	(const object_c& targ) const;
-	long double			gravity		(const object_c& targ) const;
-	void				gravitate	(const object_c& targ);
+	data				distance2	(const object_c& targ) const,
+						distance	(const object_c& targ) const,
+						gravity		(const object_c& targ) const,
+						thetaobject	(const object_c& targ) const,
+						Vcen		(const object_c& targ) const,
+						Vtan		(const object_c& targ) const,
+						orbitV		(const object_c& targ) const,
 
-	long double			Vcen		(const object_c* targ) const,
-						Vtan		(const object_c* targ) const;
-	long double			orbitV		(const object_c* targ) const;
+						x			() const,
+						y			() const,
+						Vx			() const,
+						Vy			() const,
+						accX		() const,
+						accY		() const,
+						radius		() const;
+	virtual data		mass		() const;
 
 	const ALLEGRO_COLOR	color;
 
-	object_c (std::string _name, long double _mass, long long _radius,
-	          long double _x, long double _y, long double _Vx, long double _Vy,
-	          ALLEGRO_COLOR _color);
-	~object_c();
-protected:
+	boost::intrusive::list_member_hook<> hook;
 
+	object_c (std::string name_, data m, data r,
+			  data x, data y, data Vx, data Vy, data accX, data accY,
+			  ALLEGRO_COLOR color_);
+	~object_c();
 };
 
 #endif // OBJECT_HPP

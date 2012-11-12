@@ -1,3 +1,11 @@
+11 November 2012
+   Corbit Beta v2.0:
+
+     Change log:
+        -Added: boost::intrusive base hook to object class
+        -New: struct for acceleration
+        -Applied: rudimentary newtonian physics
+
 06 November 2012
    Corbit Beta v2.0:
 
