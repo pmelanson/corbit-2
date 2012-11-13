@@ -7,7 +7,6 @@
 #include <allegro5/allegro_primitives.h>
 
 #include <corbit/corbit.hpp>
-
 using namespace std;
 
 
@@ -18,11 +17,9 @@ ALLEGRO_EVENT_QUEUE*	event_queue		=NULL;
 ALLEGRO_TIMER*			timer			=NULL;
 bool					key[ALLEGRO_KEY_MAX];
 
-object_c poop ("poop", 100.32, 233, 1, 2, 0, 0, 0, 0, al_color_name("red"));
-object_c doober ("doober", 100.32, 233, 20, 2, 11, 12, 0, 0, al_color_name("green"));
-
 typedef boost::intrusive::list <object_c> objectlist;
 objectlist object;
+//hud_c hud = hud_c::getinstance();
 
 
 bool initAllegro() {
@@ -116,17 +113,12 @@ void calculate() {
 		if (key[n])
 			cout << al_keycode_to_name(n) << endl;
 
-	if (key[ALLEGRO_KEY_RIGHT])
-		poop.accelerate (1, 0);
-	if (key[ALLEGRO_KEY_LEFT])
-		poop.accelerate (-1, 0);
 
-	poop.move();
 }
 
 void draw() {
 
-	al_draw_circle (poop.x(), poop.y(), poop.radius(), poop.color, 0);
+//	al_draw_circle (poop.x(), poop.y(), poop.radius(), poop.color, 0);
 }
 
 void run() {
@@ -175,12 +167,8 @@ int main() {
 		return 1;
 	}
 
-	object.push_back(poop);
-	object.push_back(doober);
-
-	objectlist::iterator it(object.begin()), itend(object.end());
-
-	cout << it->x();
+//	object.push_back(object_c("poop", 100.32, 233, 1, 2, 0, 0, 0, 0, al_color_name("red")));
+//	object.push_back(object_c("doober", 100.32, 233, 20, 2, 11, 12, 0, 0, al_color_name("green")));
 
 	run();
 

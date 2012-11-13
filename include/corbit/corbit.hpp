@@ -1,3 +1,4 @@
+#include "globals.hpp"
 #include "object.hpp"
 #include "hud.hpp"
 #include "camera.hpp"

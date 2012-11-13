@@ -1,35 +1,33 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+#include <corbit/globals.hpp>
+
 class camera_c {
 private:
 
-	struct				pos_t {			//holds position
+	#include <corbit/dynamics.hpp>
 
-		long double		x, y;
-						pos_t		(long double _x, long double _y);
-	} pos;
-	struct				v_t : pos_t {	//holds velocity
-
-						v_t			(long double _Vx, long double _Vy);
-	} v;
+	class object_c*		center;
 
 	bool				tracking;
 	const unsigned		inverse;
 	float				zoomlevel;
 
-						camera_c	(long double _x, long double _y, long double _Vx, long double _Vy, unsigned _inverse, float _zoomlevel);
+						camera_c	(data X, data Y, data Vx, data Vy, data accX, data accY,
+									 class object_c* center_, unsigned inverse_, float zoomlevel_);
 public:
-	void				setcenter	(class object_c& center);
+	void				setcenter	(class object_c* center_);
 	void 				recenter	();
 	void 				track		(bool totrack);
-	void 				panX		(int amount),
-						panY		(int amount);
+	void 				panX		(float amount),
+						panY		(float amount);
 
-	float				zoom		();
+	float				zoom		() const;
 	void				changezoom	(float amount);
 
-	static camera_c&	getinstance (long double _x, long double _y, long double _Vx, long double _Vy, unsigned _inverse, float _zoomlevel);
+	static camera_c&	getinstance (data X, data Y, data Vx, data Vy, data accX, data accY,
+									 class object_c* center_, unsigned inverse_, float zoomlevel_);
 };
 
-#endif // CAMERA_HPP
+#endif	//CAMERA_HPP

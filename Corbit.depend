@@ -1,6 +1,7 @@
 # depslib dependency file v1.0
-1352687476 source:c:\users\melanson\corbit\main.cpp
+1352771910 source:c:\users\melanson\corbit\main.cpp
 	<iostream>
+	<cmath>
 	<allegro5/allegro.h>
 	<allegro5/allegro_primitives.h>
 	<corbit/corbit.hpp>
@@ -210,7 +211,7 @@
 
 1289821322 c:\users\melanson\corbit\include\allegro5\alcompat.h
 
-1352688745 source:c:\users\melanson\corbit\include\corbit\object.cpp
+1352771290 source:c:\users\melanson\corbit\include\corbit\object.cpp
 	"object.hpp"
 	<cmath>
 
@@ -220,12 +221,12 @@
 
 1352602357 c:\users\melanson\corbit\include\corbit\version.h
 
-1352653830 source:c:\users\melanson\corbit\include\corbit\camera.cpp
+1352771300 source:c:\users\melanson\corbit\include\corbit\camera.cpp
 	"camera.hpp"
 
 1352600125 c:\users\melanson\corbit\include\corbit\camera.h
 
-1352653832 source:c:\users\melanson\corbit\include\corbit\hud.cpp
+1352773076 source:c:\users\melanson\corbit\include\corbit\hud.cpp
 	"hud.hpp"
 
 1352601837 c:\users\melanson\corbit\include\corbit\hud.h
@@ -242,14 +243,18 @@
 1340561286 c:\users\melanson\corbit\include\allegro5\allegro_primitives.h
 	<allegro5/allegro.h>
 
-1352653887 c:\users\melanson\corbit\include\corbit\hud.hpp
+1352772284 c:\users\melanson\corbit\include\corbit\hud.hpp
 
-1352688773 c:\users\melanson\corbit\include\corbit\object.hpp
+1352772165 c:\users\melanson\corbit\include\corbit\object.hpp
 	<string>
 	<allegro5/allegro_color.h>
 	<boost/intrusive/list.hpp>
+	<corbit/globals.hpp>
+	<corbit/dynamics.hpp>
 
-1352653853 c:\users\melanson\corbit\include\corbit\camera.hpp
+1352773528 c:\users\melanson\corbit\include\corbit\camera.hpp
+	<corbit/globals.hpp>
+	<corbit/dynamics.hpp>
 
 1351216557 c:\users\melanson\corbit\include\boost\intrusive\list.hpp
 	<boost/intrusive/detail/config_begin.hpp>
@@ -505,13 +510,14 @@
 	<boost/intrusive/detail/config_begin.hpp>
 	<boost/intrusive/detail/config_end.hpp>
 
-1352653823 c:\users\melanson\corbit\include\corbit\corbit.hpp
+1352770523 c:\users\melanson\corbit\include\corbit\corbit.hpp
+	"globals.hpp"
 	"object.hpp"
 	"hud.hpp"
 	"camera.hpp"
 	"version.hpp"
 
-1352653876 c:\users\melanson\corbit\include\corbit\version.hpp
+1352689329 c:\users\melanson\corbit\include\corbit\version.hpp
 
 1090896214 c:\users\melanson\corbit\include\boost\preprocessor\iteration\local.hpp
 	<boost/preprocessor/config/config.hpp>
@@ -1616,4 +1622,8 @@
 	<cstddef>
 	<boost/type_traits/detail/bool_trait_def.hpp>
 	<boost/type_traits/detail/bool_trait_undef.hpp>
+
+1352770865 c:\users\melanson\corbit\include\corbit\globals.hpp
+
+1352771409 c:\users\melanson\corbit\include\corbit\dynamics.hpp
 
