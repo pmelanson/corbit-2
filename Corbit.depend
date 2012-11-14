@@ -180,7 +180,7 @@
 	"allegro5/color.h"
 	"allegro5/bitmap.h"
 
-1289821322 c:\users\melanson\corbit\include\allegro5\color.h
+1352849205 c:\users\melanson\corbit\include\allegro5\color.h
 
 1330878968 c:\users\melanson\corbit\include\allegro5\bitmap.h
 	"allegro5/color.h"
@@ -226,7 +226,7 @@
 
 1352600125 c:\users\melanson\corbit\include\corbit\camera.h
 
-1352773076 source:c:\users\melanson\corbit\include\corbit\hud.cpp
+1352779036 source:c:\users\melanson\corbit\include\corbit\hud.cpp
 	"hud.hpp"
 
 1352601837 c:\users\melanson\corbit\include\corbit\hud.h
@@ -243,17 +243,18 @@
 1340561286 c:\users\melanson\corbit\include\allegro5\allegro_primitives.h
 	<allegro5/allegro.h>
 
-1352772284 c:\users\melanson\corbit\include\corbit\hud.hpp
+1352773636 c:\users\melanson\corbit\include\corbit\hud.hpp
 
-1352772165 c:\users\melanson\corbit\include\corbit\object.hpp
+1352859412 c:\users\melanson\corbit\include\corbit\object.hpp
 	<string>
 	<allegro5/allegro_color.h>
 	<boost/intrusive/list.hpp>
 	<corbit/globals.hpp>
 	<corbit/dynamics.hpp>
 
-1352773528 c:\users\melanson\corbit\include\corbit\camera.hpp
+1352861166 c:\users\melanson\corbit\include\corbit\camera.hpp
 	<corbit/globals.hpp>
+	<corbit/object.hpp>
 	<corbit/dynamics.hpp>
 
 1351216557 c:\users\melanson\corbit\include\boost\intrusive\list.hpp
@@ -517,7 +518,7 @@
 	"camera.hpp"
 	"version.hpp"
 
-1352689329 c:\users\melanson\corbit\include\corbit\version.hpp
+1352779092 c:\users\melanson\corbit\include\corbit\version.hpp
 
 1090896214 c:\users\melanson\corbit\include\boost\preprocessor\iteration\local.hpp
 	<boost/preprocessor/config/config.hpp>
@@ -1623,7 +1624,24 @@
 	<boost/type_traits/detail/bool_trait_def.hpp>
 	<boost/type_traits/detail/bool_trait_undef.hpp>
 
-1352770865 c:\users\melanson\corbit\include\corbit\globals.hpp
+1352858921 c:\users\melanson\corbit\include\corbit\globals.hpp
 
-1352771409 c:\users\melanson\corbit\include\corbit\dynamics.hpp
+1352860838 c:\users\melanson\corbit\include\corbit\dynamics.hpp
+
+1352846081 source:c:\users\melanson\corbit\src\hud.cpp
+	<corbit/hud.hpp>
+
+1352861003 source:c:\users\melanson\corbit\src\main.cpp
+	<iostream>
+	<cmath>
+	<allegro5/allegro.h>
+	<allegro5/allegro_primitives.h>
+	<corbit/corbit.hpp>
+
+1352859420 source:c:\users\melanson\corbit\src\object.cpp
+	<corbit/object.hpp>
+	<cmath>
+
+1352861189 source:c:\users\melanson\corbit\src\camera.cpp
+	<corbit/camera.hpp>
 

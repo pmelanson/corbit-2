@@ -6,7 +6,6 @@
 #include <boost/intrusive/list.hpp>
 
 #include <corbit/globals.hpp>
-extern const unsigned short FPS;
 
 class object_c : public boost::intrusive::list_base_hook<> {
 private:
@@ -27,7 +26,7 @@ public:
 						thetaobject	(const object_c& targ) const,
 						Vcen		(const object_c& targ) const,
 						Vtan		(const object_c& targ) const,
-						orbitV		(const object_c& targ) const,
+						orbitv		(const object_c& targ) const,
 
 						x			() const,
 						y			() const,
@@ -40,11 +39,11 @@ public:
 
 	const ALLEGRO_COLOR	color;
 
-	boost::intrusive::list_member_hook<> hook;
+	object_c						(std::string name_, data m, data r,
+									 data X, data Y, data Vx, data Vy, data accX, data accY,
+									 ALLEGRO_COLOR color_);
 
-	object_c (std::string name_, data m, data r,
-			  data X, data Y, data Vx, data Vy, data accX, data accY,
-			  ALLEGRO_COLOR color_);
+	~object_c						();
 };
 
 #endif	//OBJECT_HPP

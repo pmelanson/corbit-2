@@ -10,17 +10,23 @@
 using namespace std;
 
 
-const unsigned short	FPS				=30;
-
 ALLEGRO_DISPLAY*		display			=NULL;
 ALLEGRO_EVENT_QUEUE*	event_queue		=NULL;
 ALLEGRO_TIMER*			timer			=NULL;
 bool					key[ALLEGRO_KEY_MAX];
+unsigned short			dispw,
+						disph;
 
 typedef boost::intrusive::list <object_c> objectlist;
 objectlist object;
 //hud_c hud = hud_c::getinstance();
+camera_c camera = camera_c::getinstance(100, 500, 0, 0, 0, 0, NULL, 1, 1);
 
+
+struct delete_disposer {
+   void operator() (object_c *to_delete)
+   {delete to_delete;}
+};
 
 bool initAllegro() {
 
@@ -54,8 +60,9 @@ bool initAllegro() {
 	///initializes display///
 	ALLEGRO_DISPLAY_MODE disp_data;
 	al_get_display_mode(al_get_num_display_modes()-1, &disp_data);
-	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+	al_set_new_display_flags(ALLEGRO_WINDOWED);
 	display = al_create_display(disp_data.width, disp_data.height-50);
+	dispw = disp_data.width, disph = disp_data.height;
 	if(!display) {
 		cerr << "Failed to create display!" << endl;
 		success = false;
@@ -102,6 +109,8 @@ bool cleanup() {
 	if(display)
 		al_destroy_display(display);
 
+	object.erase(object.begin(), object.end());
+
 	return true;
 }
 
@@ -111,14 +120,34 @@ void calculate() {
 	static unsigned short n;
 	for (n = 0; n != ALLEGRO_KEY_MAX; n++)
 		if (key[n])
-			cout << al_keycode_to_name(n) << endl;
+			clog << endl << al_keycode_to_name(n);
 
+	camera.move();
+	camera.recenter(dispw, disph);
+
+	objectlist::iterator it;
+
+	for (it = object.begin(); it != object.end(); ++it)
+		it->move();
+
+	if (key[ALLEGRO_KEY_PAD_MINUS])
+		camera.changezoom(-0.01);
+	if (key[ALLEGRO_KEY_PAD_PLUS])
+		camera.changezoom(0.01);
+	if (key[ALLEGRO_KEY_RIGHT])
+		camera.panx(-0.01);
+	if (key[ALLEGRO_KEY_LEFT])
+		camera.panx(0.01);
+	if (key[ALLEGRO_KEY_TAB])
+		camera.toggletrack();
 
 }
 
 void draw() {
 
-//	al_draw_circle (poop.x(), poop.y(), poop.radius(), poop.color, 0);
+	static objectlist::iterator it;
+	for (it = object.begin(); it != object.end(); ++it)
+		al_draw_circle (it->x() - camera.x(), it->y() - camera.y(), it->radius() * camera.zoom(), it->color, 0);
 }
 
 void run() {
@@ -163,17 +192,23 @@ void run() {
 int main() {
 
 	if(!initialize()) {
-		cleanup();
-		return 1;
+		if(cleanup())
+			return 1;
+		else
+			return 11;
 	}
 
-//	object.push_back(object_c("poop", 100.32, 233, 1, 2, 0, 0, 0, 0, al_color_name("red")));
-//	object.push_back(object_c("doober", 100.32, 233, 20, 2, 11, 12, 0, 0, al_color_name("green")));
+	object_c doober ("poop", 1000, 200, dispw, disph, 0, 0, 0, 0, al_color_name("red"));
+
+	object.push_back(doober);
+
+	camera.setcenter(doober);
+	camera.recenter(dispw, disph);
 
 	run();
 
 	if(cleanup())
 		return 0;
 	else
-		return 2;
+		return 10;
 }

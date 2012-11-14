@@ -12,8 +12,12 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-pg" />
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add option="-pg -lgmon" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin\Release\Corbit" prefix_auto="1" extension_auto="1" />
@@ -71,17 +75,17 @@
 			<Add library="lib\mingw\libws2_32.a" />
 			<Add library="lib\mingw\libshlwapi.a" />
 		</Linker>
-		<Unit filename="include\corbit\camera.cpp" />
 		<Unit filename="include\corbit\camera.hpp" />
 		<Unit filename="include\corbit\corbit.hpp" />
 		<Unit filename="include\corbit\dynamics.hpp" />
 		<Unit filename="include\corbit\globals.hpp" />
-		<Unit filename="include\corbit\hud.cpp" />
 		<Unit filename="include\corbit\hud.hpp" />
-		<Unit filename="include\corbit\object.cpp" />
 		<Unit filename="include\corbit\object.hpp" />
 		<Unit filename="include\corbit\version.hpp" />
-		<Unit filename="main.cpp" />
+		<Unit filename="src\camera.cpp" />
+		<Unit filename="src\hud.cpp" />
+		<Unit filename="src\main.cpp" />
+		<Unit filename="src\object.cpp" />
 		<Extensions>
 			<AutoVersioning>
 				<Scheme minor_max="2147483647" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="2147483647" />

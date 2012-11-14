@@ -1,4 +1,4 @@
-#include "hud.hpp"
+#include <corbit/hud.hpp>
 
 hud_c::hud_c							(class object_c* activeship_, class object_c* target_, class object_c* reference_)
 	: activeship (activeship_), target (target_), reference (reference_) {}

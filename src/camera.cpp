@@ -1,17 +1,25 @@
-#include "camera.hpp"
+#include <corbit/camera.hpp>
 
-void				camera_c::setcenter		(class object_c* center_)	{center = center_;}
-void 				camera_c::recenter		() {
-	pos.x = center->x();
-	pos.y = center->y();
+void				camera_c::setcenter		(class object_c& center_)	{center = &center_;}
+void 				camera_c::recenter		(unsigned short dispw, unsigned short disph) {
+	if (!tracking || !center) return;
+	pos.x = center->x() -dispw/2;
+	pos.y = center->y() -disph/2;
 
-	v.x = center->x();
-	v.y = center->y();
+	v.x = center->Vx();
+	v.y = center->Vy();
+}
+void				camera_c::move			() {
+	pos.x += v.x;
+	pos.y += v.y;
 }
 void 				camera_c::track			(bool totrack)				{tracking = totrack;}
-void 				camera_c::panX			(float amount)				{v.x += amount;}
-void				camera_c::panY			(float amount)				{v.y += amount;}
+void				camera_c::toggletrack	()							{tracking = !tracking;}
+void 				camera_c::panx			(float amount)				{v.x += amount;}
+void				camera_c::pany			(float amount)				{v.y += amount;}
 
+data				camera_c::x				() const					{return pos.x;}
+data				camera_c::y				() const					{return pos.y;}
 float				camera_c::zoom			() const					{return inverse/zoomlevel;}
 void				camera_c::changezoom	(float amount)				{zoomlevel += amount;}
 
