@@ -37,11 +37,12 @@ public:
 						radius		() const;
 	virtual data		mass		() const;
 
-	const ALLEGRO_COLOR	color;
+	ALLEGRO_COLOR	color;
 
 	object_c						(std::string name_, data m, data r,
 									 data X, data Y, data Vx, data Vy, data accX, data accY,
 									 ALLEGRO_COLOR color_);
+	object_c						();
 
 	~object_c						();
 };

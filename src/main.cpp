@@ -1,9 +1,10 @@
+#include <fstream>
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <cmath>
 
 #define ALLEGRO_STATICLINK
-#include <allegro5/allegro.h>
+#include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 
 #include <corbit/corbit.hpp>
@@ -14,6 +15,7 @@ ALLEGRO_DISPLAY*		display			=NULL;
 ALLEGRO_EVENT_QUEUE*	event_queue		=NULL;
 ALLEGRO_TIMER*			timer			=NULL;
 bool					key[ALLEGRO_KEY_MAX];
+unsigned				mods;
 unsigned short			dispw,
 						disph;
 
@@ -22,11 +24,6 @@ objectlist object;
 //hud_c hud = hud_c::getinstance();
 camera_c camera = camera_c::getinstance(100, 500, 0, 0, 0, 0, NULL, 1, 1);
 
-
-struct delete_disposer {
-   void operator() (object_c *to_delete)
-   {delete to_delete;}
-};
 
 bool initAllegro() {
 
@@ -131,15 +128,19 @@ void calculate() {
 		it->move();
 
 	if (key[ALLEGRO_KEY_PAD_MINUS])
-		camera.changezoom(-0.01);
+		camera.changezoom(0.1);
 	if (key[ALLEGRO_KEY_PAD_PLUS])
-		camera.changezoom(0.01);
+		camera.changezoom(-0.1);
 	if (key[ALLEGRO_KEY_RIGHT])
-		camera.panx(-0.01);
+		camera.panx(0.1);
 	if (key[ALLEGRO_KEY_LEFT])
-		camera.panx(0.01);
+		camera.panx(-0.1);
 	if (key[ALLEGRO_KEY_TAB])
 		camera.toggletrack();
+	if (key[ALLEGRO_KEY_Q])
+		camera.track(true);
+	if (key[ALLEGRO_KEY_W])
+		camera.track(false);
 
 }
 
@@ -147,7 +148,7 @@ void draw() {
 
 	static objectlist::iterator it;
 	for (it = object.begin(); it != object.end(); ++it)
-		al_draw_circle (it->x() - camera.x(), it->y() - camera.y(), it->radius() * camera.zoom(), it->color, 0);
+		al_draw_circle (it->x() -camera.x(), it->y() -camera.y(), it->radius() *camera.zoom(), it->color, 0);
 }
 
 void run() {
@@ -176,6 +177,7 @@ void run() {
 
 		else if(ev.type == ALLEGRO_EVENT_KEY_CHAR) {						///keypress
 			key[ev.keyboard.keycode] = true;
+			mods += ev.keyboard.modifiers;
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {				///redraw
@@ -198,12 +200,13 @@ int main() {
 			return 11;
 	}
 
-	object_c doober ("poop", 1000, 200, dispw, disph, 0, 0, 0, 0, al_color_name("red"));
+	object_c doober ("poop", 1000, 200, dispw, disph, 0, 0, 0, 0, al_color_name("azure"));
 
 	object.push_back(doober);
 
 	camera.setcenter(doober);
 	camera.recenter(dispw, disph);
+
 
 	run();
 

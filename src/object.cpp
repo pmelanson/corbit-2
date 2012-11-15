@@ -74,8 +74,18 @@ object_c::object_c			(std::string name_, data m, data r,
 	clog << "\nvY=" << v.y;
 	clog << "\naccX=" << acc.x;
 	clog << "\naccY=" << acc.y;
-	clog << "\ncolor=" << hex << uppercase << int(color.r) << int(color.g) << int(color.b) << int(color.a) << dec << nouppercase;
+	unsigned char R, G, B, A;
+	al_unmap_rgba(color, &R, &G, &B, &A);
+	clog << "\ncolor=" << hex << uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << dec << nouppercase;
 	clog << endl;
+}
+
+object_c::object_c			()
+	: name ("the nameless"), _mass (1), _radius (1),
+	pos (9001, 9001), v (0, 0), acc (0, 0),
+	color (al_color_name("magenta")) {
+
+	clog << "Empty object created, placing default object at (" << pos.x << ", " << pos.y << ")" << endl;
 }
 
 object_c::~object_c			() {
@@ -89,6 +99,8 @@ object_c::~object_c			() {
 	clog << "\nvY=" << v.y;
 	clog << "\naccX=" << acc.x;
 	clog << "\naccY=" << acc.y;
-	clog << "\ncolor=" << hex << uppercase << int(color.r) << int(color.g) << int(color.b) << int(color.a) << dec << nouppercase;
+	unsigned char R, G, B, A;
+	al_unmap_rgba(color, &R, &G, &B, &A);
+	clog << "\ncolor=" << hex << uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << dec << nouppercase;
 	clog << endl;
 }

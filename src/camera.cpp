@@ -6,12 +6,12 @@ void 				camera_c::recenter		(unsigned short dispw, unsigned short disph) {
 	pos.x = center->x() -dispw/2;
 	pos.y = center->y() -disph/2;
 
-	v.x = center->Vx();
-	v.y = center->Vy();
+//	v.x = center->Vx();
+//	v.y = center->Vy();
 }
 void				camera_c::move			() {
-	pos.x += v.x;
-	pos.y += v.y;
+	pos.x += v.x /zoom();
+	pos.y += v.y /zoom();
 }
 void 				camera_c::track			(bool totrack)				{tracking = totrack;}
 void				camera_c::toggletrack	()							{tracking = !tracking;}
