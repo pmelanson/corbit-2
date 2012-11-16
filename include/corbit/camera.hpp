@@ -14,26 +14,30 @@ private:
 
 	bool				tracking;
 	const unsigned		inverse;
-	float				zoomlevel;
+	float				zoom_level;
 
-						camera_c	(data X, data Y, data Vx, data Vy, data accX, data accY,
-									 class object_c* center_, unsigned inverse_, float zoomlevel_);
+
 public:
-	void				setcenter	(class object_c& center_);
-	void 				recenter	(unsigned short dispw, unsigned short disph),
-						move		();
-	void 				track		(bool totrack),
-						toggletrack	();
-	void 				panx		(float amount),
-						pany		(float amount);
+	void				set_center		(class object_c& center_);
+	void 				recenter		(unsigned short dispw, unsigned short disph),
+						move			();
+	void 				track			(bool totrack),
+						toggle_track	();
+	void 				pan_x			(float amount),
+						pan_y			(float amount);
 
-	float				zoom		() const;
-	data				x			() const,
-						y			() const;
-	void				changezoom	(float amount);
+	float				zoom			() const;
+	data				x				() const,
+						y				() const;
+	void				change_zoom		(float amount);
 
-	static camera_c&	getinstance (data X, data Y, data Vx, data Vy, data accX, data accY,
-									 class object_c* center_, unsigned inverse_, float zoomlevel_);
+						camera_c		(data X, data Y, data Vx, data Vy, data accX, data accY,
+										 class object_c* center_, unsigned inverse_, float zoomlevel_);
+
+						~camera_c		();
+
+//	static camera_c&	get_instance	(data X, data Y, data Vx, data Vy, data accX, data accY,
+//										 class object_c* center_, unsigned inverse_, float zoomlevel_);
 };
 
 #endif	//CAMERA_HPP

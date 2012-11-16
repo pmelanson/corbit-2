@@ -1,11 +1,10 @@
-#include <fstream>
 #include <iostream>
-#define _USE_MATH_DEFINES
-#include <cmath>
 
 #define ALLEGRO_STATICLINK
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
+
+#include <boost/intrusive/list.hpp>
 
 #include <corbit/corbit.hpp>
 using namespace std;
@@ -21,8 +20,9 @@ unsigned short			dispw,
 
 typedef boost::intrusive::list <object_c> objectlist;
 objectlist object;
-//hud_c hud = hud_c::getinstance();
-camera_c camera = camera_c::getinstance(100, 500, 0, 0, 0, 0, NULL, 1, 1);
+graphics_c graphics = graphics_c::get_instance(100, 500, 0, 0, 0, 0, NULL, 1, 1);
+//calc_c calc = calc_c::get_instance();
+//camera_c camera = camera_c::get_instance(100, 500, 0, 0, 0, 0, NULL, 1, 1);
 
 
 bool initAllegro() {
@@ -119,36 +119,42 @@ void calculate() {
 		if (key[n])
 			clog << endl << al_keycode_to_name(n);
 
-	camera.move();
-	camera.recenter(dispw, disph);
+//	camera.move();
+//	camera.recenter(dispw, disph);
 
 	objectlist::iterator it;
 
 	for (it = object.begin(); it != object.end(); ++it)
 		it->move();
 
+	/*
 	if (key[ALLEGRO_KEY_PAD_MINUS])
-		camera.changezoom(0.1);
+		camera.change_zoom(0.1);
 	if (key[ALLEGRO_KEY_PAD_PLUS])
-		camera.changezoom(-0.1);
+		camera.change_zoom(-0.1);
 	if (key[ALLEGRO_KEY_RIGHT])
-		camera.panx(0.1);
+		camera.pan_x(0.1);
 	if (key[ALLEGRO_KEY_LEFT])
-		camera.panx(-0.1);
+		camera.pan_x(-0.1);
 	if (key[ALLEGRO_KEY_TAB])
-		camera.toggletrack();
+		camera.toggle_track();
 	if (key[ALLEGRO_KEY_Q])
 		camera.track(true);
 	if (key[ALLEGRO_KEY_W])
 		camera.track(false);
+	*/
 
 }
 
 void draw() {
 
-	static objectlist::iterator it;
-	for (it = object.begin(); it != object.end(); ++it)
-		al_draw_circle (it->x() -camera.x(), it->y() -camera.y(), it->radius() *camera.zoom(), it->color, 0);
+//	static objectlist::iterator it;
+//	for (it = object.begin(); it != object.end(); ++it)
+//		al_draw_circle (it->x() -camera.x(), it->y() -camera.y(), it->radius() *camera.zoom(), it->color, 0);
+
+//	graphics.draw_all(object);
+//	objectlist::iterator it;
+	graphics.draw(*object.begin());
 }
 
 void run() {
@@ -204,8 +210,8 @@ int main() {
 
 	object.push_back(doober);
 
-	camera.setcenter(doober);
-	camera.recenter(dispw, disph);
+//	camera.set_center(doober);
+//	camera.recenter(dispw, disph);
 
 
 	run();
