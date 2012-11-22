@@ -74,7 +74,6 @@
 		<Unit filename="include\corbit\calc.hpp" />
 		<Unit filename="include\corbit\camera.hpp" />
 		<Unit filename="include\corbit\corbit.hpp" />
-		<Unit filename="include\corbit\dynamics.hpp" />
 		<Unit filename="include\corbit\globals.hpp" />
 		<Unit filename="include\corbit\graphics.hpp" />
 		<Unit filename="include\corbit\object.hpp" />

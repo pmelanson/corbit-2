@@ -1,3 +1,9 @@
+22 November 2012
+   Corbit Beta v2.0:
+
+     Change log:
+        -Added: Eigen vector library
+
 14 November 2012
    Corbit Beta v2.0:
 

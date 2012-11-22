@@ -16,7 +16,7 @@ public:
 
 public:
 
-	void				draw_all		(const boost::intrusive::list<object_c> &list) const;
+	void				draw_all		(boost::intrusive::list<object_c> &list) const;
 
 	camera_c			camera;
 

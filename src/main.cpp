@@ -6,8 +6,11 @@
 
 #include <boost/intrusive/list.hpp>
 
+#include <eigen/dense>
+
 #include <corbit/corbit.hpp>
 using namespace std;
+typedef Eigen::MatrixXd matrix;
 
 
 ALLEGRO_DISPLAY*		display			=NULL;
@@ -111,6 +114,28 @@ bool cleanup() {
 	return true;
 }
 
+void input() {
+
+	if (key[ALLEGRO_KEY_PAD_MINUS])
+		graphics.camera.change_zoom(0.1);
+	if (key[ALLEGRO_KEY_PAD_PLUS])
+		graphics.camera.change_zoom(-0.1);
+
+	if (key[ALLEGRO_KEY_RIGHT])
+		graphics.camera.pan(0.1, 0);
+	if (key[ALLEGRO_KEY_LEFT])
+		graphics.camera.pan(-0.1, 0);
+
+	if (key[ALLEGRO_KEY_TAB])
+		graphics.camera.toggle_track();
+	if (key[ALLEGRO_KEY_Q])
+		graphics.camera.track(true);
+	if (key[ALLEGRO_KEY_W])
+		graphics.camera.track(false);
+
+	if (key[ALLEGRO_KEY_H])
+		graphics.camera.set_center(*object.begin());
+}
 
 void calculate() {
 
@@ -119,42 +144,19 @@ void calculate() {
 		if (key[n])
 			clog << endl << al_keycode_to_name(n);
 
-//	camera.move();
-//	camera.recenter(dispw, disph);
+	graphics.camera.update(dispw, disph);
 
-	objectlist::iterator it;
+	static objectlist::iterator it;
 
 	for (it = object.begin(); it != object.end(); ++it)
 		it->move();
 
-	/*
-	if (key[ALLEGRO_KEY_PAD_MINUS])
-		camera.change_zoom(0.1);
-	if (key[ALLEGRO_KEY_PAD_PLUS])
-		camera.change_zoom(-0.1);
-	if (key[ALLEGRO_KEY_RIGHT])
-		camera.pan_x(0.1);
-	if (key[ALLEGRO_KEY_LEFT])
-		camera.pan_x(-0.1);
-	if (key[ALLEGRO_KEY_TAB])
-		camera.toggle_track();
-	if (key[ALLEGRO_KEY_Q])
-		camera.track(true);
-	if (key[ALLEGRO_KEY_W])
-		camera.track(false);
-	*/
-
+	input();
 }
 
 void draw() {
 
-//	static objectlist::iterator it;
-//	for (it = object.begin(); it != object.end(); ++it)
-//		al_draw_circle (it->x() -camera.x(), it->y() -camera.y(), it->radius() *camera.zoom(), it->color, 0);
-
-//	graphics.draw_all(object);
-//	objectlist::iterator it;
-	graphics.draw(*object.begin());
+	graphics.draw_all(object);
 }
 
 void run() {
@@ -206,13 +208,9 @@ int main() {
 			return 11;
 	}
 
-	object_c doober ("poop", 1000, 200, dispw, disph, 0, 0, 0, 0, al_color_name("azure"));
+	object_c doober ("poop", 1000, 200, 0,0, 0,0, 0,0, al_color_name("azure"));
 
 	object.push_back(doober);
-
-//	camera.set_center(doober);
-//	camera.recenter(dispw, disph);
-
 
 	run();
 

@@ -1,35 +1,39 @@
 #include <corbit/camera.hpp>
 
-void				camera_c::set_center	(class object_c& center_)	{center = &center_;}
-void 				camera_c::recenter		(unsigned short dispw, unsigned short disph) {
-	if (!tracking || !center) return;
-	pos.x = center->x() -dispw/2;
-	pos.y = center->y() -disph/2;
+data	camera_c::x							() const {return _pos(0,0);}
+data	camera_c::y							() const {return _pos(1,0);}
+data	camera_c::Vx						() const {return _v(0,0);}
+data	camera_c::Vy						() const {return _v(1,0);}
+data	camera_c::accX						() const {return _acc(0,0);}
+data	camera_c::accY						() const {return _acc(1,0);}
+vector	camera_c::pos						() const {return _pos;}
+vector	camera_c::v							() const {return _v;}
+vector	camera_c::acc						() const {return _acc;}
 
-//	v.x = center->Vx();
-//	v.y = center->Vy();
+void				camera_c::update		(unsigned short dispw, unsigned short disph) {move(); recenter(dispw, disph);}
+void				camera_c::set_center	(class object_c& center_)	{_center = &center_;}
+void 				camera_c::recenter		(unsigned short dispw, unsigned short disph) {
+	if (!tracking || !_center) return;
+	_pos(0,0) = _center->x() -dispw/2;
+	_pos(1,0) = _center->y() -disph/2;
 }
 void				camera_c::move			() {
-	pos.x += v.x /zoom();
-	pos.y += v.y /zoom();
+	_pos += v() /zoom();
 }
 void 				camera_c::track			(bool totrack)				{tracking = totrack;}
 void				camera_c::toggle_track	()							{tracking = !tracking;}
-void 				camera_c::pan_x			(float amount)				{v.x += amount;}
-void				camera_c::pan_y			(float amount)				{v.y += amount;}
+void 				camera_c::pan			(float X, float Y)			{_v(0,0) += X; _v(1,0) += Y;}
 
-data				camera_c::x				() const					{return pos.x;}
-data				camera_c::y				() const					{return pos.y;}
 float				camera_c::zoom			() const					{return inverse/zoom_level;}
 void				camera_c::change_zoom	(float amount)				{zoom_level += amount;}
 
 
-					camera_c::camera_c		(data X, data Y, data Vx, data Vy, data accX, data accY,
+camera_c::camera_c							(data x_, data y_, data Vx_, data Vy_, data accX_, data accY_,
 											 class object_c* center_, unsigned inverse_, float zoom_level_)
-	: pos (X, Y), v (Vx, Vy), acc (accX, accY),
+	: _pos (x_, y_), _v (Vx_, Vy_), _acc (accX_, accY_),
 	inverse (inverse_), zoom_level (zoom_level_) {}
 
-					camera_c::~camera_c		() {}
+camera_c::~camera_c							() {}
 
 /*
 camera_c& camera_c::get_instance			(data X, data Y, data Vx, data Vy, data accX, data accY,

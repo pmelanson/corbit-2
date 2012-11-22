@@ -10,13 +10,16 @@
 class object_c : public boost::intrusive::list_base_hook<> {
 private:
 
+	const std::string	_name;
 	const data			_mass,
 						_radius;
 
-	#include <corbit/dynamics.hpp>
+	vector				_pos,
+						_v,
+						_acc;
 
 public:
-	const std::string	name;
+	std::string			name		() const;
 
 	void				accelerate	(data force, data radians),
 						move		();
@@ -36,8 +39,11 @@ public:
 						accY		() const,
 						radius		() const;
 	virtual data		mass		() const;
+	vector				pos			() const,
+						v			() const,
+						acc			() const;
 
-	ALLEGRO_COLOR	color;
+	ALLEGRO_COLOR		color;
 
 	object_c						(std::string name_, data m, data r,
 									 data X, data Y, data Vx, data Vy, data accX, data accY,
