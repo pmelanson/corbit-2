@@ -6,17 +6,17 @@
 #include <corbit/object.hpp>
 
 class camera_c {
-private:
-
+//private:
+public:
 	vector				_pos,
 						_v,
 						_acc;
 
 	class object_c*		_center;
 
-	bool				tracking;
-	const unsigned		inverse;
-	float				zoom_level;
+	bool				_tracking;
+	const unsigned		_inverse;
+	float				_zoom_level;
 
 	void 				recenter		(unsigned short dispw, unsigned short disph),
 						move			();

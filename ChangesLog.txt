@@ -2,6 +2,12 @@
    Corbit Beta v2.0:
 
      Change log:
+        -Cleaned: Now using calc_c to do moving and all that jazz
+
+22 November 2012
+   Corbit Beta v2.0:
+
+     Change log:
         -Added: Eigen vector library
 
 14 November 2012

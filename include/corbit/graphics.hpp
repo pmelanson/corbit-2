@@ -1,13 +1,13 @@
 #ifndef DRAWER_HPP
 #define DRAWER_HPP
 
-#include <corbit/object.hpp>
-#include <corbit/camera.hpp>
-
 #include <boost/intrusive/list.hpp>
 
+#include <corbit/camera.hpp>
+
+
 class graphics_c {
-public:
+private:
 
 	void				draw			(const object_c& obj) const;
 
@@ -16,9 +16,9 @@ public:
 
 public:
 
-	void				draw_all		(boost::intrusive::list<object_c> &list) const;
-
 	camera_c			camera;
+
+	void				draw_all		(boost::intrusive::list<object_c> &list) const;
 
 	static graphics_c&	get_instance	(data X, data Y, data Vx, data Vy, data accX, data accY,
 										 class object_c* center_, unsigned inverse_, float zoom_level_);

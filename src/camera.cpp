@@ -13,25 +13,25 @@ vector	camera_c::acc						() const {return _acc;}
 void				camera_c::update		(unsigned short dispw, unsigned short disph) {move(); recenter(dispw, disph);}
 void				camera_c::set_center	(class object_c& center_)	{_center = &center_;}
 void 				camera_c::recenter		(unsigned short dispw, unsigned short disph) {
-	if (!tracking || !_center) return;
+	if (!_tracking || !_center) return;
 	_pos(0,0) = _center->x() -dispw/2;
 	_pos(1,0) = _center->y() -disph/2;
 }
 void				camera_c::move			() {
 	_pos += v() /zoom();
 }
-void 				camera_c::track			(bool totrack)				{tracking = totrack;}
-void				camera_c::toggle_track	()							{tracking = !tracking;}
+void 				camera_c::track			(bool totrack)				{_tracking = totrack;}
+void				camera_c::toggle_track	()							{_tracking = !_tracking;}
 void 				camera_c::pan			(float X, float Y)			{_v(0,0) += X; _v(1,0) += Y;}
 
-float				camera_c::zoom			() const					{return inverse/zoom_level;}
-void				camera_c::change_zoom	(float amount)				{zoom_level += amount;}
+float				camera_c::zoom			() const					{return _inverse/_zoom_level;}
+void				camera_c::change_zoom	(float amount)				{_zoom_level += amount;}
 
 
 camera_c::camera_c							(data x_, data y_, data Vx_, data Vy_, data accX_, data accY_,
 											 class object_c* center_, unsigned inverse_, float zoom_level_)
 	: _pos (x_, y_), _v (Vx_, Vy_), _acc (accX_, accY_),
-	inverse (inverse_), zoom_level (zoom_level_) {}
+	_inverse (inverse_), _zoom_level (zoom_level_) {}
 
 camera_c::~camera_c							() {}
 

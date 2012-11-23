@@ -10,7 +10,6 @@
 
 #include <corbit/corbit.hpp>
 using namespace std;
-typedef Eigen::MatrixXd matrix;
 
 
 ALLEGRO_DISPLAY*		display			=NULL;
@@ -21,11 +20,20 @@ unsigned				mods;
 unsigned short			dispw,
 						disph;
 
-typedef boost::intrusive::list <object_c> objectlist;
-objectlist object;
-graphics_c graphics = graphics_c::get_instance(100, 500, 0, 0, 0, 0, NULL, 1, 1);
-//calc_c calc = calc_c::get_instance();
-//camera_c camera = camera_c::get_instance(100, 500, 0, 0, 0, 0, NULL, 1, 1);
+typedef boost::intrusive::list <object_c> object_list;
+object_list object;
+graphics_c graphics = graphics_c::get_instance(0,0, 0,0, 0,0, NULL, 1, 1);
+calc_c calc	= calc_c::get_instance(NULL, NULL, NULL);
+
+object_c* find_object (string name, object_list& list) {
+
+	static object_list::iterator it;
+	for (it = list.begin(); it != list.end(); ++it)
+		if (it->name() == name)
+			return &*it;
+
+	return NULL;
+}
 
 
 bool initAllegro() {
@@ -126,6 +134,11 @@ void input() {
 	if (key[ALLEGRO_KEY_LEFT])
 		graphics.camera.pan(-0.1, 0);
 
+	if (key[ALLEGRO_KEY_A])
+		calc.accelerate(*calc.active_ship(), -500, 0);
+	if (key[ALLEGRO_KEY_D])
+		calc.accelerate(*calc.active_ship(), 500, 0);
+
 	if (key[ALLEGRO_KEY_TAB])
 		graphics.camera.toggle_track();
 	if (key[ALLEGRO_KEY_Q])
@@ -134,22 +147,19 @@ void input() {
 		graphics.camera.track(false);
 
 	if (key[ALLEGRO_KEY_H])
-		graphics.camera.set_center(*object.begin());
+		graphics.camera.set_center(*find_object("poop", object));
 }
 
 void calculate() {
 
-	static unsigned short n;
-	for (n = 0; n != ALLEGRO_KEY_MAX; n++)
-		if (key[n])
-			clog << endl << al_keycode_to_name(n);
+//	static unsigned short n;
+//	for (n = 0; n != ALLEGRO_KEY_MAX; n++)
+//		if (key[n])
+//			clog << endl << al_keycode_to_name(n);
 
 	graphics.camera.update(dispw, disph);
 
-	static objectlist::iterator it;
-
-	for (it = object.begin(); it != object.end(); ++it)
-		it->move();
+	calc.update(object);
 
 	input();
 }
@@ -208,9 +218,11 @@ int main() {
 			return 11;
 	}
 
-	object_c doober ("poop", 1000, 200, 0,0, 0,0, 0,0, al_color_name("azure"));
+	object_c doober ("poop", 1000,200, 750,500, 0,0, 0,0, al_color_name("azure"));
 
 	object.push_back(doober);
+
+	calc.set_active_ship(find_object("poop", object));
 
 	run();
 
