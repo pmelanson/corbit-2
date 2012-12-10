@@ -245,13 +245,13 @@
 
 1353029443 c:\users\melanson\corbit\include\corbit\hud.hpp
 
-1353643023 c:\users\melanson\corbit\include\corbit\object.hpp
+1355088965 c:\users\melanson\corbit\include\corbit\object.hpp
 	<string>
 	<allegro5/allegro_color.h>
 	<boost/intrusive/list.hpp>
 	<corbit/globals.hpp>
 
-1353640898 c:\users\melanson\corbit\include\corbit\camera.hpp
+1355090403 c:\users\melanson\corbit\include\corbit\camera.hpp
 	<corbit/globals.hpp>
 	<corbit/object.hpp>
 
@@ -517,7 +517,7 @@
 	"version.hpp"
 	"graphics.hpp"
 
-1353560419 c:\users\melanson\corbit\include\corbit\version.hpp
+1353646268 c:\users\melanson\corbit\include\corbit\version.hpp
 
 1090896214 c:\users\melanson\corbit\include\boost\preprocessor\iteration\local.hpp
 	<boost/preprocessor/config/config.hpp>
@@ -1623,7 +1623,7 @@
 	<boost/type_traits/detail/bool_trait_def.hpp>
 	<boost/type_traits/detail/bool_trait_undef.hpp>
 
-1353554609 c:\users\melanson\corbit\include\corbit\globals.hpp
+1355088829 c:\users\melanson\corbit\include\corbit\globals.hpp
 	<eigen/dense>
 
 1353555379 c:\users\melanson\corbit\include\corbit\dynamics.hpp
@@ -1631,7 +1631,7 @@
 1353012655 source:c:\users\melanson\corbit\src\hud.cpp
 	<corbit/hud.hpp>
 
-1353646156 source:c:\users\melanson\corbit\src\main.cpp
+1355096695 source:c:\users\melanson\corbit\src\main.cpp
 	<iostream>
 	<allegro5/allegro5.h>
 	<allegro5/allegro_primitives.h>
@@ -1639,10 +1639,10 @@
 	<eigen/dense>
 	<corbit/corbit.hpp>
 
-1353643615 source:c:\users\melanson\corbit\src\object.cpp
+1355096540 source:c:\users\melanson\corbit\src\object.cpp
 	<corbit/object.hpp>
 
-1353639278 source:c:\users\melanson\corbit\src\camera.cpp
+1355096165 source:c:\users\melanson\corbit\src\camera.cpp
 	<corbit/camera.hpp>
 
 1289821322 c:\users\melanson\corbit\include\allegro5\allegro5.h
@@ -1655,20 +1655,21 @@
 1353012960 c:\users\melanson\corbit\include\corbit\drawer.hpp
 	<corbit/object.hpp>
 
-1353559778 source:c:\users\melanson\corbit\src\graphics.cpp
+1355089934 source:c:\users\melanson\corbit\src\graphics.cpp
 	<iostream>
 	<allegro5/allegro_primitives.h>
 	<corbit/graphics.hpp>
 
-1353643718 c:\users\melanson\corbit\include\corbit\graphics.hpp
+1355090129 c:\users\melanson\corbit\include\corbit\graphics.hpp
 	<boost/intrusive/list.hpp>
 	<corbit/camera.hpp>
 
-1353644192 c:\users\melanson\corbit\include\corbit\calc.hpp
+1355088971 c:\users\melanson\corbit\include\corbit\calc.hpp
 	<boost/intrusive/list.hpp>
 	<corbit/globals.hpp>
 
-1353644818 source:c:\users\melanson\corbit\src\calc.cpp
+1355095848 source:c:\users\melanson\corbit\src\calc.cpp
+	<iostream>
 	<cmath>
 	<corbit/calc.hpp>
 	<corbit/object.hpp>
@@ -2352,4 +2353,11 @@
 
 1352168568 c:\users\melanson\corbit\include\eigen\src\eigenvalues\selfadjointeigensolver_mkl.h
 	"Eigen/src/Core/util/MKL_support.h"
+
+1242494117 c:\users\melanson\corbit\include\boost\utility\addressof.hpp
+	<boost/config.hpp>
+	<boost/detail/workaround.hpp>
+
+1221702843 c:\users\melanson\corbit\include\boost\utility\enable_if.hpp
+	"boost/config.hpp"
 

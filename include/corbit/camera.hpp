@@ -8,46 +8,45 @@
 class camera_c {
 //private:
 public:
-	vector				_pos,
-						_v,
-						_acc;
+	vector			_pos,
+					_v,
+					_acc;
+	vector			_screen_size;
 
-	class object_c*		_center;
+	object_c*		_center;
 
-	bool				_tracking;
-	const unsigned		_inverse;
-	float				_zoom_level;
+	bool			_tracking;
+	const unsigned	_inverse;
+	float			_zoom_level;
 
-	void 				recenter		(unsigned short dispw, unsigned short disph),
-						move			();
+	void 			recenter		(),
+					move			();
 
 
 public:
-	void				update			(unsigned short dispw, unsigned short disph);
-	void				set_center		(class object_c& center_);
-	void 				track			(bool totrack),
-						toggle_track	();
-	void 				pan				(float X, float Y);
+	void			update			();
+	void			set_center		(class object_c& center_);
+	void 			track			(bool to_track),
+					toggle_track	();
+	void 			pan				(float X, float Y);
+	void			set_dimensions	(int disp_w, int disp_h);
 
-	float				zoom			() const;
-	data				x				() const,
-						y				() const,
-						Vx				() const,
-						Vy				() const,
-						accX			() const,
-						accY			() const;
-	vector				pos				() const,
-						v				() const,
-						acc				() const;
-	void				change_zoom		(float amount);
+	float			zoom			() const;
+	var				x				() const,
+					y				() const,
+					Vx				() const,
+					Vy				() const,
+					accX			() const,
+					accY			() const;
+	vector			pos				() const,
+					v				() const,
+					acc				() const;
+	void			change_zoom		(float amount);
 
-						camera_c		(data X, data Y, data Vx, data Vy, data accX, data accY,
-										 class object_c* center_, unsigned inverse_, float zoomlevel_);
+					camera_c		(var X, var Y, var Vx, var Vy, var accX, var accY,
+									object_c* center_, unsigned inverse_, float zoomlevel_);
 
-						~camera_c		();
-
-//	static camera_c&	get_instance	(data X, data Y, data Vx, data Vy, data accX, data accY,
-//										 class object_c* center_, unsigned inverse_, float zoomlevel_);
+					~camera_c		();
 };
 
 #endif	//CAMERA_HPP

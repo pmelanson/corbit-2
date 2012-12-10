@@ -11,7 +11,7 @@ class object_c : public boost::intrusive::list_base_hook<> {
 private:
 
 	const std::string	_name;
-	const data			_mass,
+	const var			_mass,
 						_radius;
 
 	vector				_pos,
@@ -20,7 +20,7 @@ private:
 
 public:
 	std::string			name			() const;
-	virtual data		mass			() const,
+	virtual var			mass			() const,
 						radius			() const,
 						x				() const,
 						y				() const,
@@ -32,21 +32,21 @@ public:
 						v				() const,
 						acc				() const;
 
-	virtual void		set_x			(data x_),
-						set_y			(data y_),
-						set_Vx			(data Vx_),
-						set_Vy			(data Vy_),
-						set_accX		(data accX_),
-						set_accY		(data accY_),
+	virtual void		set_x			(var x_),
+						set_y			(var y_),
+						set_Vx			(var Vx_),
+						set_Vy			(var Vy_),
+						set_accX		(var accX_),
+						set_accY		(var accY_),
 						set_pos			(vector pos_),
 						set_v			(vector v_),
 						set_acc			(vector acc_);
 
 	const ALLEGRO_COLOR	color;
 
-	object_c							(std::string name_, data m, data r,
-									 data X, data Y, data Vx, data Vy, data accX, data accY,
-									 ALLEGRO_COLOR color_);
+	object_c							(std::string name_, var m, var r,
+										var X, var Y, var Vx, var Vy, var accX, var accY,
+										ALLEGRO_COLOR color_);
 	object_c							();
 
 	~object_c							();

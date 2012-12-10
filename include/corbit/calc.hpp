@@ -8,13 +8,13 @@
 class calc_c {
 public:
 
-	class object_c	*_active_ship,	//ship currently controlled
+	object_c		*_active_ship,	//ship currently controlled
 					*_target,
 					*_reference;
 
-	void			accelerate		(object_c& A, data force, data radians),
+	void			accelerate		(object_c& A, var force, var radians),
 					move			(object_c& A);
-	data			distance2		(const object_c& A, const object_c& B) const,
+	var				distance2		(const object_c& A, const object_c& B) const,
 					distance		(const object_c& A, const object_c& B) const,
 					gravity			(const object_c& A, const object_c& B) const,
 					theta_object	(const object_c& A, const object_c& B) const,
@@ -25,7 +25,7 @@ public:
 					calc_c			(class object_c* active_ship_, class object_c* target_, class object_c* reference_);
 public:
 
-	class object_c	*active_ship	() const,
+	object_c		*active_ship	() const,
 					*target			() const,
 					*reference		() const;
 	void			set_active_ship	(class object_c* new_ship),
