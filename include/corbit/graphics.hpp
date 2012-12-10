@@ -1,29 +1,37 @@
-#ifndef DRAWER_HPP
-#define DRAWER_HPP
+#ifndef GRAPHICS_HPP
+#define GRAPHICS_HPP
 
 #include <boost/intrusive/list.hpp>
+#include <allegro5/allegro_primitives.h>
 
-#include <corbit/camera.hpp>
+#include <corbit/globals.hpp>
+
+class camera_c;
+class object_c;
 
 
 class graphics_c {
 private:
 
-	void				draw			(const object_c& obj) const;
+	void				draw			(object_c &obj) const;
 
-						graphics_c		(var X, var Y, var Vx, var Vy, var accX, var accY,
-										class object_c* center_, unsigned inverse_, float zoom_level_);
+	camera_c			*_camera;
+
+						graphics_c		();
+						graphics_c		(camera_c *camera_);
 
 public:
 
-	camera_c			camera;
+	bool				set_camera		(camera_c *camera);
+	void				set_dimensions	(int disp_w, int disp_h);
+	void				set_center		(object_c *center_);
 
 	void				draw_all		(boost::intrusive::list<object_c> &list) const;
 
-	static graphics_c&	get_instance	(var X, var Y, var Vx, var Vy, var accX, var accY,
-										class object_c* center_, unsigned inverse_, float zoom_level_);
+	static graphics_c	&get_instance	();
+	static graphics_c	&get_instance	(camera_c *camera_);
 						~graphics_c		();
 };
 
-#endif	//DRAWER_HPP
+#endif	//GRAPHICS_HPP
 

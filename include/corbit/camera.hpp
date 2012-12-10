@@ -3,17 +3,16 @@
 
 #include <corbit/globals.hpp>
 
-#include <corbit/object.hpp>
+class object_c;
 
 class camera_c {
-//private:
-public:
+private:
 	vector			_pos,
-					_v,
-					_acc;
+	_v,
+	_acc;
 	vector			_screen_size;
 
-	object_c*		_center;
+	object_c		*_center;
 
 	bool			_tracking;
 	const unsigned	_inverse;
@@ -22,10 +21,12 @@ public:
 	void 			recenter		(),
 					move			();
 
+					camera_c		(var X, var Y, var Vx, var Vy, var accX, var accY,
+									object_c *center_, unsigned inverse_, float zoomlevel_);
 
 public:
 	void			update			();
-	void			set_center		(class object_c& center_);
+	void			set_center		(object_c *center_);
 	void 			track			(bool to_track),
 					toggle_track	();
 	void 			pan				(float X, float Y);
@@ -43,10 +44,10 @@ public:
 					acc				() const;
 	void			change_zoom		(float amount);
 
-					camera_c		(var X, var Y, var Vx, var Vy, var accX, var accY,
-									object_c* center_, unsigned inverse_, float zoomlevel_);
+	static camera_c	&get_instance	(var X, var Y, var Vx, var Vy, var accX, var accY,
+									object_c *center_, unsigned inverse_, float zoom_level_);
 
-					~camera_c		();
+	~camera_c		();
 };
 
 #endif	//CAMERA_HPP

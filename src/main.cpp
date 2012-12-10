@@ -7,25 +7,27 @@
 #include <boost/intrusive/list.hpp>
 #include <boost/program_options.hpp>
 
-#include <eigen/dense>
+//#include <eigen/dense>
 
 #include <corbit/corbit.hpp>
 using namespace std;
 namespace po = boost::program_options;
 
 
-ALLEGRO_DISPLAY*		display			=NULL;
-ALLEGRO_EVENT_QUEUE*	event_queue		=NULL;
-ALLEGRO_TIMER*			timer			=NULL;
+ALLEGRO_DISPLAY			*display		=NULL;
+ALLEGRO_EVENT_QUEUE		*event_queue	=NULL;
+ALLEGRO_TIMER			*timer			=NULL;
 bool					key[ALLEGRO_KEY_MAX];
 unsigned				mods;
 
 typedef boost::intrusive::list <object_c> object_list;
 object_list object;
-graphics_c graphics = graphics_c::get_instance(0,0, 0,0, 0,0, NULL, 1, 1);
-calc_c calc	= calc_c::get_instance(NULL, NULL, NULL);
 
-object_c* find_object (string name, object_list& list) {
+camera_c	camera		= camera_c::get_instance	(0,0, 0,0, 0,0, NULL, 1, 1);
+graphics_c	graphics	= graphics_c::get_instance	(&camera);
+calc_c		calc		= calc_c::get_instance		(NULL, NULL, NULL);
+
+object_c *find_object (string name, object_list &list) {
 
 	static object_list::iterator it;
 	for (it = list.begin(); it != list.end(); ++it)
@@ -112,9 +114,9 @@ bool initialize() {
 
 	ALLEGRO_DISPLAY_MODE disp_data;
 	al_get_display_mode(al_get_num_display_modes()-1, &disp_data);
-	graphics.camera.set_dimensions(disp_data.width, disp_data.height);
+	graphics.set_dimensions(disp_data.width, disp_data.height);
 
-	graphics.camera.set_center(*find_object("butt", object));
+	graphics.set_center(find_object("butt", object));
 
 	return true;
 }
@@ -136,18 +138,18 @@ bool cleanup() {
 void input() {
 
 	if (key[ALLEGRO_KEY_PAD_MINUS])
-		graphics.camera.change_zoom(0.1);
+		graphics.change_zoom(0.1);
 	if (key[ALLEGRO_KEY_PAD_PLUS])
-		graphics.camera.change_zoom(-0.1);
+		graphics.change_zoom(-0.1);
 
 	if (key[ALLEGRO_KEY_RIGHT])
-		graphics.camera.pan(0.5, 0);
+		graphics.pan(0.5, 0);
 	if (key[ALLEGRO_KEY_LEFT])
-		graphics.camera.pan(-0.5, 0);
+		graphics.pan(-0.5, 0);
 	if (key[ALLEGRO_KEY_UP])
-		graphics.camera.pan(0, -0.5);
+		graphics.pan(0, -0.5);
 	if (key[ALLEGRO_KEY_DOWN])
-		graphics.camera.pan(0, 0.5);
+		graphics.pan(0, 0.5);
 
 	if (key[ALLEGRO_KEY_A])
 		calc.accelerate(*calc.active_ship(), -500, 0);
@@ -155,16 +157,16 @@ void input() {
 		calc.accelerate(*calc.active_ship(), 500, 0);
 
 	if (key[ALLEGRO_KEY_TAB])
-		graphics.camera.toggle_track();
+		graphics.toggle_track();
 	if (key[ALLEGRO_KEY_Q])
-		graphics.camera.track(true);
+		graphics.track(true);
 	if (key[ALLEGRO_KEY_W])
-		graphics.camera.track(false);
+		graphics.track(false);
 
 	if (key[ALLEGRO_KEY_H])
-		graphics.camera.set_center(*find_object("poop", object));
+		graphics.set_center(*find_object("poop", object));
 	if (key[ALLEGRO_KEY_1])
-		graphics.camera.set_center(*find_object("fart", object));
+		graphics.set_center(*find_object("fart", object));
 }
 
 void calculate() {
@@ -174,7 +176,7 @@ void calculate() {
 //		if (key[n])
 //			clog << endl << al_keycode_to_name(n);
 
-	graphics.camera.update();
+	graphics.update();
 
 	calc.update(object);
 

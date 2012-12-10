@@ -1,12 +1,4 @@
-#include <iostream>
-
-#define _USE_MATH_DEFINES
-#include <cmath>
-
 #include <corbit/calc.hpp>
-#include <corbit/object.hpp>
-using namespace std;
-const float	G = 6.674e-11;
 
 object_c*	calc_c::active_ship		() const						{return _active_ship;}
 object_c*	calc_c::target			() const						{return _target;}

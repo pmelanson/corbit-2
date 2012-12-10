@@ -1,7 +1,6 @@
 #include <corbit/object.hpp>
-using namespace std;
 
-string	object_c::name			() const		{return _name;}
+string	object_c::name		() const		{return _name;}
 var	object_c::mass			() const		{return _mass;}
 var	object_c::radius		() const		{return _radius;}
 var	object_c::x				() const		{return _pos(0,0);}
@@ -10,24 +9,24 @@ var	object_c::Vx			() const		{return _v(0,0);}
 var	object_c::Vy			() const		{return _v(1,0);}
 var	object_c::accX			() const		{return _acc(0,0);}
 var	object_c::accY			() const		{return _acc(1,0);}
-vector	object_c::pos			() const		{return _pos;}
-vector	object_c::v				() const		{return _v;}
-vector	object_c::acc			() const		{return _acc;}
+vector	object_c::pos		() const		{return _pos;}
+vector	object_c::v			() const		{return _v;}
+vector	object_c::acc		() const		{return _acc;}
 
-void	object_c::set_x			(var x_)		{_pos(0,0) = x_;}
-void	object_c::set_y			(var y_)		{_pos(1,0) = y_;}
-void	object_c::set_Vx		(var Vx_)		{_v(0,0) = Vx_;}
-void	object_c::set_Vy		(var Vy_)		{_v(1,0) = Vy_;}
-void	object_c::set_accX		(var accX_)	{_acc(0,0) = accX_;}
-void	object_c::set_accY		(var accY_)	{_acc(1,0) = accY_;}
-void	object_c::set_pos		(vector pos_)	{_pos = pos_;}
-void	object_c::set_v			(vector v_)		{_v = v_;}
-void	object_c::set_acc		(vector acc_)	{_acc = acc_;}
+void	object_c::set_x		(var x_)		{_pos(0,0) = x_;}
+void	object_c::set_y		(var y_)		{_pos(1,0) = y_;}
+void	object_c::set_Vx	(var Vx_)		{_v(0,0) = Vx_;}
+void	object_c::set_Vy	(var Vy_)		{_v(1,0) = Vy_;}
+void	object_c::set_accX	(var accX_)		{_acc(0,0) = accX_;}
+void	object_c::set_accY	(var accY_)		{_acc(1,0) = accY_;}
+void	object_c::set_pos	(vector pos_)	{_pos = pos_;}
+void	object_c::set_v		(vector v_)		{_v = v_;}
+void	object_c::set_acc	(vector acc_)	{_acc = acc_;}
 
 
-object_c::object_c				(string name_, var m, var r,
-								var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-								ALLEGRO_COLOR color_)
+object_c::object_c			(string name_, var m, var r,
+							var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
+							ALLEGRO_COLOR color_)
 	: _name (name_), _mass (m), _radius (r),
 	_pos (x_, y_), _v (Vx_, Vy_), _acc (accX_, accY_),
 	color (color_) {
@@ -47,7 +46,7 @@ object_c::object_c				(string name_, var m, var r,
 	clog << endl;
 }
 
-object_c::object_c				()
+object_c::object_c			()
 	: _name ("the nameless"), _mass (1), _radius (1),
 	_pos (9001, 9001), _v (0, 0), _acc (0, 0),
 	color (al_color_name("magenta")) {
