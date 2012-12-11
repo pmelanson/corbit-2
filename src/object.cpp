@@ -1,14 +1,15 @@
 #include <corbit/object.hpp>
+using namespace std;
 
 string	object_c::name		() const		{return _name;}
-var	object_c::mass			() const		{return _mass;}
-var	object_c::radius		() const		{return _radius;}
-var	object_c::x				() const		{return _pos(0,0);}
-var	object_c::y				() const		{return _pos(1,0);}
-var	object_c::Vx			() const		{return _v(0,0);}
-var	object_c::Vy			() const		{return _v(1,0);}
-var	object_c::accX			() const		{return _acc(0,0);}
-var	object_c::accY			() const		{return _acc(1,0);}
+var		object_c::mass		() const		{return _mass;}
+var		object_c::radius	() const		{return _radius;}
+var		object_c::x			() const		{return _pos(0,0);}
+var		object_c::y			() const		{return _pos(1,0);}
+var		object_c::Vx		() const		{return _v(0,0);}
+var		object_c::Vy		() const		{return _v(1,0);}
+var		object_c::accX		() const		{return _acc(0,0);}
+var		object_c::accY		() const		{return _acc(1,0);}
 vector	object_c::pos		() const		{return _pos;}
 vector	object_c::v			() const		{return _v;}
 vector	object_c::acc		() const		{return _acc;}

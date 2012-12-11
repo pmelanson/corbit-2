@@ -23,6 +23,12 @@ private:
 public:
 
 	bool				set_camera		(camera_c *camera);
+	void				change_zoom		(float amount);
+	void 				track			(bool to_track);
+	void				toggle_track	();
+	void 				pan				(float X, float Y);
+	void				update			();
+
 	void				set_dimensions	(int disp_w, int disp_h);
 	void				set_center		(object_c *center_);
 

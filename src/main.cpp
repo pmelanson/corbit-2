@@ -164,9 +164,9 @@ void input() {
 		graphics.track(false);
 
 	if (key[ALLEGRO_KEY_H])
-		graphics.set_center(*find_object("poop", object));
+		graphics.set_center(find_object("poop", object));
 	if (key[ALLEGRO_KEY_1])
-		graphics.set_center(*find_object("fart", object));
+		graphics.set_center(find_object("fart", object));
 }
 
 void calculate() {
@@ -230,9 +230,9 @@ void run() {
 
 int main() {
 
-	object_c poop ("poop", 1e10,200, 750,500, 0,0, 0,0, al_color_name("red"));
-	object_c fart ("fart", 1e5,10, 50,700, 0,0, 0,0, al_color_name("green"));
-	object_c butt ("butt", 1e8,50, 80,200, 0,0, 0,0, al_color_name("blue"));
+	object_c poop ("poop", 1e15,200, 750,500, 0,0, 0,0, al_color_name("red"));
+	object_c fart ("fart", 1e5,10, 50,700, 0,1, 0,0, al_color_name("green"));
+	object_c butt ("butt", 1e8,50, 80,200, 0,-1, 0,0, al_color_name("blue"));
 
 	object.push_back(poop);
 	object.push_back(fart);

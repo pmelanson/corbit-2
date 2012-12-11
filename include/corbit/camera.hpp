@@ -10,7 +10,7 @@ private:
 	vector			_pos,
 	_v,
 	_acc;
-	vector			_screen_size;
+	int				_screen_size[2];
 
 	object_c		*_center;
 
@@ -32,6 +32,8 @@ public:
 	void 			pan				(float X, float Y);
 	void			set_dimensions	(int disp_w, int disp_h);
 
+	int				screen_w		() const,
+					screen_h		() const;
 	float			zoom			() const;
 	var				x				() const,
 					y				() const,

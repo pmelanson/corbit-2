@@ -1,3 +1,10 @@
+10 December 2012
+   Corbit Beta v2.0:
+
+     Change log:
+        -Cleaned: camera is now a member of graphics_c
+        -Fixed: camera now zooms properly
+
 22 November 2012
    Corbit Beta v2.0:
 
