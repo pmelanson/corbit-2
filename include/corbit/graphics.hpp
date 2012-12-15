@@ -13,7 +13,7 @@ class object_c;
 class graphics_c {
 private:
 
-	void				draw			(object_c &obj) const;
+	void				_draw			(object_c &obj) const;
 
 	camera_c			*_camera;
 

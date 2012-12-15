@@ -38,6 +38,7 @@ public:
 						set_Vy			(var Vy_),
 						set_accX		(var accX_),
 						set_accY		(var accY_),
+						set_acc0		(),
 						set_pos			(vector pos_),
 						set_v			(vector v_),
 						set_acc			(vector acc_);

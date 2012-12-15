@@ -22,7 +22,7 @@ void		graphics_c::update				()						{_camera->update();}
 void		graphics_c::set_dimensions		(int disp_w, int disp_h){_camera->set_dimensions(disp_w, disp_h);}
 void		graphics_c::set_center			(object_c *center_) 	{_camera->set_center(center_);}
 
-void		graphics_c::draw				(object_c &obj) const {
+void		graphics_c::_draw				(object_c &obj) const {
 
 	if (display)
 		al_draw_filled_circle	(
@@ -37,7 +37,7 @@ void		graphics_c::draw_all			(boost::intrusive::list<object_c>& list) const {
 
 	static boost::intrusive::list<object_c>::iterator it;
 	for (it = list.begin(); it != list.end(); ++it)
-		draw(*it);
+		_draw(*it);
 }
 
 

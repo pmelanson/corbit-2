@@ -18,8 +18,8 @@ private:
 	const unsigned	_inverse;
 	float			_zoom_level;
 
-	void 			recenter		(),
-					move			();
+	void 			_recenter		(),
+					_move			();
 
 					camera_c		(var X, var Y, var Vx, var Vy, var accX, var accY,
 									object_c *center_, unsigned inverse_, float zoomlevel_);

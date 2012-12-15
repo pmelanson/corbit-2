@@ -1,13 +1,14 @@
+#include <sstream>
 #include <iostream>
 
 #define ALLEGRO_STATICLINK
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 #include <boost/intrusive/list.hpp>
 #include <boost/program_options.hpp>
-
-//#include <eigen/dense>
 
 #include <corbit/corbit.hpp>
 using namespace std;
@@ -23,7 +24,7 @@ unsigned				mods;
 typedef boost::intrusive::list <object_c> object_list;
 object_list object;
 
-camera_c	camera		= camera_c::get_instance	(0,0, 0,0, 0,0, NULL, 1, 1);
+camera_c	camera		= camera_c::get_instance	(0,0, 0,0, 0,0, NULL, 1, 10);
 graphics_c	graphics	= graphics_c::get_instance	(&camera);
 calc_c		calc		= calc_c::get_instance		(NULL, NULL, NULL);
 
@@ -107,7 +108,7 @@ bool initAllegro() {
 
 bool initialize() {
 
-	cout << "Corbit " << AutoVersion::STATUS << " v" << AutoVersion::MAJOR << '.' << AutoVersion::MINOR << endl;
+	cout << "Corbit " << AutoVersion::STATUS << " v" << AutoVersion::MAJOR << '.' << AutoVersion::MINOR << '.' << AutoVersion::BUILD << endl;
 
 	if(!initAllegro())
 		return false;
@@ -152,9 +153,9 @@ void input() {
 		graphics.pan(0, 0.5);
 
 	if (key[ALLEGRO_KEY_A])
-		calc.accelerate(*calc.active_ship(), -500, 0);
+		calc.ship_accelerate(-500, 0);
 	if (key[ALLEGRO_KEY_D])
-		calc.accelerate(*calc.active_ship(), 500, 0);
+		calc.ship_accelerate(500, 0);
 
 	if (key[ALLEGRO_KEY_TAB])
 		graphics.toggle_track();
@@ -191,8 +192,8 @@ void draw() {
 void run() {
 
 	bool redraw = true;
-	unsigned short n;
-
+	unsigned short i;
+	ALLEGRO_FONT *font = al_load_font("courier new.ttf", 36, 0);
 
 	while(true) {
 
@@ -208,8 +209,8 @@ void run() {
 			calculate();
 			redraw = true;
 
-			for(n = 0; n != ALLEGRO_KEY_MAX; n++)							//clear key states
-				key[n] = false;
+			for(i = 0; i != ALLEGRO_KEY_MAX; i++)							//clear key states
+				key[i] = false;
 		}
 
 		else if(ev.type == ALLEGRO_EVENT_KEY_CHAR) {						///keypress
@@ -221,6 +222,7 @@ void run() {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0,0,0));
 			draw();
+			al_draw_textf(font, al_map_rgb(200,200,200), 0,0, ALLEGRO_ALIGN_LEFT, "%lf you are poop", calc.ship_ref_ecc());
 			al_flip_display();
 		}
 
@@ -230,15 +232,29 @@ void run() {
 
 int main() {
 
-	object_c poop ("poop", 1e15,200, 750,500, 0,0, 0,0, al_color_name("red"));
-	object_c fart ("fart", 1e5,10, 50,700, 0,1, 0,0, al_color_name("green"));
-	object_c butt ("butt", 1e8,50, 80,200, 0,-1, 0,0, al_color_name("blue"));
+	object_c poop ("poop", 1e20,200, 750,500, -.1,.1, 0,0, al_color_name("red"));
+//	object_c fart ("fart", 1e2,10, 50,700, 0,1, 0,0, al_color_name("green"));
+	object_c butt ("butt", 1e8,50, 250,500, 0,4000, 0,0, al_color_name("blue"));
 
 	object.push_back(poop);
-	object.push_back(fart);
+//	object.push_back(fart);
 	object.push_back(butt);
 
-	calc.set_active_ship(find_object("poop", object));
+	int max = 100;
+
+	object_c ar[max];
+	int x = 0;
+	while(x != max)
+		object.push_back(ar[x++]);
+
+	calc.set_active_ship(find_object("butt", object));
+//	calc.set_target(find_object("fart", object));
+	calc.set_reference(find_object("poop", object));
+
+//	find_object("butt", object)->set_Vy(calc.ship_ref_orbitV());
+
+	cout << "v\n" << calc.ship_ref_v() << endl << calc.ship_targ_v() << endl;
+	cout << "ecc\n" << calc.ship_ref_orbitV() << endl;
 
 	if(!initialize()) {
 		if(cleanup())
@@ -246,6 +262,9 @@ int main() {
 		else
 			return 11;
 	}
+
+	al_init_font_addon();
+	al_init_ttf_addon();
 
 	run();
 
