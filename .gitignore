@@ -7,7 +7,7 @@
 #libraries
 include/
 #but not my libraries
-!include/corbit
+!include/corbit/
 
 #bin and obj
 /bin
