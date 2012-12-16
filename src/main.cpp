@@ -72,8 +72,8 @@ bool initAllegro() {
 	///initializes display///
 	ALLEGRO_DISPLAY_MODE disp_data;
 	al_get_display_mode(al_get_num_display_modes()-1, &disp_data);
-	al_set_new_display_flags(ALLEGRO_WINDOWED);
-	display = al_create_display(disp_data.width, disp_data.height-50);
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+	display = al_create_display(disp_data.width, disp_data.height);
 	if(!display) {
 		cerr << "Failed to create display!" << endl;
 		success = false;
