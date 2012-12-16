@@ -33,9 +33,6 @@
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
-			<Add option="-lgcc_eh" />
-			<Add option="-static-libgcc" />
-			<Add option="-static-libstdc++" />
 			<Add library="lib\allegro5\liballegro-5.0.7-static-mt.a" />
 			<Add library="lib\allegro5\liballegro_acodec-5.0.7-static-mt.a" />
 			<Add library="lib\allegro5\liballegro_audio-5.0.7-static-mt.a" />
