@@ -15,14 +15,16 @@ private:
 	object_c		*_center;
 
 	bool			_tracking;
-	const unsigned	_inverse;
+
 	float			_zoom_level;
+	const float		_inverse,
+					_exp;
 
 	void 			_recenter		(),
 					_move			();
 
 					camera_c		(var X, var Y, var Vx, var Vy, var accX, var accY,
-									object_c *center_, unsigned inverse_, float zoomlevel_);
+									object_c *center_, float zoomlevel_);
 
 public:
 	void			update			();
@@ -47,7 +49,7 @@ public:
 	void			change_zoom		(float amount);
 
 	static camera_c	&get_instance	(var X, var Y, var Vx, var Vy, var accX, var accY,
-									object_c *center_, unsigned inverse_, float zoom_level_);
+									object_c *center_, float zoom_level_);
 
 	~camera_c		();
 };

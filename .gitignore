@@ -4,11 +4,6 @@
 #compiled executables
 *.exe
 
-#libraries
-include/
-#but not my libraries
-!include/corbit/
-
 #bin and obj
 /bin/
 /obj/

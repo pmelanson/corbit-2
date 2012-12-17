@@ -22,6 +22,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DEIGEN_NO_DEBUG" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -29,6 +30,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add directory="include" />
 		</Compiler>

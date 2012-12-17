@@ -2,6 +2,8 @@
 
 #include <corbit/object.hpp>
 
+#include <cmath>
+
 var		camera_c::x				() const {return _pos(0,0) + _screen_size[0]/2;}
 var		camera_c::y				() const {return _pos(1,0) + _screen_size[1]/2;}
 var		camera_c::Vx			() const {return _v(0,0);}
@@ -43,19 +45,20 @@ void	camera_c::pan			(float X, float Y)	{
 	_acc(0,0) += X;
 	_acc(1,0) += Y;
 }
-float	camera_c::zoom			() const			{return _inverse/_zoom_level;}
+float	camera_c::zoom			() const			{return _inverse/std::pow(_zoom_level, _exp);}
 void	camera_c::change_zoom	(float amount)		{_zoom_level += amount;}
 
 
 camera_c::camera_c					(var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-									object_c *center_, unsigned inverse_, float zoom_level_)
+									object_c *center_, float zoom_level_)
 	: _pos (x_, y_), _v (Vx_, Vy_), _acc (accX_, accY_),
-	_tracking (false), _inverse (inverse_), _zoom_level (zoom_level_) {}
+	_tracking (false), _zoom_level (zoom_level_),
+	_inverse (1), _exp (2) {}
 
 camera_c	&camera_c::get_instance	(var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-									object_c *center_, unsigned inverse_, float zoom_level_) {
+									object_c *center_, float zoom_level_) {
 
-	static camera_c instance (x_, y_, Vx_, Vy_, accX_, accY_, center_, inverse_, zoom_level_);
+	static camera_c instance (x_, y_, Vx_, Vy_, accX_, accY_, center_, zoom_level_);
 	return instance;
 }
 

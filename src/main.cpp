@@ -8,11 +8,11 @@
 #include <allegro5/allegro_ttf.h>
 
 #include <boost/intrusive/list.hpp>
-#include <boost/program_options.hpp>
+
+#include <json_spirit/json_spirit.h>
 
 #include <corbit/corbit.hpp>
 using namespace std;
-namespace po = boost::program_options;
 
 
 ALLEGRO_DISPLAY			*display		=NULL;
@@ -24,7 +24,7 @@ unsigned				mods;
 typedef boost::intrusive::list <object_c> object_list;
 object_list object;
 
-camera_c	camera		= camera_c::get_instance	(0,0, 0,0, 0,0, NULL, 1, 10);
+camera_c	camera		= camera_c::get_instance	(0,0, 0,0, 0,0, NULL, 10);
 graphics_c	graphics	= graphics_c::get_instance	(&camera);
 calc_c		calc		= calc_c::get_instance		(NULL, NULL, NULL);
 
@@ -140,33 +140,37 @@ void input() {
 
 	if (key[ALLEGRO_KEY_PAD_MINUS])
 		graphics.change_zoom(0.1);
-	if (key[ALLEGRO_KEY_PAD_PLUS])
+	else if (key[ALLEGRO_KEY_PAD_PLUS])
 		graphics.change_zoom(-0.1);
 
-	if (key[ALLEGRO_KEY_RIGHT])
-		graphics.pan(0.5, 0);
-	if (key[ALLEGRO_KEY_LEFT])
-		graphics.pan(-0.5, 0);
-	if (key[ALLEGRO_KEY_UP])
-		graphics.pan(0, -0.5);
-	if (key[ALLEGRO_KEY_DOWN])
-		graphics.pan(0, 0.5);
+	else if (key[ALLEGRO_KEY_RIGHT])
+		graphics.pan(100, 0);
+	else if (key[ALLEGRO_KEY_LEFT])
+		graphics.pan(-100, 0);
+	else if (key[ALLEGRO_KEY_UP])
+		graphics.pan(0, -100);
+	else if (key[ALLEGRO_KEY_DOWN])
+		graphics.pan(0, 100);
 
-	if (key[ALLEGRO_KEY_A])
+	if (key[ALLEGRO_KEY_W])
+		calc.ship_accelerate(0, -5000000000);
+	else if (key[ALLEGRO_KEY_A])
 		calc.ship_accelerate(-500, 0);
-	if (key[ALLEGRO_KEY_D])
+	if (key[ALLEGRO_KEY_S])
+		calc.ship_accelerate(0, 5000000000);
+	else if (key[ALLEGRO_KEY_D])
 		calc.ship_accelerate(500, 0);
 
-	if (key[ALLEGRO_KEY_TAB])
+	else if (key[ALLEGRO_KEY_TAB])
 		graphics.toggle_track();
-	if (key[ALLEGRO_KEY_Q])
+	else if (key[ALLEGRO_KEY_Q])
 		graphics.track(true);
-	if (key[ALLEGRO_KEY_W])
+	else if (key[ALLEGRO_KEY_E])
 		graphics.track(false);
 
-	if (key[ALLEGRO_KEY_H])
+	else if (key[ALLEGRO_KEY_H])
 		graphics.set_center(find_object("poop", object));
-	if (key[ALLEGRO_KEY_1])
+	else if (key[ALLEGRO_KEY_1])
 		graphics.set_center(find_object("fart", object));
 }
 
@@ -232,26 +236,28 @@ void run() {
 
 int main() {
 
-	object_c poop ("poop", 1e20,200, 750,500, -.1,.1, 0,0, al_color_name("red"));
-//	object_c fart ("fart", 1e2,10, 50,700, 0,1, 0,0, al_color_name("green"));
-	object_c butt ("butt", 1e8,50, 250,500, 0,4000, 0,0, al_color_name("blue"));
+	object_c poop ("poop", 1e2,200, 750,500, -.1,.1, 0,0, al_color_name("red"));
+	object_c fart ("fart", 1e2,10, 50,700, 0,1, 0,0, al_color_name("green"));
+	object_c butt ("butt", 1e8,50, 250,500, 0,4000, 0,0, al_color_name("pink"));
 
 	object.push_back(poop);
-//	object.push_back(fart);
+	object.push_back(fart);
 	object.push_back(butt);
 
-	int max = 100;
+
+
+	int max = 200;
 
 	object_c ar[max];
 	int x = 0;
 	while(x != max)
 		object.push_back(ar[x++]);
 
-	calc.set_active_ship(find_object("butt", object));
-//	calc.set_target(find_object("fart", object));
+	calc.set_active_ship(find_object("poop", object));
+	calc.set_target(find_object("fart", object));
 	calc.set_reference(find_object("poop", object));
 
-//	find_object("butt", object)->set_Vy(calc.ship_ref_orbitV());
+//	find_object("butt", object)->set_Vy(10900.);
 
 	cout << "v\n" << calc.ship_ref_v() << endl << calc.ship_targ_v() << endl;
 	cout << "ecc\n" << calc.ship_ref_orbitV() << endl;
