@@ -2295,11 +2295,10 @@
 	<corbit/globals.hpp>
 	<boost/intrusive/list.hpp>
 
-1355700961 source:c:\users\melanson\corbit\src\main.cpp
-	<sstream>
+1355720139 source:c:\users\melanson\corbit\src\main.cpp
+	<fstream>
 	<iostream>
 	<allegro5/allegro5.h>
-	<allegro5/allegro_primitives.h>
 	<allegro5/allegro_font.h>
 	<allegro5/allegro_ttf.h>
 	<boost/intrusive/list.hpp>

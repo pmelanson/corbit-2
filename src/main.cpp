@@ -1,15 +1,15 @@
-#include <sstream>
+#include <fstream>
 #include <iostream>
 
 #define ALLEGRO_STATICLINK
 #include <allegro5/allegro5.h>
-#include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
 #include <boost/intrusive/list.hpp>
 
 #include <json_spirit/json_spirit.h>
+namespace js = json_spirit;
 
 #include <corbit/corbit.hpp>
 using namespace std;
@@ -261,6 +261,10 @@ int main() {
 
 	cout << "v\n" << calc.ship_ref_v() << endl << calc.ship_targ_v() << endl;
 	cout << "ecc\n" << calc.ship_ref_orbitV() << endl;
+
+	ifstream file("objects.json");
+	js::Value value;
+//	js::read(file, value);
 
 	if(!initialize()) {
 		if(cleanup())
