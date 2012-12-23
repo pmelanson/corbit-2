@@ -24,7 +24,7 @@ unsigned				mods;
 typedef boost::intrusive::list <object_c> object_list;
 object_list object;
 
-camera_c	camera		= camera_c::get_instance	(0,0, 0,0, 0,0, NULL, 10);
+camera_c	camera		= camera_c::get_instance	(0,0, 0,0, 0,0, NULL, 2);
 graphics_c	graphics	= graphics_c::get_instance	(&camera);
 calc_c		calc		= calc_c::get_instance		(NULL, NULL, NULL);
 
@@ -226,7 +226,7 @@ void run() {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0,0,0));
 			draw();
-			al_draw_textf(font, al_map_rgb(200,200,200), 0,0, ALLEGRO_ALIGN_LEFT, "%lf you are poop", calc.ship_ref_ecc());
+			al_draw_textf(font, al_map_rgb(200,200,200), 0,0, ALLEGRO_ALIGN_LEFT, "%lf you are poop %lf", calc.ship_ref_ecc(), calc.ship_ref_dist());
 			al_flip_display();
 		}
 
@@ -236,28 +236,28 @@ void run() {
 
 int main() {
 
-	object_c poop ("poop", 1e2,200, 750,500, -.1,.1, 0,0, al_color_name("red"));
-	object_c fart ("fart", 1e2,10, 50,700, 0,1, 0,0, al_color_name("green"));
-	object_c butt ("butt", 1e8,50, 250,500, 0,4000, 0,0, al_color_name("pink"));
+	object_c poop ("earth", 1e18,200, 750,500, -.1,.1, 0,0, al_color_name("green"));
+//	object_c fart ("iss", 1e1,10, 50,700, 0,1, 0,0, al_color_name("blue"));
+	object_c butt ("hab", 1e8,50, 250,500, 0,39, 0,0, al_color_name("red"));
 
 	object.push_back(poop);
-	object.push_back(fart);
+//	object.push_back(fart);
 	object.push_back(butt);
 
 
 
-	int max = 200;
+	int max = 0;
 
 	object_c ar[max];
 	int x = 0;
 	while(x != max)
 		object.push_back(ar[x++]);
 
-	calc.set_active_ship(find_object("poop", object));
-	calc.set_target(find_object("fart", object));
-	calc.set_reference(find_object("poop", object));
+	calc.set_active_ship(find_object("hab", object));
+	calc.set_target(find_object("earth", object));
+	calc.set_reference(find_object("earth", object));
 
-//	find_object("butt", object)->set_Vy(10900.);
+	find_object("hab", object)->set_Vy(calc.ship_ref_orbitV());
 
 	cout << "v\n" << calc.ship_ref_v() << endl << calc.ship_targ_v() << endl;
 	cout << "ecc\n" << calc.ship_ref_orbitV() << endl;

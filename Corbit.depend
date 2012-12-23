@@ -2282,20 +2282,20 @@
 1340561286 c:\users\melanson\corbit\include\allegro5\allegro_primitives.h
 	<allegro5/allegro.h>
 
-1355615476 source:c:\users\melanson\corbit\src\object.cpp
+1356283456 source:c:\users\melanson\corbit\src\object.cpp
 	<corbit/object.hpp>
 
-1355612108 source:c:\users\melanson\corbit\src\calc.cpp
+1356284837 source:c:\users\melanson\corbit\src\calc.cpp
 	<iostream>
 	<corbit/calc.hpp>
 	<corbit/object.hpp>
 	<cmath>
 
-1355593482 c:\users\melanson\corbit\include\corbit\calc.hpp
+1356284271 c:\users\melanson\corbit\include\corbit\calc.hpp
 	<corbit/globals.hpp>
 	<boost/intrusive/list.hpp>
 
-1355720139 source:c:\users\melanson\corbit\src\main.cpp
+1356284117 source:c:\users\melanson\corbit\src\main.cpp
 	<fstream>
 	<iostream>
 	<allegro5/allegro5.h>

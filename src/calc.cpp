@@ -5,7 +5,7 @@
 
 #define _USE_MATH_DEFINES
 #include <cmath>
-const float	G = 6.674e-11;
+const float	G	=	6.674e-11;
 
 object_c	*calc_c::active_ship	() const						{return _active_ship;}
 object_c	*calc_c::target			() const						{return _targ;}
@@ -21,13 +21,28 @@ var			calc_c::distance2		(const object_c &A, const object_c &B) const {
 var			calc_c::distance		(const object_c &A, const object_c &B) const {
 	return (A.pos() - B.pos()).norm();
 }
+var			calc_c::ship_dist		(const object_c &A) const {
+	if(!_active_ship)
+		return NAN;
+	return distance(*_active_ship, A);
+}
+var			calc_c::ship_targ_dist	() const {
+	if(!_active_ship || !_targ)
+		return NAN;
+	return distance(*_active_ship, *_targ);
+}
+var			calc_c::ship_ref_dist	() const {
+	if(!_active_ship || !_ref)
+		return NAN;
+	return distance(*_active_ship, *_ref);
+}
 
 var			calc_c::theta_object	(const object_c &A, const object_c &B) const {
 	return atan2f(B.y()-A.y(), B.x()-A.x());
 }
 
 var			calc_c::gravity			(const object_c &A, const object_c &B) const {
-	if(!std::isnormal(distance2(A,B)) || !distance2(A,B))	//if the distance is inf, nan, or 0
+	if(!std::isnormal(distance2(A,B)) || !distance2(A,B))	//if the distance is inf, NAN, or 0
 		return 1;
 
 	return G * (A.mass() * B.mass()) / distance2(A,B);
@@ -49,12 +64,12 @@ var			calc_c::orbitV			(const object_c &A, const object_c &B) const {
 }
 var			calc_c::ship_targ_orbitV() const {
 	if(!_active_ship || !_targ)
-		return 1./0.;	//NaN
+		return NAN;
 	return orbitV(*_active_ship, *_targ);
 }
 var			calc_c::ship_ref_orbitV	() const {
-	if(!_active_ship || !_targ)
-		return 1./0.;	//NaN
+	if(!_active_ship || !_ref)
+		return NAN;
 	return orbitV(*_active_ship, *_ref);
 }
 
@@ -82,11 +97,16 @@ var			calc_c::eccentricity	(const object_c &A, const object_c &B) const {
 
 var			calc_c::ship_ecc		(const object_c &A) const {
 	if(!_active_ship)
-		return 12./0.;	//NaN
+		return 12./0.;
 	return eccentricity(*_active_ship, A);
 }
-var			calc_c::ship_targ_ecc	() const {return ship_ecc(*_targ);}
-var			calc_c::ship_ref_ecc	() const {return ship_ecc(*_ref);}
+var			calc_c::ship_targ_ecc	() const {
+	return ship_ecc(*_targ);
+}
+var			calc_c::ship_ref_ecc	() const {
+
+	return ship_ecc(*_ref);
+}
 
 
 vector		calc_c::relative_pos	(const object_c &A, const object_c &B) const {
@@ -102,12 +122,12 @@ vector		calc_c::ship_relative_v	(const object_c &A) const {
 }
 vector		calc_c::ship_targ_v		() const {
 	if(!_active_ship || !_targ)
-		return vector(1./0., 1./0.);	//NaN
+		return vector(NAN, NAN);
 	return ship_relative_v(*_targ);
 }
 vector		calc_c::ship_ref_v		() const {
 	if(!_active_ship || !_ref)
-		return vector(1./0., 1./0.);	//NaN
+		return vector(NAN, NAN);
 	return ship_relative_v(*_ref);
 }
 

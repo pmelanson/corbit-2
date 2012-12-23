@@ -21,7 +21,7 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-O1" />
 					<Add option="-DEIGEN_NO_DEBUG" />
 				</Compiler>
 				<Linker>

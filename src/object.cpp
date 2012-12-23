@@ -49,7 +49,7 @@ object_c::object_c			(string name_, var m, var r,
 }
 
 object_c::object_c			()
-	: _name ("the nameless"), _mass (1e10), _radius (100),
+	: _name ("the nameless"), _mass (1e2), _radius (1e2),
 	_pos (vector::Random()), _v (vector::Random()), _acc (vector::Zero()),
 	color (al_color_name("lightgoldenrodyellow")) {
 

@@ -30,6 +30,9 @@ public:
 
 	var				distance2		(const object_c &A, const object_c &B) const,
 					distance		(const object_c &A, const object_c &B) const,
+					ship_dist		(const object_c &A) const,
+					ship_targ_dist	() const,
+					ship_ref_dist	() const,
 					theta_object	(const object_c &A, const object_c &B) const,
 					gravity			(const object_c &A, const object_c &B) const,
 					Vcen			(const object_c &A, const object_c &B) const,
