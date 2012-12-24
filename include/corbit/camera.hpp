@@ -8,8 +8,8 @@ class object_c;
 class camera_c {
 private:
 	vector			_pos,
-	_v,
-	_acc;
+					_v,
+					_acc;
 	int				_screen_size[2];
 
 	object_c		*_center;

@@ -7,13 +7,12 @@ class hud_c {
 private:
 
 
-
 public:
 
-	void update ();
+	void	update	();
 
-		hud_c	();
-		~hud_c	();
+	hud_c			();
+	~hud_c			();
 };
 
 

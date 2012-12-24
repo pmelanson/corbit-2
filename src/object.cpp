@@ -13,6 +13,7 @@ var		object_c::accY		() const		{return _acc(1,0);}
 vector	object_c::pos		() const		{return _pos;}
 vector	object_c::v			() const		{return _v;}
 vector	object_c::acc		() const		{return _acc;}
+col		object_c::color		() const		{return _color;}
 
 void	object_c::set_x		(var x_)		{_pos(0,0) = x_;}
 void	object_c::set_y		(var y_)		{_pos(1,0) = y_;}
@@ -28,10 +29,10 @@ void	object_c::set_acc	(vector acc_)	{_acc = acc_;}
 
 object_c::object_c			(string name_, var m, var r,
 							var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-							ALLEGRO_COLOR color_)
+							col color_)
 	: _name (name_), _mass (m ? m : 1), _radius (r),
 	_pos (x_, y_), _v (Vx_, Vy_), _acc (accX_, accY_),
-	color (color_) {
+	_color (color_) {
 
 	clog << "\n[" << name() << "]";
 	clog << "\nmass=" << mass();
@@ -43,7 +44,7 @@ object_c::object_c			(string name_, var m, var r,
 	clog << "\naccX=" << accX();
 	clog << "\naccY=" << accY();
 	unsigned char R, G, B, A;
-	al_unmap_rgba(color, &R, &G, &B, &A);
+	al_unmap_rgba(_color, &R, &G, &B, &A);
 	clog << "\ncolor=" << hex << uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << dec << nouppercase;
 	clog << endl;
 }
@@ -51,7 +52,7 @@ object_c::object_c			(string name_, var m, var r,
 object_c::object_c			()
 	: _name ("the nameless"), _mass (1e2), _radius (1e2),
 	_pos (vector::Random()), _v (vector::Random()), _acc (vector::Zero()),
-	color (al_color_name("lightgoldenrodyellow")) {
+	_color (al_color_name("lightgoldenrodyellow")) {
 
 	clog << "\nEmpty object created, placing default object at (" << x() << ", " << y() << ")" << endl;
 }
@@ -68,7 +69,7 @@ object_c::~object_c			() {
 	clog << "\naccX=" << accX();
 	clog << "\naccY=" << accY();
 	unsigned char R, G, B, A;
-	al_unmap_rgba(color, &R, &G, &B, &A);
+	al_unmap_rgba(_color, &R, &G, &B, &A);
 	clog << "\ncolor=" << hex << uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << dec << nouppercase;
 	clog << endl;
 }

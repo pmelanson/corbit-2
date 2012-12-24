@@ -18,6 +18,8 @@ private:
 						_v,
 						_acc;
 
+	const col			_color;
+
 public:
 	std::string			name			() const;
 	virtual var			mass			() const,
@@ -31,6 +33,7 @@ public:
 	virtual vector		pos				() const,
 						v				() const,
 						acc				() const;
+	col					color			() const;
 
 	virtual void		set_x			(var x_),
 						set_y			(var y_),
@@ -43,11 +46,9 @@ public:
 						set_v			(vector v_),
 						set_acc			(vector acc_);
 
-	const ALLEGRO_COLOR	color;
-
 	object_c							(std::string name_, var m, var r,
 										var X, var Y, var Vx, var Vy, var accX, var accY,
-										ALLEGRO_COLOR color_);
+										col color_);
 	object_c							();
 
 	~object_c							();

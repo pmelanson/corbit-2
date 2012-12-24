@@ -29,7 +29,7 @@ void		graphics_c::_draw				(object_c &obj) const {
 								(obj.x() - _camera->x()) * _camera->zoom() + _camera->screen_w()/2,
 								(obj.y() - _camera->y()) * _camera->zoom() - _camera->screen_h()/2,
 								obj.radius() * _camera->zoom(),
-								obj.color
+								obj.color()
 								);
 }
 

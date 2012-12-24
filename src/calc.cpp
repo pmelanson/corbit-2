@@ -74,24 +74,20 @@ var			calc_c::ship_ref_orbitV	() const {
 }
 
 var			calc_c::eccentricity	(const object_c &A, const object_c &B) const {
-	const var E =
-		(relative_v(A,B).squaredNorm())	// v^2 / 2
-		/ 2
-		-								// -
-		G * (A.mass() + B.mass())	/	// G(m1 + m2) / r
-		distance(A,B),
+	const var
+	mu	= G * (A.mass() + B.mass()),		//G(m1+m2)
+	E	= -
+		(relative_v(A,B).squaredNorm())	/ 2	//v^2 / 2
+		-									//-
+		(mu / distance(A,B)),				//mu / r
 
-	h = (distance(A,B) * Vtan(A,B)) * (distance(A,B) * Vtan(A,B));	//(r * Vtan)^2
-
-//	std::cout.precision(3);
-//	std::cout << h << '\t' << E << std::endl;
-//	h = 50;
+	h	= (distance(A,B) * Vtan(A,B)) * (distance(A,B) * Vtan(A,B));	//(r * Vtan)^2
 
 	return std::sqrt(				//sqrt of
 		1 +							//1 +
-		(2 * E * h * 10000)					//2Eh^2
+		(2 * E * h * 10000)			//2Eh^2
 		/
-		(G * (A.mass() + B.mass()) )//G(m1+m2)
+		(mu)						//G(m1+m2)
 	);
 }
 

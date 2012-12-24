@@ -76,11 +76,13 @@
 		<Unit filename="include\corbit\corbit.hpp" />
 		<Unit filename="include\corbit\globals.hpp" />
 		<Unit filename="include\corbit\graphics.hpp" />
+		<Unit filename="include\corbit\hud.hpp" />
 		<Unit filename="include\corbit\object.hpp" />
 		<Unit filename="include\corbit\version.hpp" />
 		<Unit filename="src\calc.cpp" />
 		<Unit filename="src\camera.cpp" />
 		<Unit filename="src\graphics.cpp" />
+		<Unit filename="src\hud.cpp" />
 		<Unit filename="src\main.cpp" />
 		<Unit filename="src\object.cpp" />
 		<Extensions>

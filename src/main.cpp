@@ -117,7 +117,7 @@ bool initialize() {
 	al_get_display_mode(al_get_num_display_modes()-1, &disp_data);
 	graphics.set_dimensions(disp_data.width, disp_data.height);
 
-	graphics.set_center(find_object("butt", object));
+	graphics.set_center(find_object("earth", object));
 
 	return true;
 }
@@ -169,9 +169,9 @@ void input() {
 		graphics.track(false);
 
 	else if (key[ALLEGRO_KEY_H])
-		graphics.set_center(find_object("poop", object));
+		graphics.set_center(find_object("hab", object));
 	else if (key[ALLEGRO_KEY_1])
-		graphics.set_center(find_object("fart", object));
+		graphics.set_center(find_object("earth", object));
 }
 
 void calculate() {
@@ -181,9 +181,8 @@ void calculate() {
 //		if (key[n])
 //			clog << endl << al_keycode_to_name(n);
 
-	graphics.update();
-
 	calc.update(object);
+	graphics.update();
 
 	input();
 }
@@ -236,7 +235,7 @@ void run() {
 
 int main() {
 
-	object_c poop ("earth", 1e18,200, 750,500, -.1,.1, 0,0, al_color_name("green"));
+	object_c poop ("earth", 1e20,200, 750,500, -.1,.1, 0,0, al_color_name("green"));
 //	object_c fart ("iss", 1e1,10, 50,700, 0,1, 0,0, al_color_name("blue"));
 	object_c butt ("hab", 1e8,50, 250,500, 0,39, 0,0, al_color_name("red"));
 

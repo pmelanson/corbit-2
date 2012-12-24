@@ -6,8 +6,7 @@
 
 #include <corbit/globals.hpp>
 
-class camera_c;
-class object_c;
+class camera_c, object_c;
 
 
 class graphics_c {
@@ -17,8 +16,8 @@ private:
 
 	camera_c			*_camera;
 
-						graphics_c		();
-						graphics_c		(camera_c *camera_);
+	graphics_c							();
+	graphics_c							(camera_c *camera_);
 
 public:
 
