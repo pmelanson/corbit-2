@@ -1,0 +1,66 @@
+# depslib dependency file v1.0
+1358620780 source:/home/patrick/Code/corbit/src/calc.cpp
+	<corbit/calc.hpp>
+	<corbit/object.hpp>
+	<Eigen/Dense>
+	<cmath>
+
+1358621193 /home/patrick/Code/corbit/include/corbit/calc.hpp
+	<corbit/globals.hpp>
+
+1358621217 /home/patrick/Code/corbit/include/corbit/globals.hpp
+	<Eigen/Dense>
+	<allegro5/color.h>
+
+1358621238 /home/patrick/Code/corbit/include/corbit/object.hpp
+	<string>
+	<boost/intrusive/list.hpp>
+	<corbit/globals.hpp>
+
+1358635171 source:/home/patrick/Code/corbit/src/camera.cpp
+	<corbit/camera.hpp>
+	<corbit/object.hpp>
+	<cmath>
+
+1358621203 /home/patrick/Code/corbit/include/corbit/camera.hpp
+	<corbit/globals.hpp>
+
+1358629281 source:/home/patrick/Code/corbit/src/graphics.cpp
+	<corbit/graphics.hpp>
+	<corbit/object.hpp>
+	<corbit/camera.hpp>
+	<allegro5/allegro_primitives.h>
+
+1358628284 /home/patrick/Code/corbit/include/corbit/graphics.hpp
+	<corbit/globals.hpp>
+
+1358620811 source:/home/patrick/Code/corbit/src/hud.cpp
+	<corbit/hud.hpp>
+
+1358621229 /home/patrick/Code/corbit/include/corbit/hud.hpp
+	<corbit/globals.hpp>
+
+1358620834 source:/home/patrick/Code/corbit/src/object.cpp
+	<corbit/object.hpp>
+	<allegro5/allegro_color.h>
+
+1358635149 source:/home/patrick/Code/corbit/src/main.cpp
+	<iostream>
+	<allegro5/allegro5.h>
+	<allegro5/allegro_color.h>
+	<allegro5/allegro_primitives.h>
+	<allegro5/allegro_font.h>
+	<allegro5/allegro_ttf.h>
+	<boost/intrusive/list.hpp>
+	<corbit/corbit.hpp>
+
+1358621210 /home/patrick/Code/corbit/include/corbit/corbit.hpp
+	"globals.hpp"
+	"object.hpp"
+	"calc.hpp"
+	"camera.hpp"
+	"version.hpp"
+	"graphics.hpp"
+
+1358621253 /home/patrick/Code/corbit/include/corbit/version.hpp
+
