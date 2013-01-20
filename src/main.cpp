@@ -186,7 +186,6 @@ void calculate() {
 //		if (key[n])
 //			clog << endl << al_keycode_to_name(n);
 
-
 	for(auto &itX : object) {
 		for(auto &itY : object) {
 			itX.accelerate( calc::gravity(itX, itY), calc::theta(itX, itY));
@@ -208,7 +207,6 @@ void draw() {
 	for(auto &it : object) {
 		graphics::draw(it);
 	}
-
 }
 
 void run() {

@@ -14,7 +14,7 @@ namespace calc {
 					Vcen		(const object_c &A, const object_c &B),
 					Vtan		(const object_c &A, const object_c &B),
 					ecc			(const object_c &A, const object_c &B);
-	vector			position	(const object_c &A, const object_c &B),
+	vect			position	(const object_c &A, const object_c &B),
 					velocity	(const object_c &A, const object_c &B);
 };
 

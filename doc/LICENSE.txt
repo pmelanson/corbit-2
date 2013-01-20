@@ -22,4 +22,8 @@ This software is licensed for 2012 under the WTFPL license, as follows:
 
 
 
+<<<<<<< HEAD
 Isn't that an awesome license?
+=======
+Isn't that an awesome license?
+>>>>>>> b85922a2c423cbf0eece1a19d86315fec2fbae1d

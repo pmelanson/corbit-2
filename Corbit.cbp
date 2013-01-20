@@ -56,21 +56,46 @@
 			<AutoVersioning>
 				<Scheme minor_max="2147483647" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="2147483647" />
 				<Settings autoincrement="0" date_declarations="1" update_manifest="97" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="include\corbit\version.hpp" />
-				<Changes_Log show_changes_editor="1" app_title="%p %T v%M.%m:" changeslog_path="ChangesLog.txt" />
-				<Code header_guard="VERSION_HPP" namespace="AutoVersion" prefix="" />
+				&#x0A;=======&#x0A;&#x09;&#x09;&#x09;
+				<Add option="-lgcc_eh" />
+				<Add option="-static-libgcc" />
+				<Add option="-static-libstdc++" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_acodec-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_audio-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\libvorbisfile-1.3.2-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\libvorbis-1.3.2-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_color-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_dialog-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_font-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_image-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_memfile-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_physfs-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_primitives-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\liballegro_ttf-5.0.7-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\libdumb-0.9.3-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\libFLAC-1.2.1-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\libfreetype-2.4.8-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\libogg-1.2.1-static-mt.a" />
+				<Add library="C:\Users\Melanson\dev\allegro-5.0.7-mingw-4.6.2\lib\libzlib-1.2.5-static-mt.a" />
+				<Add library="C:\MinGW\lib\libgdiplus.a" />
+				<Add library="C:\MinGW\lib\libuuid.a" />
+				<Add library="C:\MinGW\lib\libkernel32.a" />
+				<Add library="C:\MinGW\lib\libwinmm.a" />
+				<Add library="C:\MinGW\lib\libpsapi.a" />
+				<Add library="C:\MinGW\lib\libopengl32.a" />
+				<Add library="C:\MinGW\lib\libglu32.a" />
+				<Add library="C:\MinGW\lib\libuser32.a" />
+				<Add library="C:\MinGW\lib\libcomdlg32.a" />
+				<Add library="C:\MinGW\lib\libgdi32.a" />
+				<Add library="C:\MinGW\lib\libshell32.a" />
+				<Add library="C:\MinGW\lib\libole32.a" />
+				<Add library="C:\MinGW\lib\libadvapi32.a" />
+				<Add library="C:\MinGW\lib\libws2_32.a" />
+				<Add library="C:\MinGW\lib\libshlwapi.a" />
 			</AutoVersioning>
 			<code_completion />
 			<debugger />
-			<envvars />
-			<DoxyBlocks>
-				<comment_style block="0" line="0" />
-				<doxyfile_project project_number="2.0.9" use_auto_version="1" />
-				<doxyfile_build />
-				<doxyfile_warnings />
-				<doxyfile_output latex="1" />
-				<doxyfile_dot />
-				<general />
-			</DoxyBlocks>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

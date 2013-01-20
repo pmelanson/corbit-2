@@ -10,9 +10,9 @@ var		camera_c::Vx		() const {return _v(0,0);}
 var		camera_c::Vy		() const {return _v(1,0);}
 var		camera_c::accX		() const {return _acc(0,0);}
 var		camera_c::accY		() const {return _acc(1,0);}
-vector	camera_c::pos		() const {return _pos;}
-vector	camera_c::v			() const {return _v;}
-vector	camera_c::acc		() const {return _acc;}
+vect	camera_c::pos		() const {return _pos;}
+vect	camera_c::v			() const {return _v;}
+vect	camera_c::acc		() const {return _acc;}
 
 void	camera_c::update	() {
 	move();

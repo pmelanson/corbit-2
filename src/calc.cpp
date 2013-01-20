@@ -58,10 +58,10 @@ var			calc::ecc			(const object_c &A, const object_c &B) {
 	);
 }
 
-vector		calc::position		(const object_c &A, const object_c &B) {
+vect		calc::position		(const object_c &A, const object_c &B) {
 	return A.pos() - B.pos();
 }
 
-vector		calc::velocity		(const object_c &A, const object_c &B) {
+vect		calc::velocity		(const object_c &A, const object_c &B) {
 	return A.v() - B.v();
 }

@@ -43,7 +43,7 @@ object_c::object_c			(std::string name_, var m, var r,
 
 object_c::object_c			()
 	: name ("the nameless"), mass (1e2), radius (1e2),
-	_pos (vector::Random()), _v (vector::Random()), _acc (vector::Zero()),
+	_pos (vect::Random()), _v (vect::Random()), _acc (vect::Zero()),
 	color (al_color_name("lightgoldenrodyellow")) {
 
 	std::clog << "\nEmpty object created, placing default object at (" << x() << ", " << y() << ")" << std::endl;

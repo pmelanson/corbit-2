@@ -7,7 +7,7 @@ class object_c;
 
 class camera_c {
 private:
-	vector			_pos,
+	vect			_pos,
 					_v,
 					_acc;
 
@@ -23,7 +23,7 @@ public:
 					Vy				() const,
 					accX			() const,
 					accY			() const;
-	vector			pos				() const,
+	vect			pos				() const,
 					v				() const,
 					acc				() const;
 

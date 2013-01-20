@@ -17,4 +17,3 @@ public:
 
 
 #endif	//HUD_HPP
-
