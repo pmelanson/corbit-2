@@ -1,6 +1,5 @@
 #ifndef CALC_HPP
 #define CALC_HPP
-
 #include <corbit/globals.hpp>
 
 class object_c;

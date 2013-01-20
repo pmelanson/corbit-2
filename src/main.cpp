@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 
 #define ALLEGRO_STATICLINK
@@ -8,6 +9,8 @@
 #include <allegro5/allegro_ttf.h>
 
 #include <boost/intrusive/list.hpp>
+
+//#include <json_cpp/json.h>
 
 #include <corbit/corbit.hpp>
 using std::clog;
@@ -116,8 +119,6 @@ bool initialize() {
 
 	ALLEGRO_DISPLAY_MODE disp_data;
 	al_get_display_mode(al_get_num_display_modes()-1, &disp_data);
-	cout << disp_data.width << endl;
-	cout << disp_data.height << endl;
 	graphics::camera->size[0] = disp_data.width;
 	graphics::camera->size[1] = disp_data.height;
 
@@ -204,13 +205,17 @@ void calculate() {
 
 void draw() {
 
+	for(auto &it : object) {
+		graphics::draw(it);
+	}
+
 }
 
 void run() {
 
 	bool redraw = true;
 	unsigned short i;
-	ALLEGRO_FONT *font = al_load_font("FreeSans.ttf", 36, 0);
+	ALLEGRO_FONT *font = al_load_font("courier new.ttf", 36, 0);
 
 	while(true) {
 
@@ -256,17 +261,6 @@ int main() {
 	object.push_back(poop);
 //	object.push_back(fart);
 	object.push_back(butt);
-
-	int b = 5;
-	int &a = b;
-	a = 111;
-	b = 6342;
-	cout << a << endl;
-	int c = 6;
-	a = c;
-	a = 333;
-	c = 12;
-	cout << a << endl;
 
 
 
