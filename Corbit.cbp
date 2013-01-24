@@ -56,7 +56,7 @@
 			<AutoVersioning>
 				<Scheme minor_max="2147483647" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="2147483647" />
 				<Settings autoincrement="0" date_declarations="1" update_manifest="97" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="include\corbit\version.hpp" />
-				&#x0A;=======&#x0A;&#x09;&#x09;&#x09;
+				&#x0A;&#x09;&#x09;&#x09;&#x09;&#x0A;=======&#x0A;&#x09;&#x09;&#x09;&#x0A;&#x09;&#x09;&#x09;&#x09;
 				<Add option="-lgcc_eh" />
 				<Add option="-static-libgcc" />
 				<Add option="-static-libstdc++" />

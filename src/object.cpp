@@ -4,15 +4,14 @@
 
 void	object_c::move		() {
 	_v	+=	_acc/FPS;
-
-	_pos+=	_v	/FPS;
-
 	_acc.setZero();
+	_pos+=	_v	/FPS;
 }
-
+#include <iostream>
 void	object_c::accelerate(var force, var radians) {
 	if(!mass) return;
 
+	//I know doing set_var(get_var() + x); is dums, but I just want to keep this independent from the datatype used to represent positions OKAY?
 	set_accX (accX() + cos(radians) * (force / mass));
 	set_accY (accY() + sin(radians) * (force / mass));
 }
@@ -20,7 +19,7 @@ void	object_c::accelerate(var force, var radians) {
 object_c::object_c			(std::string name_, var m, var r,
 							var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 							col color_)
-	: name (name_), mass (m ? m : 1), radius (r),
+	: name (name_), mass (m>0 ? m : 1), radius (r),
 	_pos (x_, y_), _v (Vx_, Vy_), _acc (accX_, accY_),
 	color (color_) {
 

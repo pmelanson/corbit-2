@@ -42,19 +42,19 @@ var			calc::orbitV		(const object_c &A, const object_c &B) {
 
 var			calc::ecc			(const object_c &A, const object_c &B) {
 	const var
-	mu	= G * (A.mass + B.mass),		//G(m1+m2)
-	E	= -
+	mu	= G * (A.mass + B.mass),	//G(m1+m2)
+	E	=
 		(velocity(A,B).squaredNorm())	/ 2	//v^2 / 2
 		-									//-
 		(mu / distance(A,B)),				//mu / r
 
 	h	= (distance(A,B) * Vtan(A,B)) * (distance(A,B) * Vtan(A,B));	//(r * Vtan)^2
 
-	return std::sqrt(				//sqrt of
-		1 +							//1 +
-		(2 * E * h)			//2Eh^2
+	return std::sqrt(	//sqrt of
+		1 +				//1 +
+		(2 * E * h)		//2Eh^2
 		/
-		(mu)						//G(m1+m2)
+		(mu)			//G(m1+m2)
 	);
 }
 
