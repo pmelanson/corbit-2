@@ -184,7 +184,7 @@ void calculate() {
 	for (n = 0; n != ALLEGRO_KEY_MAX; n++)
 		if (key[n])
 			clog << al_keycode_to_name(n) << '\n';
-	cout << "------\n";
+	cout << "-----------\n";
 
 	auto itX = object.begin();
 
@@ -193,12 +193,13 @@ void calculate() {
 		++itY;
 		while(itY != object.end()) {
 			itX->accelerate( calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
-			itX->accelerate(-calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
-//			cout << itX->name << '\t' << itY->name << endl;
+			itY->accelerate(-calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
 			++itY;
 		}
 		++itX;
 	}
+
+//	find_object("hab")->set_accX(50);
 
 	for(auto &it : object) {
 		it.move();
@@ -242,6 +243,12 @@ void run() {
 		}
 		else if	(ev.type == ALLEGRO_EVENT_KEY_UP) {							///key release
 			key[ev.keyboard.keycode] = false;
+			mods -= ev.keyboard.modifiers;
+		}
+		else if	(ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {					///display resize
+			if(!al_acknowledge_resize(display)) {
+				clog << "Could not acknowledge resize( " << al_get_time() << "s from startup)" << endl;
+			}
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {				///redraw
@@ -271,7 +278,7 @@ int main() {
 		}
 	}
 
-	object_c poop ("earth", 1e14, 200, 0,0, -.1,.1, 0,0, al_color_name("green"));
+	object_c poop ("earth", 1e18, 200, 0,0, -.1,.1, 0,0, al_color_name("green"));
 //	object_c fart ("iss", 1e1,10, 50,700, 0,1, 0,0, al_color_name("blue"));
 	object_c butt ("hab", 1e8,50, 500,0, 0,39, 0,0, al_color_name("red"));
 
@@ -292,7 +299,8 @@ int main() {
 	targ = find_object("earth");
 	ref  = find_object("earth");
 
-	find_object("hab")->set_Vy(calc::orbitV(*ship, *ref));
+//	find_object("hab")->accelerate(calc::orbitV(*ship, *ref) * find_object("hab")->mass, 3.14159);
+	find_object("hab")->accelerate(50000000000, 0);
 
 //	ofstream file("objectout.json");
 //	js::Object obj;

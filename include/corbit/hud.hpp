@@ -1,6 +1,7 @@
 #ifndef HUD_HPP
 #define HUD_HPP
 
+
 #include <corbit/globals.hpp>
 
 class hud_c {

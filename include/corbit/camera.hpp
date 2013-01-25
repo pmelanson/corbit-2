@@ -1,31 +1,18 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include <corbit/globals.hpp>
+
+#include <corbit/physical.hpp>
 
 class object_c;
 
-class camera_c {
+class camera_c : public physical_c {
 private:
-	vect			_pos,
-					_v,
-					_acc;
-
 
 	void			recenter		(),
 					move			();
 
 public:
-
-	var				x				() const,
-					y				() const,
-					Vx				() const,
-					Vy				() const,
-					accX			() const,
-					accY			() const;
-	vect			pos				() const,
-					v				() const,
-					acc				() const;
 
 	float			zoom			() const;
 
@@ -49,5 +36,6 @@ public:
 
 	~camera_c		();
 };
+
 
 #endif	//CAMERA_HPP

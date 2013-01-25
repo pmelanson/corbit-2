@@ -1,29 +1,30 @@
 #include <corbit/object.hpp>
 
+#include <cmath>
+
 #include <allegro5/allegro_color.h>
 
-void	object_c::move		() {
+using std::clog;
+
+void	object_c::move() {
 	_v	+=	_acc/FPS;
 	_acc.setZero();
 	_pos+=	_v	/FPS;
 }
-#include <iostream>
+
 void	object_c::accelerate(var force, var radians) {
 	if(!mass) return;
 
-	//I know doing set_var(get_var() + x); is dums, but I just want to keep this independent from the datatype used to represent positions OKAY?
-	set_accX (accX() + cos(radians) * (force / mass));
-	set_accY (accY() + sin(radians) * (force / mass));
+	_acc(0,0) += std::cos(radians) * (force / mass);
+	_acc(1,0) += std::sin(radians) * (force / mass);
 }
 
-object_c::object_c			(std::string name_, var m, var r,
-							var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-							col color_)
-	: name (name_), mass (m>0 ? m : 1), radius (r),
-	_pos (x_, y_), _v (Vx_, Vy_), _acc (accX_, accY_),
-	color (color_) {
-
-	using std::clog;
+object_c::object_c(std::string name_, var m, var r,
+				   var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
+				   col color_)
+	: name(name_), mass(m>0 ? m : 1), radius(r),
+	physical_c(x_,y_, Vx_,Vy_, accX_,accY_),
+	color(color_) {
 
 	clog << "\n[" << name << "]";
 	clog << "\nmass=" << mass;
@@ -40,17 +41,15 @@ object_c::object_c			(std::string name_, var m, var r,
 	clog << std::endl;
 }
 
-object_c::object_c			()
-	: name ("the nameless"), mass (1e2), radius (1e2),
-	_pos (vect::Random()), _v (vect::Random()), _acc (vect::Zero()),
-	color (al_color_name("lightgoldenrodyellow")) {
+object_c::object_c()
+	: name("the nameless"), mass(1e2), radius(1e2),
+	physical_c(vect::Random()(0,0),vect::Random()(1,0), vect::Random()(0,0),vect::Random()(1,0), 0,0),
+	color(al_color_name("lightgoldenrodyellow")) {
 
 	std::clog << "\nEmpty object created, placing default object at (" << x() << ", " << y() << ")" << std::endl;
 }
 
-object_c::~object_c			() {
-
-	using std::clog;
+object_c::~object_c() {
 
 	clog << "\n[" << name << "]";
 	clog << "\nmass=" << mass;

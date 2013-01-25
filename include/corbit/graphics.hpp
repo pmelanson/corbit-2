@@ -1,6 +1,7 @@
 #ifndef GRAPHICS_HPP
 #define GRAPHICS_HPP
 
+
 #include <corbit/globals.hpp>
 
 class object_c;
@@ -12,5 +13,6 @@ namespace graphics {
 
 	extern		camera_c	*camera;
 };
+
 
 #endif	//GRAPHICS_HPP
