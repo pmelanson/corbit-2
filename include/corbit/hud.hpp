@@ -4,17 +4,10 @@
 
 #include <corbit/globals.hpp>
 
-class hud_c {
-private:
-
-
-public:
+namespace hud {
 
 	void	update	();
-
-	hud_c			();
-	~hud_c			();
-};
+}
 
 
 #endif	//HUD_HPP

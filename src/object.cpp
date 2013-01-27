@@ -5,12 +5,8 @@
 #include <allegro5/allegro_color.h>
 
 using std::clog;
+using std::endl;
 
-void	object_c::move() {
-	_v	+=	_acc/FPS;
-	_acc.setZero();
-	_pos+=	_v	/FPS;
-}
 
 void	object_c::accelerate(var force, var radians) {
 	if(!mass) return;
@@ -19,6 +15,7 @@ void	object_c::accelerate(var force, var radians) {
 	_acc(1,0) += std::sin(radians) * (force / mass);
 }
 
+
 object_c::object_c(std::string name_, var m, var r,
 				   var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 				   col color_)
@@ -26,6 +23,7 @@ object_c::object_c(std::string name_, var m, var r,
 	physical_c(x_,y_, Vx_,Vy_, accX_,accY_),
 	color(color_) {
 
+	clog << endl << "CONSTRUCTING:";
 	clog << "\n[" << name << "]";
 	clog << "\nmass=" << mass;
 	clog << "\nradius=" << radius;
@@ -42,8 +40,8 @@ object_c::object_c(std::string name_, var m, var r,
 }
 
 object_c::object_c()
-	: name("the nameless"), mass(1e2), radius(1e2),
-	physical_c(vect::Random()(0,0),vect::Random()(1,0), vect::Random()(0,0),vect::Random()(1,0), 0,0),
+	: name("the nameless"), mass(1e10), radius(1e2),
+	physical_c(1337,1337, vect::Random()(0,0),vect::Random()(1,0), 0,0),
 	color(al_color_name("lightgoldenrodyellow")) {
 
 	std::clog << "\nEmpty object created, placing default object at (" << x() << ", " << y() << ")" << std::endl;
@@ -51,6 +49,7 @@ object_c::object_c()
 
 object_c::~object_c() {
 
+	clog << endl << "DECONSTRUCTING:";
 	clog << "\n[" << name << "]";
 	clog << "\nmass=" << mass;
 	clog << "\nradius=" << radius;

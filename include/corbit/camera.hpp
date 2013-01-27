@@ -9,8 +9,7 @@ class object_c;
 class camera_c : public physical_c {
 private:
 
-	void			recenter		(),
-					move			();
+	void			recenter		();
 
 public:
 
@@ -23,15 +22,14 @@ public:
 	bool			tracking;
 
 	float			zoom_level;
-	const float		inverse,
-					exp;
+	const float		exp;
 
 
 	void 			pan				(float X, float Y);
 
 	void			update			();
 
-	camera_c						(var X, var Y, var Vx, var Vy, var accX, var accY,
+	camera_c						(var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 									object_c *center_, float zoomlevel_);
 
 	~camera_c		();

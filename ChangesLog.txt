@@ -1,6 +1,0 @@
-24 December 2012
-   Corbit Beta v2.0:
-
-     Change log:
-        -Added: eccentricity calculations
-

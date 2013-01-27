@@ -1,12 +1,40 @@
-<<<<<<< HEAD
 {
-	"house_number" : 42,
-	"road" : "East Street",
-	"town" : "Newtown"
-=======
-{
-	"house_number" : 42,
-	"road" : "East Street",
-	"town" : "Newtown"
->>>>>>> b85922a2c423cbf0eece1a19d86315fec2fbae1d
+	"objects": [
+		{
+			"name": "earth",
+			"mass": 1e18,
+			"radius": 200,
+			"pos": {
+				"x": 0,
+				"y": 0
+			},
+			"v": {
+				"x": 0,
+				"y": 0
+			},
+			"acc": {
+				"x": 0,
+				"y": 0
+			},
+			"color": "green"
+		},
+		{
+			"name": "mars",
+			"mass": 1e17,
+			"radius": 100,
+			"pos": {
+				"x": 1,
+				"y": 1
+			},
+			"v": {
+				"x": 0,
+				"y": 0
+			},
+			"acc": {
+				"x": 0,
+				"y": 0
+			},
+			"color": "red"
+		}
+	]
 }

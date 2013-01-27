@@ -1,4 +1,3 @@
-#include <fstream>
 #include <iostream>
 
 #define ALLEGRO_STATICLINK
@@ -10,7 +9,8 @@
 
 #include <boost/intrusive/list.hpp>
 
-//#include <json_cpp/json.h>
+#include <fstream>
+#include <json/json.h>
 
 #include <corbit/corbit.hpp>
 using std::clog;
@@ -19,6 +19,11 @@ using std::cout;
 using std::cin;
 using std::string;
 using std::endl;
+using std::ifstream;
+using std::ofstream;
+using std::vector;
+typedef boost::intrusive::list <object_c> object_list;
+using namespace Json;
 
 
 ALLEGRO_DISPLAY		*display		=NULL;
@@ -30,7 +35,6 @@ object_c			*ship			=NULL,
 					*targ			=NULL,
 					*ref			=NULL;
 
-typedef boost::intrusive::list <object_c> object_list;
 object_list object;
 
 object_c *find_object (string name) {
@@ -121,7 +125,71 @@ bool init() {
 	if(!init_allegro())
 		return false;
 
-	graphics::camera->center = find_object("earth");
+
+	Value root;
+	Reader reader;
+	ifstream fin("objects.json");
+
+	if(!reader.parse(fin, root)) {
+		cout << "well sheit.\n" << reader.getFormatedErrorMessages();
+		return false;
+	}
+
+	const Value objects = root["objects"];
+
+	string	name="";
+	var		m   =0,	r   =0,
+			x   =0,	y   =0,
+			Vx  =0,	Vy  =0,
+			accX=0,	accY=0;
+	col		color(al_color_name("lawngreen"));
+
+	static vector<object_c*> input;
+	cout << "\n\nSIZE HERE\n\n" << objects.size() << "\nsize";
+
+	for(unsigned i=0; i < objects.size(); ++i) {
+		name	= objects[i].get("name", "Unnamed").asString();
+		m		= objects[i].get("mass", 100).asDouble();
+		r		= objects[i].get("radius", 100).asDouble();
+		x		= objects[i]["pos"].get("x", 100).asDouble();
+		y		= objects[i]["pos"].get("y", 100).asDouble();
+		Vx		= objects[i]["v"].get("x", 100).asDouble();
+		Vy		= objects[i]["v"].get("y", 100).asDouble();
+		accX	= objects[i]["acc"].get("x", 100).asDouble();
+		accY	= objects[i]["acc"].get("y", 100).asDouble();
+		color	= al_color_name(objects[i].get("color", "lawngreen").asCString());
+
+		cout << "\nMAKING " << i << endl;
+
+		input.push_back(new object_c(name, m, r, x,y, Vx,Vy, accX,accY, color));
+	}
+
+
+	TODO: make a dynamic array to store local objects so that I can push em to the object list
+
+
+//	input.shrink_to_fit();
+	cout << "\nLOOP\n";
+	for(auto it = input.begin(); it != input.end(); ++it) {
+		cout << (*it)->name << '\t';
+		object.push_back(**it);
+		cout << object.back().name << endl;
+	}
+//	cout << object.back().name;
+
+//	static object_c earth	("earth",	1e15,	200,	0,0,	0,0,	0,0, al_color_name("green"));				object.push_back(earth);
+	static object_c iss		("iss",		1e3,	30,		500,0,	0,200,	0,0, al_color_name("blue"));				object.push_back(iss);
+	static hab_c 	hab		("hab",		1e8,	50,		0,500,	300,0,	0,0, al_color_name("red"), 1, 1, 1);		object.push_back(hab);
+
+	const int max = 1;
+	static object_c ar[max];
+	int j = 0;
+	while(j != max)
+		object.push_back(ar[j++]);
+
+	ship = find_object("hab");
+	targ = find_object("ref");
+	ref  = find_object("earth");
 
 	return true;
 }
@@ -142,39 +210,39 @@ bool cleanup() {
 
 void input() {
 
-	if (key[ALLEGRO_KEY_PAD_MINUS])
+	if(key[ALLEGRO_KEY_PAD_MINUS])
 		graphics::camera->zoom_level += 0.1;
-	else if (key[ALLEGRO_KEY_PAD_PLUS])
+	if(key[ALLEGRO_KEY_PAD_PLUS])
 		graphics::camera->zoom_level -= 0.1;
 
-	else if (key[ALLEGRO_KEY_TAB])
+	if(key[ALLEGRO_KEY_TAB])
 		graphics::camera->tracking = !graphics::camera->tracking;
-	else if (key[ALLEGRO_KEY_Q])
+	if(key[ALLEGRO_KEY_Q])
 		graphics::camera->tracking = true;
-	else if (key[ALLEGRO_KEY_E])
+	if(key[ALLEGRO_KEY_E])
 		graphics::camera->tracking = false;
 
-	else if (key[ALLEGRO_KEY_RIGHT])
-		graphics::camera->pan(100, 0);
-	else if (key[ALLEGRO_KEY_LEFT])
-		graphics::camera->pan(-100, 0);
-	else if (key[ALLEGRO_KEY_UP])
-		graphics::camera->pan(0, -100);
-	else if (key[ALLEGRO_KEY_DOWN])
-		graphics::camera->pan(0, 100);
+	if(key[ALLEGRO_KEY_RIGHT])
+		graphics::camera->pan(10, 0);
+	if(key[ALLEGRO_KEY_LEFT])
+		graphics::camera->pan(-10, 0);
+	if(key[ALLEGRO_KEY_UP])
+		graphics::camera->pan(0, -10);
+	if(key[ALLEGRO_KEY_DOWN])
+		graphics::camera->pan(0, 10);
 
-	if (key[ALLEGRO_KEY_W])
-		ship->accelerate(0, -5000000000);
-	else if (key[ALLEGRO_KEY_A])
-		ship->accelerate(-500, 0);
-	if (key[ALLEGRO_KEY_S])
-		ship->accelerate(0, 5000000000);
-	else if (key[ALLEGRO_KEY_D])
-		ship->accelerate(500, 0);
+	if(key[ALLEGRO_KEY_W])
+		ship->accelerate(50000000000, 3.14159 * 1.5);
+	if(key[ALLEGRO_KEY_A])
+		ship->accelerate(50000000000, 3.14159 * 1.0);
+	if(key[ALLEGRO_KEY_S])
+		ship->accelerate(50000000000, 3.14159 * 0.5);
+	if(key[ALLEGRO_KEY_D])
+		ship->accelerate(50000000000, 3.14159 * 0.0);
 
-	else if (key[ALLEGRO_KEY_H])
+	if(key[ALLEGRO_KEY_H])
 		graphics::camera->center = find_object("hab");
-	else if (key[ALLEGRO_KEY_1])
+	if(key[ALLEGRO_KEY_1])
 		graphics::camera->center = find_object("earth");
 }
 
@@ -217,10 +285,9 @@ void draw() {
 	}
 }
 
-void run() {
+bool run() {
 
 	bool redraw = true;
-	unsigned short i;
 	ALLEGRO_FONT *font = al_load_font("courier new.ttf", 36, 0);
 
 	while(true) {
@@ -229,7 +296,7 @@ void run() {
 		al_wait_for_event(event_queue, &ev);
 
 		if		(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) { 					///window close
-			return;
+			return true;
 		}
 
 		else if	(ev.type == ALLEGRO_EVENT_TIMER) {							///tick
@@ -255,11 +322,13 @@ void run() {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0,0,0));
 			draw();
-			al_draw_textf(font, al_map_rgb(200,200,200), 0,0, ALLEGRO_ALIGN_LEFT, "%lf you are poop %lf", calc::ecc(*ship, *ref), calc::distance(*ship, *ref));
+			al_draw_textf(font, al_map_rgb(200,200,200), 0,0, ALLEGRO_ALIGN_LEFT, "%lf you are poop %lf", graphics::camera->zoom(), graphics::camera->zoom_level);
 			al_flip_display();
 		}
 
 	}
+
+	return true;
 }
 
 
@@ -268,54 +337,22 @@ int main() {
 	int return_code = 0x00000;
 
 
+
 	if(!init()) {
 		cerr << "Init failed!" << endl;
 		return_code += 0x00001;
-		if(!cleanup()) {
-			cerr << "Cleanup failed!" << endl;
-			return_code += 0x00004;
-			return return_code;
-		}
+	}
+//	cout << object.front().name;
+//	cout << ref->name;
+	if(!run()) {
+		cerr << "Error in main loop!" << endl;
+		return_code += 0x00004;
 	}
 
-	object_c poop ("earth", 1e18, 200, 0,0, -.1,.1, 0,0, al_color_name("green"));
-//	object_c fart ("iss", 1e1,10, 50,700, 0,1, 0,0, al_color_name("blue"));
-	object_c butt ("hab", 1e8,50, 500,0, 0,39, 0,0, al_color_name("red"));
-
-	object.push_back(poop);
-//	object.push_back(fart);
-	object.push_back(butt);
-
-
-
-	int max = 0;
-
-	object_c ar[max];
-	int x = 0;
-	while(x != max)
-		object.push_back(ar[x++]);
-
-	ship = find_object("hab");
-	targ = find_object("earth");
-	ref  = find_object("earth");
-
-//	find_object("hab")->accelerate(calc::orbitV(*ship, *ref) * find_object("hab")->mass, 3.14159);
-	find_object("hab")->accelerate(50000000000, 0);
-
-//	ofstream file("objectout.json");
-//	js::Object obj;
-//	obj.push_back(Pair("mass", 122));
-//	obj.push_back(Pair("radius", 15));
-//	js::write(obj, file, pretty_print);
-//	file.close();
-//	js::Value value;
-//	js::read(file, value);
-
-	run();
 
 	if(!cleanup()) {
 		cerr << "Cleanup failed!" << endl;
-		return_code += 0x00004;
+		return_code += 0x00002;
 		return return_code;
 	}
 
