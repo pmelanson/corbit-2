@@ -25,18 +25,20 @@ object_c::object_c(std::string name_, var m, var r,
 
 	clog << endl << "CONSTRUCTING:";
 	clog << "\n[" << name << "]";
-	clog << "\nmass=" << mass;
-	clog << "\nradius=" << radius;
-	clog << "\nx=" << x();
-	clog << "\ny=" << y();
-	clog << "\nVx=" << Vx();
-	clog << "\nVy=" << Vy();
-	clog << "\naccX=" << accX();
-	clog << "\naccY=" << accY();
+//	clog << "\nmass=" << mass;
+//	clog << "\nradius=" << radius;
+//	clog << "\nx=" << x();
+//	clog << "\ny=" << y();
+//	clog << "\nVx=" << Vx();
+//	clog << "\nVy=" << Vy();
+//	clog << "\naccX=" << accX();
+//	clog << "\naccY=" << accY();
 	unsigned char R, G, B, A;
 	al_unmap_rgba(color, &R, &G, &B, &A);
-	clog << "\ncolor=" << std::hex << std::uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << std::dec << std::nouppercase;
+//	clog << "\ncolor=" << std::hex << std::uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << std::dec << std::nouppercase;
 	clog << std::endl;
+
+	objects.push_back(*this);
 }
 
 object_c::object_c()
@@ -51,16 +53,18 @@ object_c::~object_c() {
 
 	clog << endl << "DECONSTRUCTING:";
 	clog << "\n[" << name << "]";
-	clog << "\nmass=" << mass;
-	clog << "\nradius=" << radius;
-	clog << "\nx=" << x();
-	clog << "\ny=" << y();
-	clog << "\nVx=" << Vx();
-	clog << "\nVy=" << Vy();
-	clog << "\naccX=" << accX();
-	clog << "\naccY=" << accY();
+//	clog << "\nmass=" << mass;
+//	clog << "\nradius=" << radius;
+//	clog << "\nx=" << x();
+//	clog << "\ny=" << y();
+//	clog << "\nVx=" << Vx();
+//	clog << "\nVy=" << Vy();
+//	clog << "\naccX=" << accX();
+//	clog << "\naccY=" << accY();
 	unsigned char R, G, B, A;
 	al_unmap_rgba(color, &R, &G, &B, &A);
-	clog << "\ncolor=" << std::hex << std::uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << std::dec << std::nouppercase;
+//	clog << "\ncolor=" << std::hex << std::uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << std::dec << std::nouppercase;
 	clog << std::endl;
+
+	objects.erase(object_list::s_iterator_to(*this));
 }

@@ -21,8 +21,9 @@ using std::string;
 using std::endl;
 using std::ifstream;
 using std::ofstream;
-using std::vector;
-typedef boost::intrusive::list <object_c> object_list;
+using std::malloc;
+//typedef boost::intrusive::list <object_c> object_list;
+object_c::object_list object_c::objects;
 using namespace Json;
 
 
@@ -35,11 +36,11 @@ object_c			*ship			=NULL,
 					*targ			=NULL,
 					*ref			=NULL;
 
-object_list object;
+//object_list objects;
 
 object_c *find_object (string name) {
 
-	for(auto &it : object) {
+	for(auto &it : object_c::objects) {
 		if(it.name == name) {
 			return &it;
 		}
@@ -135,7 +136,7 @@ bool init() {
 		return false;
 	}
 
-	const Value objects = root["objects"];
+	const Value json_objects = root["objects"];
 
 	string	name="";
 	var		m   =0,	r   =0,
@@ -144,52 +145,53 @@ bool init() {
 			accX=0,	accY=0;
 	col		color(al_color_name("lawngreen"));
 
-	static vector<object_c*> input;
-	cout << "\n\nSIZE HERE\n\n" << objects.size() << "\nsize";
+	static object_c *json_input = (object_c*) malloc(json_objects.size() * sizeof(object_c));
+//	static const int *json_input = (int*) malloc(json_objects.size() * sizeof(const int));
+//	static std::vector<object_c> json_input;
+	cout << "\n\nSIZE HERE\n\n" << json_objects.size();
 
-	for(unsigned i=0; i < objects.size(); ++i) {
-		name	= objects[i].get("name", "Unnamed").asString();
-		m		= objects[i].get("mass", 100).asDouble();
-		r		= objects[i].get("radius", 100).asDouble();
-		x		= objects[i]["pos"].get("x", 100).asDouble();
-		y		= objects[i]["pos"].get("y", 100).asDouble();
-		Vx		= objects[i]["v"].get("x", 100).asDouble();
-		Vy		= objects[i]["v"].get("y", 100).asDouble();
-		accX	= objects[i]["acc"].get("x", 100).asDouble();
-		accY	= objects[i]["acc"].get("y", 100).asDouble();
-		color	= al_color_name(objects[i].get("color", "lawngreen").asCString());
+	for(unsigned i=0; i < json_objects.size(); ++i) {
+		name	= json_objects[i].get("name", "unnamed").asString();
+		m		= json_objects[i].get("mass", 100).asDouble();
+		r		= json_objects[i].get("radius", 100).asDouble();
+		x		= json_objects[i]["pos"].get("x", 100).asDouble();
+		y		= json_objects[i]["pos"].get("y", 100).asDouble();
+		Vx		= json_objects[i]["v"].get("x", 100).asDouble();
+		Vy		= json_objects[i]["v"].get("y", 100).asDouble();
+		accX	= json_objects[i]["acc"].get("x", 100).asDouble();
+		accY	= json_objects[i]["acc"].get("y", 100).asDouble();
+		color	= al_color_name(json_objects[i].get("color", "lawngreen").asCString());
 
-		cout << "\nMAKING " << i << endl;
-
-		input.push_back(new object_c(name, m, r, x,y, Vx,Vy, accX,accY, color));
+//		json_input[i](name, m, r, x,y, Vx,Vy, accX,accY, color);
+//		json_input.emplace_back(*new object_c(name, m, r, x,y, Vx,Vy, accX,accY, color));
+		new (&json_input[i]) object_c(name, m, r, x,y, Vx,Vy, accX,accY, color);
+//		json_input[i]=4;
 	}
+//	static object_c mars(name, m, r, x,y, Vx,Vy, accX,accY, color);
 
-
-	TODO: make a dynamic array to store local objects so that I can push em to the object list
+//	cin.ignore();
 
 
 //	input.shrink_to_fit();
-	cout << "\nLOOP\n";
-	for(auto it = input.begin(); it != input.end(); ++it) {
-		cout << (*it)->name << '\t';
-		object.push_back(**it);
-		cout << object.back().name << endl;
-	}
-//	cout << object.back().name;
+//	cout << "\nLOOP\n";
+//	for(auto it = input.begin(); it != input.end(); ++it) {
+//		cout << (*it)->name << '\t';
+//		objects.push_back(**it);
+//		cout << object_c::objects.back().name << endl;
+//	}
+//	cout << object_c::objects.back().name;
 
-//	static object_c earth	("earth",	1e15,	200,	0,0,	0,0,	0,0, al_color_name("green"));				object.push_back(earth);
-	static object_c iss		("iss",		1e3,	30,		500,0,	0,200,	0,0, al_color_name("blue"));				object.push_back(iss);
-	static hab_c 	hab		("hab",		1e8,	50,		0,500,	300,0,	0,0, al_color_name("red"), 1, 1, 1);		object.push_back(hab);
+//	static object_c earth	("earth",	1e15,	200,	0,0,	0,0,	0,0, al_color_name("green"));				objects.push_back(earth);
+//	static object_c iss		("iss",		1e3,	30,		500,0,	0,200,	0,0, al_color_name("blue"));
+//	static hab_c 	hab		("hab",		1e8,	50,		0,500,	300,0,	0,0, al_color_name("red"), 1, 1, 1);
+//
+//	const int max = 1;
+//	static object_c ar[max];
 
-	const int max = 1;
-	static object_c ar[max];
-	int j = 0;
-	while(j != max)
-		object.push_back(ar[j++]);
-
-	ship = find_object("hab");
-	targ = find_object("ref");
-	ref  = find_object("earth");
+//
+//	ship = find_object("hab");
+//	targ = find_object("ref");
+//	ref  = find_object("earth");
 
 	return true;
 }
@@ -203,7 +205,7 @@ bool cleanup() {
 	if(display)
 		al_destroy_display(display);
 
-	object.erase(object.begin(), object.end());
+//	objects.erase(objects.begin(), objects.end());
 
 	return true;
 }
@@ -254,12 +256,12 @@ void calculate() {
 			clog << al_keycode_to_name(n) << '\n';
 	cout << "-----------\n";
 
-	auto itX = object.begin();
+	auto itX = object_c::objects.begin();
 
-	while(itX != object.end()) {
+	while(itX != object_c::objects.end()) {
 		auto itY = itX;
 		++itY;
-		while(itY != object.end()) {
+		while(itY != object_c::objects.end()) {
 			itX->accelerate( calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
 			itY->accelerate(-calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
 			++itY;
@@ -269,9 +271,11 @@ void calculate() {
 
 //	find_object("hab")->set_accX(50);
 
-	for(auto &it : object) {
+	for(auto &it : object_c::objects) {
 		it.move();
 	}
+
+
 
 	graphics::camera->update();
 
@@ -280,7 +284,7 @@ void calculate() {
 
 void draw() {
 
-	for(auto &it : object) {
+	for(auto &it : object_c::objects) {
 		graphics::draw(it);
 	}
 }
@@ -342,13 +346,20 @@ int main() {
 		cerr << "Init failed!" << endl;
 		return_code += 0x00001;
 	}
-//	cout << object.front().name;
+//	cout << object_c::objects.front().name;
 //	cout << ref->name;
+
+	new object_c 		("iss",		1e3,	30,		500,0,	0,200,	0,0, al_color_name("blue"));
+	hab_c 	hab		("hab",		1e8,	50,		0,500,	300,0,	0,0, al_color_name("red"), 1, 1, 1);
+//	objects.push_back(iss);
+	cout << object_c::objects.front().name;
+
 	if(!run()) {
 		cerr << "Error in main loop!" << endl;
 		return_code += 0x00004;
 	}
 
+//	delete ref;
 
 	if(!cleanup()) {
 		cerr << "Cleanup failed!" << endl;

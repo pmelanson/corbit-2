@@ -9,6 +9,10 @@
 
 class object_c : public physical_c, public boost::intrusive::list_base_hook<> {
 public:
+
+	typedef boost::intrusive::list<object_c> object_list;
+	static object_list objects;
+
 	const std::string	name;
 	const var			mass,
 						radius;
@@ -23,7 +27,10 @@ public:
 	object_c						();
 
 	~object_c						();
-};
 
+	friend void				swap		(object_c &first, object_c &second);
+
+    object_c& operator=	(const object_c &other);
+};
 
 #endif	//OBJECT_HPP
