@@ -2,7 +2,7 @@
 #define GLOBALS_HPP
 
 
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #include <allegro5/color.h>
 
 typedef					long double					var;

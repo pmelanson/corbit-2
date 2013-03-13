@@ -4,7 +4,7 @@
 
 #include <corbit/physical.hpp>
 
-class object_c;
+class entity_c;
 
 class camera_c : public physical_c {
 private:
@@ -17,7 +17,7 @@ public:
 
 	int				size[2];
 
-	object_c		*center;
+	entity_c		*center;
 
 	bool			tracking;
 
@@ -30,7 +30,7 @@ public:
 	void			update			();
 
 	camera_c						(var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-									object_c *center_, float zoomlevel_);
+									entity_c *center_, float zoomlevel_);
 
 	~camera_c		();
 };

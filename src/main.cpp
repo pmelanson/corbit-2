@@ -8,6 +8,7 @@
 #include <allegro5/allegro_ttf.h>
 
 #include <boost/intrusive/list.hpp>
+#include <boost/scoped_ptr.hpp>
 
 #include <fstream>
 #include <json/json.h>
@@ -22,8 +23,7 @@ using std::endl;
 using std::ifstream;
 using std::ofstream;
 using std::malloc;
-//typedef boost::intrusive::list <object_c> object_list;
-object_c::object_list object_c::objects;
+typedef boost::intrusive::list <entity_c> entity_list_t;
 using namespace Json;
 
 
@@ -32,15 +32,14 @@ ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
 bool				key[ALLEGRO_KEY_MAX] ={};
 unsigned			mods			=0;
-object_c			*ship			=NULL,
+entity_c			*ship			=NULL,
 					*targ			=NULL,
 					*ref			=NULL;
+entity_list_t entities;
 
-//object_list objects;
+entity_c *find_entity (string name) {
 
-object_c *find_object (string name) {
-
-	for(auto &it : object_c::objects) {
+	for(auto &it : entities) {
 		if(it.name == name) {
 			return &it;
 		}
@@ -48,6 +47,18 @@ object_c *find_object (string name) {
 
 	return NULL;
 }
+
+//cloner functor
+struct new_cloner {
+	entity_c *operator()(const entity_c &clone_this)
+		{  cout << "CLONED\n";return new entity_c(clone_this);  }
+};
+
+//disposer functor
+struct delete_disposer {
+	void operator()(entity_c *delete_this)
+		{  delete delete_this;  }
+};
 
 
 bool init_allegro() {
@@ -88,7 +99,9 @@ bool init_allegro() {
 	display = al_create_display(disp_data.width, disp_data.height);
 	graphics::camera->size[0] = disp_data.width;
 	graphics::camera->size[1] = disp_data.height;
-	cout << "[DISPLAY]\n" << "Pixel format: " << disp_data.format << '\n' << disp_data.width << 'x' << disp_data.height << '\n' << disp_data.refresh_rate << "Hz" << endl;
+	cout << "[DISPLAY]\n" << "Pixel format: " << disp_data.format << '\n'
+	<< disp_data.width << 'x' << disp_data.height << '\n'
+	<< disp_data.refresh_rate << "Hz" << endl;
 	if(!display) {
 		cerr << "Failed to create display!" << endl;
 		success = false;
@@ -121,22 +134,24 @@ bool init_allegro() {
 
 bool init() {
 
-	cout << "Corbit " << AutoVersion::STATUS << " v" << AutoVersion::MAJOR << '.' << AutoVersion::MINOR << '.' << AutoVersion::BUILD << endl;
+	cout << "Corbit " << AutoVersion::STATUS
+	<< " v" << AutoVersion::MAJOR
+	<< '.' << AutoVersion::MINOR
+	<< '.' << AutoVersion::BUILD << endl;
 
 	if(!init_allegro())
 		return false;
 
-
 	Value root;
 	Reader reader;
-	ifstream fin("objects.json");
+	ifstream fin("entities.json");
 
 	if(!reader.parse(fin, root)) {
 		cout << "well sheit.\n" << reader.getFormatedErrorMessages();
 		return false;
 	}
 
-	const Value json_objects = root["objects"];
+	const Value json_entities = root["entities"];
 
 	string	name="";
 	var		m   =0,	r   =0,
@@ -145,53 +160,42 @@ bool init() {
 			accX=0,	accY=0;
 	col		color(al_color_name("lawngreen"));
 
-	static object_c *json_input = (object_c*) malloc(json_objects.size() * sizeof(object_c));
-//	static const int *json_input = (int*) malloc(json_objects.size() * sizeof(const int));
-//	static std::vector<object_c> json_input;
-	cout << "\n\nSIZE HERE\n\n" << json_objects.size();
+	std::vector<entity_c> json_input;
+	json_input.reserve(json_entities.size());
+	cout << "\n\nSIZE: " << json_entities.size();
 
-	for(unsigned i=0; i < json_objects.size(); ++i) {
-		name	= json_objects[i].get("name", "unnamed").asString();
-		m		= json_objects[i].get("mass", 100).asDouble();
-		r		= json_objects[i].get("radius", 100).asDouble();
-		x		= json_objects[i]["pos"].get("x", 100).asDouble();
-		y		= json_objects[i]["pos"].get("y", 100).asDouble();
-		Vx		= json_objects[i]["v"].get("x", 100).asDouble();
-		Vy		= json_objects[i]["v"].get("y", 100).asDouble();
-		accX	= json_objects[i]["acc"].get("x", 100).asDouble();
-		accY	= json_objects[i]["acc"].get("y", 100).asDouble();
-		color	= al_color_name(json_objects[i].get("color", "lawngreen").asCString());
+	cout << "\n\n";
 
-//		json_input[i](name, m, r, x,y, Vx,Vy, accX,accY, color);
-//		json_input.emplace_back(*new object_c(name, m, r, x,y, Vx,Vy, accX,accY, color));
-		new (&json_input[i]) object_c(name, m, r, x,y, Vx,Vy, accX,accY, color);
-//		json_input[i]=4;
+	for(unsigned i=0; i != json_entities.size(); ++i) {
+		name	= json_entities[i].get("name", "unnamed").asString();
+		m		= json_entities[i].get("mass", 100).asDouble();
+		r		= json_entities[i].get("radius", 100).asDouble();
+		x		= json_entities[i]["pos"].get("x", 100).asDouble();
+		y		= json_entities[i]["pos"].get("y", 100).asDouble();
+		Vx		= json_entities[i]["v"].get("x", 100).asDouble();
+		Vy		= json_entities[i]["v"].get("y", 100).asDouble();
+		accX	= json_entities[i]["acc"].get("x", 100).asDouble();
+		accY	= json_entities[i]["acc"].get("y", 100).asDouble();
+		color	= al_color_name(json_entities[i].get("color", "lawngreen").asCString());
+
+		json_input.push_back(entity_c(name, m, r, x,y, Vx,Vy, accX,accY, color));
+		cout << "VECTORED " << json_input.back().name << "\n\n";
 	}
-//	static object_c mars(name, m, r, x,y, Vx,Vy, accX,accY, color);
 
-//	cin.ignore();
+	cout << "ALL DONE\n";
+
+	entity_list_t json_list;
+	json_list.insert(json_list.begin(), json_input.begin(), json_input.end());
+
+	entities.clone_from(json_list, new_cloner(), delete_disposer());
+
+	assert(entities.back().name == json_list.back().name);
+	assert(entities.front().name == json_list.front().name);
 
 
-//	input.shrink_to_fit();
-//	cout << "\nLOOP\n";
-//	for(auto it = input.begin(); it != input.end(); ++it) {
-//		cout << (*it)->name << '\t';
-//		objects.push_back(**it);
-//		cout << object_c::objects.back().name << endl;
-//	}
-//	cout << object_c::objects.back().name;
+	ship = find_entity("mars");
 
-//	static object_c earth	("earth",	1e15,	200,	0,0,	0,0,	0,0, al_color_name("green"));				objects.push_back(earth);
-//	static object_c iss		("iss",		1e3,	30,		500,0,	0,200,	0,0, al_color_name("blue"));
-//	static hab_c 	hab		("hab",		1e8,	50,		0,500,	300,0,	0,0, al_color_name("red"), 1, 1, 1);
-//
-//	const int max = 1;
-//	static object_c ar[max];
 
-//
-//	ship = find_object("hab");
-//	targ = find_object("ref");
-//	ref  = find_object("earth");
 
 	return true;
 }
@@ -205,7 +209,8 @@ bool cleanup() {
 	if(display)
 		al_destroy_display(display);
 
-//	objects.erase(objects.begin(), objects.end());
+//	entities.erase(entities.begin(), entities.end());
+	entities.clear_and_dispose(delete_disposer());
 
 	return true;
 }
@@ -234,18 +239,18 @@ void input() {
 		graphics::camera->pan(0, 10);
 
 	if(key[ALLEGRO_KEY_W])
-		ship->accelerate(50000000000, 3.14159 * 1.5);
+		if(ship) ship->accelerate(5e19, 3.14159 * 1.5);
 	if(key[ALLEGRO_KEY_A])
-		ship->accelerate(50000000000, 3.14159 * 1.0);
+		if(ship) ship->accelerate(5e19, 3.14159 * 1.0);
 	if(key[ALLEGRO_KEY_S])
-		ship->accelerate(50000000000, 3.14159 * 0.5);
+		if(ship) ship->accelerate(5e19, 3.14159 * 0.5);
 	if(key[ALLEGRO_KEY_D])
-		ship->accelerate(50000000000, 3.14159 * 0.0);
+		if(ship) ship->accelerate(5e19, 3.14159 * 0.0);
 
 	if(key[ALLEGRO_KEY_H])
-		graphics::camera->center = find_object("hab");
+		graphics::camera->center = find_entity("hab");
 	if(key[ALLEGRO_KEY_1])
-		graphics::camera->center = find_object("earth");
+		graphics::camera->center = find_entity("earth");
 }
 
 void calculate() {
@@ -254,14 +259,15 @@ void calculate() {
 	for (n = 0; n != ALLEGRO_KEY_MAX; n++)
 		if (key[n])
 			clog << al_keycode_to_name(n) << '\n';
-	cout << "-----------\n";
+	cout << "\n-----------\n";
 
-	auto itX = object_c::objects.begin();
+	auto itX = entities.begin();
 
-	while(itX != object_c::objects.end()) {
+	while(itX != entities.end()) {
 		auto itY = itX;
 		++itY;
-		while(itY != object_c::objects.end()) {
+		while(itY != entities.end()) {
+			calc::detect_collision(*itX, *itY);
 			itX->accelerate( calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
 			itY->accelerate(-calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
 			++itY;
@@ -269,9 +275,9 @@ void calculate() {
 		++itX;
 	}
 
-//	find_object("hab")->set_accX(50);
+//	find_entity("hab")->set_accX(50);
 
-	for(auto &it : object_c::objects) {
+	for(auto &it : entities) {
 		it.move();
 	}
 
@@ -284,7 +290,7 @@ void calculate() {
 
 void draw() {
 
-	for(auto &it : object_c::objects) {
+	for(auto &it : entities) {
 		graphics::draw(it);
 	}
 }
@@ -318,7 +324,7 @@ bool run() {
 		}
 		else if	(ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {					///display resize
 			if(!al_acknowledge_resize(display)) {
-				clog << "Could not acknowledge resize( " << al_get_time() << "s from startup)" << endl;
+				clog << "Could not acknowledge resize [ " << al_get_time() << "]" << endl;
 			}
 		}
 
@@ -326,7 +332,7 @@ bool run() {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0,0,0));
 			draw();
-			al_draw_textf(font, al_map_rgb(200,200,200), 0,0, ALLEGRO_ALIGN_LEFT, "%lf you are poop %lf", graphics::camera->zoom(), graphics::camera->zoom_level);
+			al_draw_textf(font, al_map_rgb(200,200,200), 0,0, ALLEGRO_ALIGN_LEFT, "zoom: %lf zoom_level: %lf", graphics::camera->zoom(), graphics::camera->zoom_level);
 			al_flip_display();
 		}
 
@@ -346,20 +352,15 @@ int main() {
 		cerr << "Init failed!" << endl;
 		return_code += 0x00001;
 	}
-//	cout << object_c::objects.front().name;
-//	cout << ref->name;
 
-	new object_c 		("iss",		1e3,	30,		500,0,	0,200,	0,0, al_color_name("blue"));
-	hab_c 	hab		("hab",		1e8,	50,		0,500,	300,0,	0,0, al_color_name("red"), 1, 1, 1);
-//	objects.push_back(iss);
-	cout << object_c::objects.front().name;
+	for(auto it = entities.begin(); it != entities.end(); ++it)
+		cout << it->name << endl;
+
 
 	if(!run()) {
 		cerr << "Error in main loop!" << endl;
 		return_code += 0x00004;
 	}
-
-//	delete ref;
 
 	if(!cleanup()) {
 		cerr << "Cleanup failed!" << endl;

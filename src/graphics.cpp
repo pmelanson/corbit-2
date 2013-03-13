@@ -1,5 +1,5 @@
 #include <corbit/graphics.hpp>
-#include <corbit/object.hpp>
+#include <corbit/entity.hpp>
 #include <corbit/hab.hpp>
 #include <corbit/camera.hpp>
 
@@ -14,7 +14,7 @@ namespace	graphics {
 	camera_c *camera = &default_camera;
 }
 
-void		graphics::draw	(const object_c &obj) {
+void		graphics::draw	(const entity_c &obj) {
 
 	if (display) {
 		al_draw_filled_circle(

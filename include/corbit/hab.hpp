@@ -1,9 +1,9 @@
 #ifndef HAB_HPP
 #define HAB_HPP
 
-#include <corbit/object.hpp>
+#include <corbit/entity.hpp>
 
-class hab_c : public object_c {
+class hab_c : public entity_c {
 private:
 
 	long long		_fuel;
