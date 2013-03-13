@@ -24,12 +24,12 @@ void	entity_c::print() {
 	clog << "\n[" << name << "]";
 	clog << "\nmass=" << mass;
 	clog << "\nradius=" << radius;
-	clog << "\nx=" << x();
-	clog << "\ny=" << y();
-	clog << "\nVx=" << Vx();
-	clog << "\nVy=" << Vy();
-	clog << "\naccX=" << accX();
-	clog << "\naccY=" << accY();
+	clog << "\nx=" << pos[0];
+	clog << "\ny=" << pos[1];
+	clog << "\nVx=" << v[0];
+	clog << "\nVy=" << v[1];
+	clog << "\naccX=" << acc[0];
+	clog << "\naccY=" << acc[1];
 	unsigned char R, G, B, A;
 	al_unmap_rgba(color, &R, &G, &B, &A);
 	clog << "\ncolor=" << hex << uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << dec << nouppercase;
@@ -52,7 +52,7 @@ entity_c::entity_c()
 	physical_c(1337,1337, vect::Random()[0],vect::Random()[1], 0,0),
 	color(al_color_name("lightgoldenrodyellow")) {
 
-	clog << "\nEmpty entity created, placing default entity at (" << x() << ", " << y() << ")" << endl;
+	clog << "\nEmpty entity created, placing default entity at (" << pos[0] << ", " << pos[1] << ")" << endl;
 }
 
 entity_c::~entity_c() {

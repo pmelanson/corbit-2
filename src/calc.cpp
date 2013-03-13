@@ -11,18 +11,18 @@ var			calc::distance2		(const entity_c &A, const entity_c &B) {
 	return (A.pos - B.pos).squaredNorm();
 }
 var			calc::step_distance2	(const entity_c &A, const entity_c &B) {
-	return ((A.pos+A.v) - (B.pos+B.v)).squaredNorm();
+	return ((A.pos+ A.v*1/FPS) - (B.pos+ B.v*1/FPS)).squaredNorm();
 }
 var			calc::distance		(const entity_c &A, const entity_c &B) {
 	return (A.pos - B.pos).norm();
 }
 var			calc::step_distance		(const entity_c &A, const entity_c &B) {
-	return ((A.pos+A.v) - (B.pos+B.v)).norm();
+	return ((A.pos+ A.v*1/FPS) - (B.pos+ B.v*1/FPS)).norm();
 }
 
 
 var			calc::theta			(const entity_c &A, const entity_c &B) {
-	return atan2f(B.y()-A.y(), B.x()-A.x());
+	return atan2f(B.pos[1]-A.pos[1], B.pos[0]-A.pos[0]);
 }
 
 var			calc::gravity		(const entity_c &A, const entity_c &B) {
@@ -33,12 +33,19 @@ var			calc::gravity		(const entity_c &A, const entity_c &B) {
 }
 
 var			calc::Vcen			(const entity_c &A, const entity_c &B) {
-	return (A.x() - B.x()) * cos(theta(A,B)) +
-		   (A.y() - B.y()) * sin(theta(A,B));
+	vect n (A.pos - B.pos);	//normal vector
+
+	vect un (n / n.norm());				//unit vector of n
+
+	return un.dot(A.v);
 }
 var			calc::Vtan			(const entity_c &A, const entity_c &B) {
-	return (A.x() - B.x()) * cos(theta(A,B) + M_PI_2) +
-		   (A.y() - B.y()) * sin(theta(A,B) + M_PI_2);
+	vect n (A.pos - B.pos);	//normal vector
+
+	vect un (n / n.norm());				//unit vector of n
+	vect unt (-un[1], un[0]);			//vector that is tangent to un
+
+	return unt.dot(A.v);
 }
 
 var			calc::orbitV		(const entity_c &A, const entity_c &B) {
@@ -73,11 +80,20 @@ vect		calc::velocity		(const entity_c &A, const entity_c &B) {
 	return A.v - B.v;
 }
 
-void		calc::detect_collision(entity_c &A, entity_c &B) {
-	if(step_distance(A,B) > (A.radius + B.radius))
-		return;	//distance^2 > (A.r + B.r)^2 is a faster calcaulation
+bool		calc::approaching	(const entity_c &A, const entity_c &B) {
+//	return (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) > 0;
+	std::cout << "dotting: " << (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) << '\n';
+	return (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) > 0;
+}
 
-	vect n (A.x()-B.x(), A.y()-B.y());	//normal vector
+void		calc::detect_collision(entity_c &A, entity_c &B) {
+	if(distance(A,B) > A.radius + B.radius)
+		return;
+//	std::cout << A.name << " approaching " << B.name << "?\t" << approaching(A,B) << '\n';
+	if(!approaching(A,B))
+		return;
+
+	vect n (A.pos - B.pos);				//normal vector
 
 	vect un (n / n.norm());				//unit vector of n
 	vect unt (-un[1], un[0]);			//vector that is tangent to un
@@ -93,23 +109,23 @@ void		calc::detect_collision(entity_c &A, entity_c &B) {
 	var vBt_ = vBt;
 
 	//vAn and vBt can be calculated with a simple 1D collision calculation
-
-	//calculate vAn prime
 	var vAn_ = (vAn * (A.mass - B.mass) + 2 * B.mass * vBn)
 									/
 							(A.mass + B.mass);
 
-	//calculate vBn prime
 	var vBn_ = (vBn * (B.mass - A.mass) + 2 * A.mass * vAn)
 									/
 							(B.mass + A.mass);
 
 	//convert scalar normal and tangent velocities to vectors
-	vect VAn = vAn_ * un;
-	vect VAt = vAt_ * unt;
+	//also, apply coefficient of restitution
+	static const var R = 0.5;
+	vect VAn = vAn_ * un * R;
+	vect VAt = vAt_ * unt * R;
 
-	vect VBn = vBn_ * un;
-	vect VBt = vBt_ * unt;
+
+	vect VBn = vBn_ * un * R;
+	vect VBt = vBt_ * unt * R;
 
 	//add em up
 	A.v = VAn + VAt;

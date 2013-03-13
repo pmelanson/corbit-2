@@ -18,26 +18,26 @@ void		graphics::draw	(const entity_c &obj) {
 
 	if (display) {
 		al_draw_filled_circle(
-			(obj.x() - camera->x()) * camera->zoom() + camera->size[0]/2,
-			(obj.y() - camera->y()) * camera->zoom() + camera->size[1]/2,
+			(obj.pos[0] - camera->pos[0]) * camera->zoom() + camera->size[0]/2,
+			(obj.pos[1] - camera->pos[1]) * camera->zoom() + camera->size[1]/2,
 			obj.radius * camera->zoom(),
 			obj.color
 		);
 	}
 
-//	std::cout << obj.x() - camera->x() << ',' << obj.y() - camera->y() << std::endl;
+//	std::cout << obj.pos[0] - camera->pos[0] << ',' << obj.pos[1] - camera->pos[1] << std::endl;
 }
 
 void		graphics::draw	(const hab_c &hab) {
 
 	if (display) {
 		al_draw_filled_circle(
-			(hab.x() - camera->x()) * camera->zoom() + camera->size[0]/2,
-			(hab.y() - camera->y()) * camera->zoom() + camera->size[1]/2,
+			(hab.pos[0] - camera->pos[0]) * camera->zoom() + camera->size[0]/2,
+			(hab.pos[1] - camera->pos[1]) * camera->zoom() + camera->size[1]/2,
 			hab.radius * camera->zoom() * 500,
 			hab.color
 		);
 	}
 
-//	std::cout << hab.x() - camera->x() << ',' << hab.y() - camera->y() << std::endl;
+//	std::cout << hab.pos[0] - camera->pos[0] << ',' << hab.pos[1] - camera->pos[1] << std::endl;
 }

@@ -20,6 +20,7 @@ namespace calc {
 					ecc				(const entity_c &A, const entity_c &B);
 	vect			position		(const entity_c &A, const entity_c &B),
 					velocity		(const entity_c &A, const entity_c &B);
+	bool			approaching		(const entity_c &A, const entity_c &B);
 
 	void			detect_collision(entity_c &A, entity_c &B);
 };

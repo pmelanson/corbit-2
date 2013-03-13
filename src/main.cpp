@@ -230,25 +230,27 @@ void input() {
 		graphics::camera->tracking = false;
 
 	if(key[ALLEGRO_KEY_RIGHT])
-		graphics::camera->pan(10, 0);
+		graphics::camera->pan(100, 0);
 	if(key[ALLEGRO_KEY_LEFT])
-		graphics::camera->pan(-10, 0);
+		graphics::camera->pan(-100, 0);
 	if(key[ALLEGRO_KEY_UP])
-		graphics::camera->pan(0, -10);
+		graphics::camera->pan(0, -100);
 	if(key[ALLEGRO_KEY_DOWN])
-		graphics::camera->pan(0, 10);
+		graphics::camera->pan(0, 100);
 
 	if(key[ALLEGRO_KEY_W])
-		if(ship) ship->accelerate(5e19, 3.14159 * 1.5);
+		if(ship) ship->accelerate(9e6, 3.14159 * 1.5);
 	if(key[ALLEGRO_KEY_A])
-		if(ship) ship->accelerate(5e19, 3.14159 * 1.0);
+		if(ship) ship->accelerate(9e6, 3.14159 * 1.0);
 	if(key[ALLEGRO_KEY_S])
-		if(ship) ship->accelerate(5e19, 3.14159 * 0.5);
+		if(ship) ship->accelerate(9e6, 3.14159 * 0.5);
 	if(key[ALLEGRO_KEY_D])
-		if(ship) ship->accelerate(5e19, 3.14159 * 0.0);
+		if(ship) ship->accelerate(9e6, 3.14159 * 0.0);
 
 	if(key[ALLEGRO_KEY_H])
 		graphics::camera->center = find_entity("hab");
+	if(key[ALLEGRO_KEY_4])
+		graphics::camera->center = find_entity("mars");
 	if(key[ALLEGRO_KEY_1])
 		graphics::camera->center = find_entity("earth");
 }
@@ -261,15 +263,23 @@ void calculate() {
 			clog << al_keycode_to_name(n) << '\n';
 	cout << "\n-----------\n";
 
-	auto itX = entities.begin();
 
+//	for(auto &it : entities) {
+//		it.move();
+//	}
+
+	auto itX = entities.begin();
 	while(itX != entities.end()) {
 		auto itY = itX;
 		++itY;
 		while(itY != entities.end()) {
+//			calc::detect_collision(*itX, *itY);
+			if(calc::distance2(*itX, *itY) > (itX->radius + itY->radius)*(itX->radius + itY->radius)) {
+				cout << "graving\n";
+				itX->accelerate( calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
+				itY->accelerate(-calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
+			}
 			calc::detect_collision(*itX, *itY);
-			itX->accelerate( calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
-			itY->accelerate(-calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
 			++itY;
 		}
 		++itX;
