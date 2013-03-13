@@ -22,7 +22,6 @@ public:
 	bool			tracking;
 
 	float			zoom_level;
-	const float		exp;
 
 
 	void 			pan				(float X, float Y);

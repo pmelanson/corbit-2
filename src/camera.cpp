@@ -21,13 +21,13 @@ void	camera_c::pan		(float X, float Y)	{
 	acc[1] += Y;
 }
 float	camera_c::zoom		() const			{
-	return 1 / std::pow(std::abs(zoom_level), exp);
+	return 1 / std::pow(std::abs(zoom_level), 12);
 }
 
 
 camera_c::camera_c			(var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 							entity_c *center_, float zoom_level_)
 	: physical_c(x_,y_, Vx_,Vy_, accX_,accY_),
-	center (center_), tracking (true), zoom_level (zoom_level_), exp (2) {}
+	center (center_), tracking (true), zoom_level (zoom_level_) {}
 
 camera_c::~camera_c			() {}
