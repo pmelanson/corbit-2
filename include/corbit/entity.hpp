@@ -19,6 +19,8 @@ public:
 
 	const col			color;
 
+	void				print			();
+
 	entity_c							(std::string name_, var m, var r,
 										var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 										col color_);

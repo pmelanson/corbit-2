@@ -275,13 +275,9 @@ void calculate() {
 		++itX;
 	}
 
-//	find_entity("hab")->set_accX(50);
-
 	for(auto &it : entities) {
 		it.move();
 	}
-
-
 
 	graphics::camera->update();
 

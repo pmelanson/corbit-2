@@ -15,21 +15,12 @@ using std::cos;
 using std::sin;
 
 
-
 void	entity_c::accelerate(var force, var radians) {
 	acc[0] += cos(radians) * (force / mass);
 	acc[1] += sin(radians) * (force / mass);
 }
 
-
-entity_c::entity_c(string name_, var m, var r,
-				   var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-				   col color_)
-	: name(name_), mass(m>0 ? m : 1), radius(r),
-	physical_c(x_,y_, Vx_,Vy_, accX_,accY_),
-	color(color_) {
-
-	clog << endl << "CONSTRUCTING:";
+void	entity_c::print() {
 	clog << "\n[" << name << "]";
 	clog << "\nmass=" << mass;
 	clog << "\nradius=" << radius;
@@ -43,6 +34,17 @@ entity_c::entity_c(string name_, var m, var r,
 	al_unmap_rgba(color, &R, &G, &B, &A);
 	clog << "\ncolor=" << hex << uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << dec << nouppercase;
 	clog << endl;
+}
+
+entity_c::entity_c(string name_, var m, var r,
+				   var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
+				   col color_)
+	: name(name_), mass(m>0 ? m : 1), radius(r),
+	physical_c(x_,y_, Vx_,Vy_, accX_,accY_),
+	color(color_) {
+
+	clog << endl << "CONSTRUCTING:";
+	print();
 }
 
 entity_c::entity_c()
@@ -56,17 +58,5 @@ entity_c::entity_c()
 entity_c::~entity_c() {
 
 	clog << endl << "DESTRUCTING:";
-	clog << "\n[" << name << "]";
-	clog << "\nmass=" << mass;
-	clog << "\nradius=" << radius;
-	clog << "\nx=" << x();
-	clog << "\ny=" << y();
-	clog << "\nVx=" << Vx();
-	clog << "\nVy=" << Vy();
-	clog << "\naccX=" << accX();
-	clog << "\naccY=" << accY();
-	unsigned char R, G, B, A;
-	al_unmap_rgba(color, &R, &G, &B, &A);
-	clog << "\ncolor=" << hex << uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << dec << nouppercase;
-	clog << endl;
+	print();
 }

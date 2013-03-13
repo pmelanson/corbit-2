@@ -9,7 +9,9 @@ class entity_c;
 namespace calc {
 
 	var				distance2		(const entity_c &A, const entity_c &B),
+					step_distance2	(const entity_c &A, const entity_c &B),
 					distance		(const entity_c &A, const entity_c &B),
+					step_distance	(const entity_c &A, const entity_c &B),
 					theta			(const entity_c &A, const entity_c &B),
 					gravity			(const entity_c &A, const entity_c &B),
 					orbitV			(const entity_c &A, const entity_c &B),

@@ -10,9 +10,16 @@ const float	G	=	6.674e-11;
 var			calc::distance2		(const entity_c &A, const entity_c &B) {
 	return (A.pos - B.pos).squaredNorm();
 }
+var			calc::step_distance2	(const entity_c &A, const entity_c &B) {
+	return ((A.pos+A.v) - (B.pos+B.v)).squaredNorm();
+}
 var			calc::distance		(const entity_c &A, const entity_c &B) {
 	return (A.pos - B.pos).norm();
 }
+var			calc::step_distance		(const entity_c &A, const entity_c &B) {
+	return ((A.pos+A.v) - (B.pos+B.v)).norm();
+}
+
 
 var			calc::theta			(const entity_c &A, const entity_c &B) {
 	return atan2f(B.y()-A.y(), B.x()-A.x());
@@ -66,24 +73,19 @@ vect		calc::velocity		(const entity_c &A, const entity_c &B) {
 	return A.v - B.v;
 }
 
-#include <iostream>
-using std::cout;
 void		calc::detect_collision(entity_c &A, entity_c &B) {
-	if(distance2(A,B) > (A.radius + B.radius)*(A.radius + B.radius))
+	if(step_distance(A,B) > (A.radius + B.radius))
 		return;	//distance^2 > (A.r + B.r)^2 is a faster calcaulation
 
 	vect n (A.x()-B.x(), A.y()-B.y());	//normal vector
-	cout << "\nn:\n" << n;
 
 	vect un (n / n.norm());				//unit vector of n
-	cout << "\nun:\n" << un;
-	vect unt (-un[1], un[0]);		//vector that is tangent to un
-	cout << "\nunt:\n" << unt;
+	vect unt (-un[1], un[0]);			//vector that is tangent to un
 
-	var vAn = un.dot(A.v);			//A's velocity projected along un
-	var vAt = unt.dot(A.v);			//A's velocity projected along ut
+	var vAn = un.dot(A.v);				//A's velocity projected along un
+	var vAt = unt.dot(A.v);				//A's velocity projected along unt
 
-	var vBn = un.dot(B.v);			//same for B
+	var vBn = un.dot(B.v);				//same for B
 	var vBt = unt.dot(B.v);
 
 	//vAt and vBt will not change, so we don't do anything for them
