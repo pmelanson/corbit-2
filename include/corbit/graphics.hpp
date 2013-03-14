@@ -21,6 +21,8 @@ namespace graphics {
 	private:
 		const ALLEGRO_COLOR	text_col;
 		unsigned			lines;
+		unsigned			column;
+		const unsigned		columns;
 		void				add_line	(std::stringstream &text);
 
 	public:
@@ -28,7 +30,7 @@ namespace graphics {
 		void				draw		();
 
 		hud_c				(ALLEGRO_COLOR text_col_)
-			: text_col(text_col_), lines(1), font(0x0) {
+			: text_col(text_col_), lines(0), column(0), columns(5), font(0x0) {
 		}
 	};
 

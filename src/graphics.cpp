@@ -157,7 +157,7 @@ void	graphics::hud_c::draw () {
 		<< "Manual";
 	add_line(text);
 
-	lines = 1;
+	lines = 0;
 //	al_draw_text(font, text_col, 10,10, ALLEGRO_ALIGN_LEFT, text.str().c_str());
 //al_draw_textf(font, al_map_rgb(200,200,200), 200,0, ALLEGRO_ALIGN_LEFT, "zoom: %Lf zoom_level: %Lf", graphics::camera->zoom(), graphics::camera->zoom_level);
 }

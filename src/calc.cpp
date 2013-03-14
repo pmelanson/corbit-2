@@ -100,7 +100,7 @@ vect		calc::velocity		(const entity_c &A, const entity_c &B) {
 
 bool		calc::approaching	(const entity_c &A, const entity_c &B) {
 //	return (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) > 0;
-	std::cout << "dotting: " << (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) << '\n';
+//	std::cout << "dotting: " << (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) << '\n';
 	return (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) > 0;
 }
 
