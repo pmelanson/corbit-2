@@ -13,11 +13,16 @@ namespace calc {
 					distance		(const entity_c &A, const entity_c &B),
 					step_distance	(const entity_c &A, const entity_c &B),
 					theta			(const entity_c &A, const entity_c &B),
+					theta			(const entity_c &A, const entity_c &B, const entity_c &C),
 					gravity			(const entity_c &A, const entity_c &B),
-					orbitV			(const entity_c &A, const entity_c &B),
-					Vcen			(const entity_c &A, const entity_c &B),
-					Vtan			(const entity_c &A, const entity_c &B),
-					ecc				(const entity_c &A, const entity_c &B);
+					v_orbit			(const entity_c &A, const entity_c &B),
+					v_cen			(const entity_c &A, const entity_c &B),
+					v_tan			(const entity_c &A, const entity_c &B),
+					pitch			(const entity_c &A, const entity_c &B),
+					stopping_acc	(const entity_c &A, const entity_c &B),
+					ecc				(const entity_c &A, const entity_c &B),
+					periapsis		(const entity_c &A, const entity_c &B),
+					apoapsis		(const entity_c &A, const entity_c &B);
 	vect			position		(const entity_c &A, const entity_c &B),
 					velocity		(const entity_c &A, const entity_c &B);
 	bool			approaching		(const entity_c &A, const entity_c &B);

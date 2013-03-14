@@ -24,6 +24,9 @@ var			calc::step_distance		(const entity_c &A, const entity_c &B) {
 var			calc::theta			(const entity_c &A, const entity_c &B) {
 	return atan2f(B.pos[1]-A.pos[1], B.pos[0]-A.pos[0]);
 }
+var			calc::theta			(const entity_c &A, const entity_c &B, const entity_c &C) {
+	return 100;	//TODO
+}
 
 var			calc::gravity		(const entity_c &A, const entity_c &B) {
 	if(!std::isnormal(distance2(A,B)) || !distance2(A,B))	//if the distance is inf, NAN, or 0
@@ -32,14 +35,14 @@ var			calc::gravity		(const entity_c &A, const entity_c &B) {
 	return G * (A.mass * B.mass) / distance2(A,B);
 }
 
-var			calc::Vcen			(const entity_c &A, const entity_c &B) {
+var			calc::v_cen			(const entity_c &A, const entity_c &B) {
 	vect n (A.pos - B.pos);	//normal vector
 
 	vect un (n / n.norm());				//unit vector of n
 
 	return un.dot(A.v);
 }
-var			calc::Vtan			(const entity_c &A, const entity_c &B) {
+var			calc::v_tan			(const entity_c &A, const entity_c &B) {
 	vect n (A.pos - B.pos);	//normal vector
 
 	vect un (n / n.norm());				//unit vector of n
@@ -48,7 +51,11 @@ var			calc::Vtan			(const entity_c &A, const entity_c &B) {
 	return unt.dot(A.v);
 }
 
-var			calc::orbitV		(const entity_c &A, const entity_c &B) {
+var			calc::pitch			(const entity_c &A, const entity_c &B) {
+	return 300;	//TODO
+}
+
+var			calc::v_orbit		(const entity_c &A, const entity_c &B) {
 	return sqrt(
 			   (B.mass*B.mass * G) /
 			   ((A.mass + B.mass) * distance(A,B)));
@@ -62,7 +69,7 @@ var			calc::ecc			(const entity_c &A, const entity_c &B) {
 		-									//-
 		(mu / distance(A,B)),				//mu / r
 
-	h	= (distance(A,B) * Vtan(A,B)) * (distance(A,B) * Vtan(A,B));	//(r * Vtan)^2
+	h	= (distance(A,B) * v_tan(A,B)) * (distance(A,B) * v_tan(A,B));	//(r * v_tan)^2
 
 	return std::sqrt(	//sqrt of
 		1 +				//1 +
@@ -70,6 +77,17 @@ var			calc::ecc			(const entity_c &A, const entity_c &B) {
 		/
 		(mu)			//G(m1+m2)
 	);
+}
+
+var			calc::periapsis		(const entity_c &A, const entity_c &B) {
+	return 20;	//TODO
+}
+var			calc::apoapsis		(const entity_c &A, const entity_c &B) {
+	return 40;	//TODO
+}
+
+var			calc::stopping_acc	(const entity_c &A, const entity_c &B) {
+	return 200;	//TODO
 }
 
 vect		calc::position		(const entity_c &A, const entity_c &B) {

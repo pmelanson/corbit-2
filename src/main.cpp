@@ -32,9 +32,7 @@ ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
 bool				key[ALLEGRO_KEY_MAX] ={};
 unsigned			mods			=0;
-entity_c			*ship			=NULL,
-					*targ			=NULL,
-					*ref			=NULL;
+
 entity_list_t entities;
 
 entity_c *find_entity (string name) {
@@ -95,7 +93,7 @@ bool init_allegro() {
 
 	ALLEGRO_DISPLAY_MODE disp_data;
 	al_get_display_mode(0, &disp_data);
-	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+	al_set_new_display_flags(ALLEGRO_WINDOWED);
 	display = al_create_display(disp_data.width, disp_data.height);
 	graphics::camera->size[0] = disp_data.width;
 	graphics::camera->size[1] = disp_data.height;
@@ -106,6 +104,7 @@ bool init_allegro() {
 		cerr << "Failed to create display!" << endl;
 		success = false;
 	}
+	al_acknowledge_resize(display);
 
 	if(!al_inhibit_screensaver(true)) {
 		cerr << "Failed to inhibit screensaver!" << endl;
@@ -193,9 +192,11 @@ bool init() {
 	assert(entities.front().name == json_list.front().name);
 
 
-	ship = find_entity("mars");
+	nav::ship = find_entity("mars");
+	nav::ref = find_entity("earth");
+	nav::targ = find_entity("earth");
 
-
+	graphics::hud.font = al_load_ttf_font("pirulen.ttf", 15, 0);
 
 	return true;
 }
@@ -239,13 +240,13 @@ void input() {
 		graphics::camera->pan(0, 100);
 
 	if(key[ALLEGRO_KEY_W])
-		if(ship) ship->accelerate(9e6, 3.14159 * 1.5);
+		if(nav::ship) nav::ship->accelerate(9e6, 3.14159 * 1.5);
 	if(key[ALLEGRO_KEY_A])
-		if(ship) ship->accelerate(9e6, 3.14159 * 1.0);
+		if(nav::ship) nav::ship->accelerate(9e6, 3.14159 * 1.0);
 	if(key[ALLEGRO_KEY_S])
-		if(ship) ship->accelerate(9e6, 3.14159 * 0.5);
+		if(nav::ship) nav::ship->accelerate(9e6, 3.14159 * 0.5);
 	if(key[ALLEGRO_KEY_D])
-		if(ship) ship->accelerate(9e6, 3.14159 * 0.0);
+		if(nav::ship) nav::ship->accelerate(9e6, 3.14159 * 0.0);
 
 	if(key[ALLEGRO_KEY_H])
 		graphics::camera->center = find_entity("hab");
@@ -264,18 +265,12 @@ void calculate() {
 	cout << "\n-----------\n";
 
 
-//	for(auto &it : entities) {
-//		it.move();
-//	}
-
 	auto itX = entities.begin();
 	while(itX != entities.end()) {
 		auto itY = itX;
 		++itY;
 		while(itY != entities.end()) {
-//			calc::detect_collision(*itX, *itY);
 			if(calc::distance2(*itX, *itY) > (itX->radius + itY->radius)*(itX->radius + itY->radius)) {
-				cout << "graving\n";
 				itX->accelerate( calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
 				itY->accelerate(-calc::gravity(*itX, *itY), calc::theta(*itX, *itY));
 			}
@@ -299,6 +294,8 @@ void draw() {
 	for(auto &it : entities) {
 		graphics::draw(it);
 	}
+
+	graphics::hud.draw();
 }
 
 bool run() {
@@ -338,7 +335,7 @@ bool run() {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0,0,0));
 			draw();
-			al_draw_textf(font, al_map_rgb(200,200,200), 0,0, ALLEGRO_ALIGN_LEFT, "zoom: %lf zoom_level: %lf", graphics::camera->zoom(), graphics::camera->zoom_level);
+//			al_draw_textf(font, al_map_rgb(200,200,200), 200,0, ALLEGRO_ALIGN_LEFT, "zoom: %Lf zoom_level: %Lf", graphics::camera->zoom(), graphics::camera->zoom_level);
 			al_flip_display();
 		}
 
