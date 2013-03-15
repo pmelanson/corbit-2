@@ -7,13 +7,15 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
+#include <Box2D/Box2D.h>
+
 #include <boost/intrusive/list.hpp>
-#include <boost/scoped_ptr.hpp>
 
 #include <fstream>
 #include <json/json.h>
 
 #include <corbit/corbit.hpp>
+
 using std::clog;
 using std::cerr;
 using std::cout;
@@ -94,6 +96,11 @@ bool init_allegro() {
 	ALLEGRO_DISPLAY_MODE disp_data;
 	al_get_display_mode(0, &disp_data);
 	al_set_new_display_flags(ALLEGRO_WINDOWED);
+
+	al_set_new_display_option(ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
+	al_set_new_display_option(ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
+	al_set_new_display_option(ALLEGRO_VSYNC, 1, ALLEGRO_SUGGEST);
+
 	display = al_create_display(disp_data.width, disp_data.height);
 	graphics::camera->size[0] = disp_data.width;
 	graphics::camera->size[1] = disp_data.height;
@@ -195,8 +202,9 @@ bool init() {
 	nav::ship = find_entity("mars");
 	nav::ref = find_entity("earth");
 	nav::targ = find_entity("earth");
+	graphics::camera->center = find_entity("mars");
 
-	graphics::hud.font = al_load_ttf_font("pirulen.ttf", 15, 0);
+	graphics::hud.font = al_load_ttf_font("res/DejaVuSansMono.ttf", 15, 0);
 
 	return true;
 }
@@ -231,25 +239,33 @@ void input() {
 		graphics::camera->tracking = false;
 
 	if(key[ALLEGRO_KEY_RIGHT])
-		graphics::camera->pan(100, 0);
+		graphics::camera->pan(200, 0);
 	if(key[ALLEGRO_KEY_LEFT])
-		graphics::camera->pan(-100, 0);
+		graphics::camera->pan(-200, 0);
 	if(key[ALLEGRO_KEY_UP])
-		graphics::camera->pan(0, -100);
+		graphics::camera->pan(0, -200);
 	if(key[ALLEGRO_KEY_DOWN])
-		graphics::camera->pan(0, 100);
+		graphics::camera->pan(0, 200);
 
 	if(key[ALLEGRO_KEY_W])
-		if(nav::ship) nav::ship->accelerate(9e6, 3.14159 * 1.5);
+		if(nav::ship) nav::ship->accelerate(1e6, 3.14159 * 1.5);
 	if(key[ALLEGRO_KEY_A])
-		if(nav::ship) nav::ship->accelerate(9e6, 3.14159 * 1.0);
+		if(nav::ship) nav::ship->accelerate(1e6, 3.14159 * 1.0);
 	if(key[ALLEGRO_KEY_S])
-		if(nav::ship) nav::ship->accelerate(9e6, 3.14159 * 0.5);
+		if(nav::ship) nav::ship->accelerate(1e6, 3.14159 * 0.5);
 	if(key[ALLEGRO_KEY_D])
-		if(nav::ship) nav::ship->accelerate(9e6, 3.14159 * 0.0);
-
+		if(nav::ship) nav::ship->accelerate(1e6, 3.14159 * 0.0);
 	if(key[ALLEGRO_KEY_H])
-		graphics::camera->center = find_entity("hab");
+		if(nav::ship) nav::ship->accelerate(1e8, 3.14159 * 1.0);
+	if(key[ALLEGRO_KEY_J])
+		if(nav::ship) nav::ship->accelerate(1e8, 3.14159 * 0.5);
+	if(key[ALLEGRO_KEY_K])
+		if(nav::ship) nav::ship->accelerate(1e8, 3.14159 * 1.5);
+	if(key[ALLEGRO_KEY_L])
+		if(nav::ship) nav::ship->accelerate(1e8, 3.14159 * 0.0);
+
+//	if(key[ALLEGRO_KEY_H])
+//		graphics::camera->center = find_entity("hab");
 	if(key[ALLEGRO_KEY_4])
 		graphics::camera->center = find_entity("mars");
 	if(key[ALLEGRO_KEY_1])
@@ -300,8 +316,9 @@ void draw() {
 
 bool run() {
 
+	bool pic=false;
+	bool doit=false;
 	bool redraw = true;
-	ALLEGRO_FONT *font = al_load_font("courier new.ttf", 36, 0);
 
 	while(true) {
 
@@ -335,8 +352,15 @@ bool run() {
 			redraw = false;
 			al_clear_to_color(al_map_rgb(0,0,0));
 			draw();
-//			al_draw_textf(font, al_map_rgb(200,200,200), 200,0, ALLEGRO_ALIGN_LEFT, "zoom: %Lf zoom_level: %Lf", graphics::camera->zoom(), graphics::camera->zoom_level);
 			al_flip_display();
+//			if(!pic)
+//				pic=true;
+//			else if(!doit)
+//				doit=true;
+//			else if(pic && doit) {
+//				system("import -window root /home/wopr/vertcache2big4u.jpg");
+//				return true;
+//			}
 		}
 
 	}

@@ -21,7 +21,7 @@ void	camera_c::pan		(float X, float Y)	{
 	acc[1] += Y;
 }
 float	camera_c::zoom		() const			{
-	return 1 / std::pow(std::abs(zoom_level), 12);
+	return 20 / std::pow(std::abs(zoom_level), 4);
 }
 
 

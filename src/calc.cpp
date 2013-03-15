@@ -105,7 +105,7 @@ bool		calc::approaching	(const entity_c &A, const entity_c &B) {
 }
 
 void		calc::detect_collision(entity_c &A, entity_c &B) {
-	if(distance(A,B) > A.radius + B.radius)
+	if(step_distance(A,B) > A.radius + B.radius)
 		return;
 //	std::cout << A.name << " approaching " << B.name << "?\t" << approaching(A,B) << '\n';
 	if(!approaching(A,B))

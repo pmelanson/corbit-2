@@ -5,4 +5,4 @@ Corbit is a C++ port of the QB version of orbit, perpetrated by the dmags, while
 
 Read the docs for more info. At the moment this is a monopoly project, but take a glance at the source and tell me what you think.
 
-To build this, you need allegro 5.1 (preferably), boost libraries, and jsoncpp is already included
+To build this, you need allegro 5.1 (preferably), boost libraries, Box2D, and jsoncpp is already included
