@@ -13,7 +13,7 @@ private:
 public:
 	hab_c						(std::string name_, var m, var r,
 								var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-								col color_, long long fuel_, float burn_rate_, long long thrust_);
+								ALLEGRO_COLOR color_, long long fuel_, float burn_rate_, long long thrust_);
 };
 
 

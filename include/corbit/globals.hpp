@@ -7,7 +7,6 @@
 
 typedef					long double					var;
 typedef					Eigen::Matrix<var, 1, 2>	vect;
-typedef					ALLEGRO_COLOR				col;
 const unsigned short	FPS							=30;
 
 

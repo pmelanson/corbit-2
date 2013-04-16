@@ -17,13 +17,13 @@ public:
 
 	void				accelerate		(var force, var radians);
 
-	const col			color;
+	const ALLEGRO_COLOR	color;
 
-	void				print			();
+	void			print			();
 
 	entity_c							(std::string name_, var m, var r,
 										var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-										col color_);
+										ALLEGRO_COLOR color_);
 	entity_c							();
 
 	~entity_c							();

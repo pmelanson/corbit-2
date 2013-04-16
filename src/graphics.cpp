@@ -16,10 +16,9 @@
 extern ALLEGRO_DISPLAY *display;
 camera_c default_camera(0,0, 0,0, 0,0, NULL, 4);
 
-//#include <iostream>
-
 namespace	graphics {
 	camera_c	*camera = &default_camera;
+	console_c	console (al_color_name("grey"));
 	hud_c		hud (al_color_name("grey"));
 }
 
@@ -46,12 +45,8 @@ void	graphics::draw		(const hab_c &hab) {
 	draw_at(hab, graphics::camera->zoom(), hab.pos[0], hab.pos[1]);
 }
 
-//
-//void	graphics::hud_c::update() {
-//	column_w	= graphics::camera->size[0] / columns;
-//	text_start_x= padding;
-//	text_start_y= 4 * graphics::camera->size[1] / 5;
-//}
+
+
 
 void	graphics::hud_c::new_column() {
 	line = 0;
@@ -85,9 +80,6 @@ void	graphics::hud_c::draw () {
 	text << std::setprecision(2) << std::uppercase << std::fixed;
 	line = 0;
 	column = 0;
-
-//	if(calc::distance(*nav::ship, *nav::ref) - (nav::ship->radius + nav::ref->radius) < 3)
-//		system("import -window root /home/wopr/s.jpg");
 
 
 	text << "Speed (" << nav::ref->name << "): "
@@ -130,17 +122,10 @@ void	graphics::hud_c::draw () {
 	add_line(text);
 
 
-	graphics::draw_at(*nav::ship, 50/nav::ship->radius,
-					  graphics::camera->size[0]/2, 900);
-//	add_line(text);
-//	add_line(text);
-//	add_line(text);
-//	add_line(text);
-//	add_line(text);
-//	add_line(text);
-//	add_line(text);
-//	add_line(text);
-
+	graphics::draw_at(*nav::ship,
+					100/nav::ship->radius,
+					  graphics::camera->size[0]/2,
+					  graphics::camera->size[1] - graphics::camera->size[1]/10);
 
 	text << "Fuel (" << nav::ship->name << "): "
 		<< "a billion";
@@ -163,8 +148,7 @@ void	graphics::hud_c::draw () {
 		<< calc::pitch(*nav::ship, *nav::ref);
 	add_line(text);
 	text << "Center: "
-		<< "poop";
-//		<< graphics::camera->center->name;
+		<< graphics::camera->center->name;
 	add_line(text);
 	text << "Ship: "
 		<< nav::ship->name;
@@ -178,4 +162,15 @@ void	graphics::hud_c::draw () {
 	text << "Navigation: "
 		<< "Manual";
 	add_line(text);
+}
+
+
+void	graphics::console_c::draw() {
+
+	if (!open) {
+		return;
+	}
+
+	al_draw_ustr(font, text_col, 500, 500, ALLEGRO_ALIGN_LEFT, input);
+
 }

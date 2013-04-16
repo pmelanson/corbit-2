@@ -19,7 +19,6 @@ namespace graphics {
 	void		draw		(const hab_c &hab);
 
 	class		hud_c {
-
 	private:
 		const ALLEGRO_COLOR	text_col;
 		unsigned			line,
@@ -39,11 +38,29 @@ namespace graphics {
 		hud_c				(ALLEGRO_COLOR text_col_)
 			: text_col(text_col_), line(0), column(0), columns(3),
 			padding(15), font(0x0) {
-//			make padding better
 		}
 	};
-
 	extern		hud_c		hud;
+
+
+	class		console_c {
+	private:
+		const ALLEGRO_COLOR	text_col;
+
+	public:
+		ALLEGRO_FONT		*font;
+		ALLEGRO_USTR		*input;
+
+		bool				open;
+
+		void				draw		();
+
+		console_c			(ALLEGRO_COLOR text_col_)
+			: text_col(text_col_), font(0x0), input(al_ustr_new("")),
+			open(false) {
+			}
+	};
+	extern		console_c	console;
 
 	extern		camera_c	*camera;
 }

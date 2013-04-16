@@ -38,7 +38,7 @@ void	entity_c::print() {
 
 entity_c::entity_c(string name_, var m, var r,
 				   var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-				   col color_)
+				   ALLEGRO_COLOR color_)
 	: name(name_), mass(m>0 ? m : 1), radius(r),
 	physical_c(x_,y_, Vx_,Vy_, accX_,accY_),
 	color(color_) {
