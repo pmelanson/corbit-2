@@ -32,12 +32,13 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-std=c++11" />
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
-			<Add option="`pkg-config --libs allegro-5 allegro_primitives-5 allegro_ttf-5 allegro_color-5`" />
+			<Add option="`pkg-config --cflags --libs allegro-5 allegro_primitives-5 allegro_ttf-5 allegro_color-5`" />
 		</Linker>
 		<Unit filename="entities.json" />
 		<Unit filename="include/corbit/calc.hpp" />

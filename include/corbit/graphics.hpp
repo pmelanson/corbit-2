@@ -3,12 +3,14 @@
 
 
 #include <corbit/globals.hpp>
-#include <allegro5/allegro_font.h>
+#include <sstream>
+//#include <allegro5/allegro_font.h>
 class entity_c;
 class hab_c;
 class camera_c;
 class ALLEGRO_FONT;
 class ALLEGRO_COLOR;
+using std::stringstream;
 
 namespace graphics {
 
@@ -47,16 +49,22 @@ namespace graphics {
 	private:
 		const ALLEGRO_COLOR	text_col;
 
+		const unsigned		height;
+		const unsigned		line_height;
+		unsigned			n_output_lines;
+
 	public:
 		ALLEGRO_FONT		*font;
-		ALLEGRO_USTR		*input;
+		stringstream		input;
+		stringstream		contents;
 
 		bool				open;
 
 		void				draw		();
 
 		console_c			(ALLEGRO_COLOR text_col_)
-			: text_col(text_col_), font(0x0), input(al_ustr_new("")),
+			: text_col(text_col_), height(500), line_height(12), n_output_lines(0),
+			font(0x0), input(""),
 			open(false) {
 			}
 	};

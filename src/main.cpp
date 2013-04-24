@@ -38,10 +38,6 @@ ALLEGRO_USTR		*console_input	=al_ustr_new("");
 
 entity_list_t entities;
 
-void console() {
-
-}
-
 entity_c *find_entity (string name) {
 
 for (auto &it : entities) {
@@ -55,34 +51,32 @@ for (auto &it : entities) {
 
 bool init_allegro() {
 
-	bool success = true;
-
 	if (!al_init() ) {
 		cerr << "Failed to initialise Allegro!" << endl;
-		success = false;
+		return false;
 	}
 
 	if (!al_init_primitives_addon() ) {
 		cerr << "Failed to initialise primitives addon!" << endl;
-		success = false;
+		return false;
 	}
 
 	al_init_font_addon();
 	if (!al_init_ttf_addon() ) {
 		cerr << "Failed to initalise ttf addon!" << endl;
-		success = false;
+		return false;
 	}
 
 
 	if (!al_install_keyboard() ) {
 		cerr << "Failed to install keyboard!" << endl;
-		success = false;
+		return false;
 	}
 
 	timer = al_create_timer (1./FPS);
 	if (!timer) {
 		cerr << "Failed to create timer!" << endl;
-		success = false;
+		return false;
 	}
 
 	ALLEGRO_DISPLAY_MODE disp_data;
@@ -90,7 +84,7 @@ bool init_allegro() {
 	al_set_new_display_flags (ALLEGRO_FULLSCREEN_WINDOW);
 
 	al_set_new_display_option (ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
-	al_set_new_display_option (ALLEGRO_SAMPLES, 8, ALLEGRO_SUGGEST);
+	al_set_new_display_option (ALLEGRO_SAMPLES, 4, ALLEGRO_SUGGEST);
 	al_set_new_display_option (ALLEGRO_VSYNC, 1, ALLEGRO_SUGGEST);
 
 	display = al_create_display (disp_data.width, disp_data.height);
@@ -101,7 +95,7 @@ bool init_allegro() {
 		 << disp_data.refresh_rate << "Hz" << endl;
 	if (!display) {
 		cerr << "Failed to create display!" << endl;
-		success = false;
+		return false;
 	}
 	al_acknowledge_resize (display);
 
@@ -115,7 +109,7 @@ bool init_allegro() {
 	event_queue = al_create_event_queue();
 	if (!event_queue) {
 		cerr << "Failed to create event_queue!" << endl;
-		success = false;
+		return false;
 	}
 
 	//registers event sources
@@ -127,7 +121,7 @@ bool init_allegro() {
 	al_flip_display();
 	al_start_timer (timer);
 
-	return success;
+	return true;
 }
 
 bool init() {
@@ -232,19 +226,19 @@ void input() {
 		graphics::camera->pan (0, 200);
 
 	if (key[ALLEGRO_KEY_W])
-		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 1.5);
+		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 0.5);
 	if (key[ALLEGRO_KEY_A])
 		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 1.0);
 	if (key[ALLEGRO_KEY_S])
-		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 0.5);
+		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 1.5);
 	if (key[ALLEGRO_KEY_D])
 		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 0.0);
 	if (key[ALLEGRO_KEY_H])
 		if (nav::ship) nav::ship->accelerate (1e8, 3.14159 * 1.0);
 	if (key[ALLEGRO_KEY_J])
-		if (nav::ship) nav::ship->accelerate (1e8, 3.14159 * 0.5);
-	if (key[ALLEGRO_KEY_K])
 		if (nav::ship) nav::ship->accelerate (1e8, 3.14159 * 1.5);
+	if (key[ALLEGRO_KEY_K])
+		if (nav::ship) nav::ship->accelerate (1e8, 3.14159 * 0.5);
 	if (key[ALLEGRO_KEY_L])
 		if (nav::ship) nav::ship->accelerate (1e8, 3.14159 * 0.0);
 
@@ -260,10 +254,16 @@ void calculate() {
 
 	unsigned short n;
 	for (n = 0; n != ALLEGRO_KEY_MAX; n++)
-		if (key[n])
-			clog << al_keycode_to_name (n) << '\n';
+		if (key[n]) {
+//			clog << al_keycode_to_name (n) << '\n';
+		}
 	cout << "-----------\n";
 
+
+
+	for (auto &it : entities) {
+		it.move();
+	}
 
 	auto itX = entities.begin();
 	while (itX != entities.end() ) {
@@ -278,10 +278,6 @@ void calculate() {
 			++itY;
 		}
 		++itX;
-	}
-
-	for (auto &it : entities) {
-		it.move();
 	}
 
 	graphics::camera->update();
@@ -306,8 +302,8 @@ void draw() {
 
 bool run() {
 
-	bool redraw			=true;
-	bool paused			=false;
+	bool redraw	= true;
+	bool paused	= false;
 
 	while (true) {
 
@@ -332,7 +328,10 @@ bool run() {
 
 		else if (graphics::console.open									///console text entry
 				&& ev.type == ALLEGRO_EVENT_KEY_CHAR) {
-			al_ustr_append_chr(graphics::console.input, ev.keyboard.unichar);
+			ALLEGRO_USTR *buf = al_ustr_new("");
+			al_ustr_append_chr(buf, ev.keyboard.unichar);
+			graphics::console.input << char(ev.keyboard.unichar);
+			clog << char(ev.keyboard.unichar) << ev.keyboard.repeat;
 			redraw = true;
 		}
 
@@ -374,11 +373,7 @@ int main() {
 		return_code += 0x00001;
 	}
 
-	for (auto it = entities.begin(); it != entities.end(); ++it)
-		cout << it->name << endl;
-
-
-	if (!run() ) {
+	else if (!run() ) {
 		cerr << "Error in main loop!" << endl;
 		return_code += 0x00004;
 	}

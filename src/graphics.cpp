@@ -31,8 +31,8 @@ void	graphics::draw_at	(const entity_c &obj, var zoom, var x, var y) {
 void	graphics::draw		(const entity_c &obj) {
 	draw_at(obj,
 		camera->zoom(),
-		(obj.pos[0] - camera->pos[0]) * camera->zoom() + camera->size[0]/2,
-		(obj.pos[1] - camera->pos[1]) * camera->zoom() + camera->size[1]/2);
+		( obj.pos[0] - camera->pos[0]) * camera->zoom() + camera->size[0]/2,
+		(-obj.pos[1] + camera->pos[1]) * camera->zoom() + camera->size[1]/2);
 }
 
 void	graphics::draw_at	(const hab_c &hab, var zoom, var x, var y) {
@@ -165,12 +165,15 @@ void	graphics::hud_c::draw () {
 }
 
 
+
+
 void	graphics::console_c::draw() {
 
 	if (!open) {
 		return;
 	}
 
-	al_draw_ustr(font, text_col, 500, 500, ALLEGRO_ALIGN_LEFT, input);
+	al_draw_text(font, text_col, 0, height - line_height, ALLEGRO_ALIGN_LEFT, input.str().c_str());
+
 
 }

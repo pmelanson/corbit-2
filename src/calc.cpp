@@ -36,11 +36,11 @@ var			calc::gravity		(const entity_c &A, const entity_c &B) {
 }
 
 var			calc::v_cen			(const entity_c &A, const entity_c &B) {
-	vect n (A.pos - B.pos);	//normal vector
+	vect n (A.pos - B.pos);				//normal vector
 
 	vect un (n / n.norm());				//unit vector of n
 
-	return un.dot(A.v);
+	return un.dot(A.v - B.v);
 }
 var			calc::v_tan			(const entity_c &A, const entity_c &B) {
 	vect n (A.pos - B.pos);	//normal vector
@@ -48,7 +48,7 @@ var			calc::v_tan			(const entity_c &A, const entity_c &B) {
 	vect un (n / n.norm());				//unit vector of n
 	vect unt (-un[1], un[0]);			//vector that is tangent to un
 
-	return unt.dot(A.v);
+	return unt.dot(A.v - B.v);
 }
 
 var			calc::pitch			(const entity_c &A, const entity_c &B) {
@@ -98,33 +98,60 @@ vect		calc::velocity		(const entity_c &A, const entity_c &B) {
 	return A.v - B.v;
 }
 
-bool		calc::approaching	(const entity_c &A, const entity_c &B) {
+//bool		calc::approaching	(const entity_c &A, const entity_c &B) {
 //	return (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) > 0;
-//	std::cout << "dotting: " << (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) << '\n';
-	return (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) > 0;
-}
+////	if (abs(A.pos
+//}
 
 void		calc::detect_collision(entity_c &A, entity_c &B) {
-	if(step_distance(A,B) > A.radius + B.radius)
+
+	if (distance(A,B) > A.radius + B.radius &&
+		velocity(A,B).norm() < A.radius + B.radius) {
 		return;
-//	std::cout << A.name << " approaching " << B.name << "?\t" << approaching(A,B) << '\n';
-	if(!approaching(A,B))
+	}
+
+	var	a = velocity(A,B).squaredNorm(),
+		b = 2 * position(A,B).dot(velocity(A,B)),
+		c = position(A,B).squaredNorm() - (A.radius + B.radius)*(A.radius + B.radius);
+
+	if (b*b - 4*a*c < 0) {
+		std::clog << "discriminant: -----\n";
+	}
+	else if (b*b - 4*a*c == 0) {
+		std::clog << "discriminant: 00000\n";
+	}
+	else if (b*b - 4*a*c > 0) {
+		std::clog << "discriminant: +++++\n";
+	}
+	std::clog << "-sqrt=" << (-b - sqrt(b*b -4*a*c))/(2*a) << '\n';
+	std::clog << "+sqrt=" << (-b + sqrt(b*b -4*a*c))/(2*a) << '\n';
+
+	var t_to_impact = (-b - sqrt(b*b -4*a*c))/(2*a);
+
+	if (isnan(t_to_impact)) {
 		return;
+	}
 
-	vect n (A.pos - B.pos);				//normal vector
+	A.pos += A.v * t_to_impact;
+	B.pos += B.v * t_to_impact;
 
-	vect un (n / n.norm());				//unit vector of n
-	vect unt (-un[1], un[0]);			//vector that is tangent to un
+	vect n (A.pos - B.pos);		//normal vector
 
-	var vAn = un.dot(A.v);				//A's velocity projected along un
-	var vAt = unt.dot(A.v);				//A's velocity projected along unt
+	vect un (n / n.norm());		//unit vector of n
+	vect unt (-un[1], un[0]);	//vector that is tangent to un
 
-	var vBn = un.dot(B.v);				//same for B
-	var vBt = unt.dot(B.v);
+	var vAn = v_cen(A,B);		//A's velocity projected along un
+	var vAt = v_tan(A,B);		//A's velocity projected along unt
+
+	var vBn = v_cen(A,B);		//same for B
+	var vBt = v_tan(A,B);
 
 	//vAt and vBt will not change, so we don't do anything for them
-	var vAt_ = vAt;
-	var vBt_ = vBt;
+	var vAt_ = v_tan(A,B);
+	var vBt_ = v_tan(B,A);
+
+	//under a certain threshold, just set them to zero
+	std::clog << "vAt_ = " << vAt_ << '\t' << "vBt_ = " << vBt_ << '\n';
 
 	//vAn and vBt can be calculated with a simple 1D collision calculation
 	var vAn_ = (vAn * (A.mass - B.mass) + 2 * B.mass * vBn)
@@ -135,9 +162,12 @@ void		calc::detect_collision(entity_c &A, entity_c &B) {
 									/
 							(B.mass + A.mass);
 
+
+	std::clog << "vAn_ = " << vAn_ << '\t' << "vBn_ = " << vBn_ << '\n';
+
 	//convert scalar normal and tangent velocities to vectors
 	//also, apply coefficient of restitution
-	static const var R = 0.5;
+	const var R = 1;
 	vect VAn = vAn_ * un * R;
 	vect VAt = vAt_ * unt * R;
 
