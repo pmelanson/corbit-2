@@ -12,8 +12,6 @@
 #include <fstream>
 #include <json/json.h>
 
-#include <curses.h>
-
 #include <corbit/corbit.hpp>
 
 using std::clog;
@@ -189,20 +187,6 @@ bool init_allegro() {
 }
 
 bool init() {
-
-	WINDOW *console;
-
-	if ((console = initscr()) == NULL) {
-		cout << "\n\njohn is kill\n\n";
-	}
-
-	addstr("\n\nJohn is no kill\n\n");
-	refresh();
-	sleep(3);
-
-	delwin(console);
-	endwin();
-	refresh();
 
 	cout << "Corbit " << AutoVersion::STATUS
 		 << " v" << AutoVersion::MAJOR
