@@ -17,7 +17,7 @@ var			calc::distance		(const entity_c &A, const entity_c &B) {
 	return (A.pos - B.pos).norm();
 }
 var			calc::step_distance		(const entity_c &A, const entity_c &B) {
-	return ((A.pos+ A.v*1/FPS) - (B.pos+ B.v*1/FPS)).norm();
+	return ((A.pos + (A.v + A.acc)/FPS) - (B.pos + (B.v + B.acc)/FPS)).norm();
 }
 
 
@@ -103,16 +103,22 @@ vect		calc::velocity		(const entity_c &A, const entity_c &B) {
 ////	if (abs(A.pos
 //}
 
+using std::cout;
+
 void		calc::detect_collision(entity_c &A, entity_c &B) {
 
-	if (distance(A,B) > A.radius + B.radius &&
-		velocity(A,B).norm() < A.radius + B.radius) {
+	if (step_distance(A,B) > A.radius + B.radius) {
 		return;
 	}
 
 	var	a = velocity(A,B).squaredNorm(),
 		b = 2 * position(A,B).dot(velocity(A,B)),
 		c = position(A,B).squaredNorm() - (A.radius + B.radius)*(A.radius + B.radius);
+
+	if (a == 0) {
+		std::cerr << "Divide by 0 caught in collision detection routine (A.v = B.v)\n";
+		return;
+	}
 
 	if (b*b - 4*a*c < 0) {
 		std::clog << "discriminant: -----\n";
@@ -128,30 +134,38 @@ void		calc::detect_collision(entity_c &A, entity_c &B) {
 
 	var t_to_impact = (-b - sqrt(b*b -4*a*c))/(2*a);
 
-	if (isnan(t_to_impact)) {
+	if (!std::isnormal(t_to_impact) ||
+		t_to_impact > 1./FPS ||
+		t_to_impact < 0) {
+//		std::clog << 1/0;
 		return;
 	}
 
+	std::clog << "\nCOLLISION DETECTED\n";
+	std::clog << "t- " << t_to_impact << "s\n";
+
+//	system("import -window \"Corbit Beta v2.0.9\" /home/cvt/collision.jpg");
+
 	A.pos += A.v * t_to_impact;
 	B.pos += B.v * t_to_impact;
+
+	A.acc.setZero();
+	B.acc.setZero();
 
 	vect n (A.pos - B.pos);		//normal vector
 
 	vect un (n / n.norm());		//unit vector of n
 	vect unt (-un[1], un[0]);	//vector that is tangent to un
 
-	var vAn = v_cen(A,B);		//A's velocity projected along un
-	var vAt = v_tan(A,B);		//A's velocity projected along unt
+	var vAn = un.dot(A.v);		//A's velocity projected along un
+	var vAt = unt.dot(A.v);		//A's velocity projected along unt
 
-	var vBn = v_cen(A,B);		//same for B
-	var vBt = v_tan(A,B);
+	var vBn = un.dot(B.v);		//same for B
+	var vBt = unt.dot(B.v);
 
 	//vAt and vBt will not change, so we don't do anything for them
-	var vAt_ = v_tan(A,B);
-	var vBt_ = v_tan(B,A);
-
-	//under a certain threshold, just set them to zero
-	std::clog << "vAt_ = " << vAt_ << '\t' << "vBt_ = " << vBt_ << '\n';
+	var vAt_ = vAt;
+	var vBt_ = vBt;
 
 	//vAn and vBt can be calculated with a simple 1D collision calculation
 	var vAn_ = (vAn * (A.mass - B.mass) + 2 * B.mass * vBn)
@@ -162,20 +176,24 @@ void		calc::detect_collision(entity_c &A, entity_c &B) {
 									/
 							(B.mass + A.mass);
 
-
-	std::clog << "vAn_ = " << vAn_ << '\t' << "vBn_ = " << vBn_ << '\n';
-
 	//convert scalar normal and tangent velocities to vectors
 	//also, apply coefficient of restitution
 	const var R = 1;
 	vect VAn = vAn_ * un * R;
 	vect VAt = vAt_ * unt * R;
 
-
 	vect VBn = vBn_ * un * R;
 	vect VBt = vBt_ * unt * R;
 
 	//add em up
-	A.v = VAn + VAt;
-	B.v = VBn + VBt;
+	std::clog << "Beforus:\n" << A.v << '\n' << B.v << '\n';
+
+	A.v = (VAn + VAt);
+	B.v = (VBn + VBt);
+
+	std::clog << "\nAfterit:\n" << A.v << '\n' << B.v << '\n';
+
+	//move for the rest of the frame
+	A.pos += A.v * (1./FPS - t_to_impact);
+	B.pos += A.v * (1./FPS - t_to_impact);
 }

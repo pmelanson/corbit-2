@@ -12,7 +12,7 @@
 #include <fstream>
 #include <json/json.h>
 
-#include <regex>
+#include <curses.h>
 
 #include <corbit/corbit.hpp>
 
@@ -26,7 +26,6 @@ using std::ifstream;
 using std::ofstream;
 using std::malloc;
 typedef boost::intrusive::list <entity_c> entity_list_t;
-using namespace Json;
 
 
 ALLEGRO_DISPLAY		*display		=NULL;
@@ -34,19 +33,76 @@ ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
 bool				key[ALLEGRO_KEY_MAX] = {};
 unsigned			mods			=0;
-ALLEGRO_USTR		*console_input	=al_ustr_new("");
+stringstream		console_input	("");
 
 entity_list_t entities;
 
 entity_c *find_entity (string name) {
 
-for (auto &it : entities) {
+	for (auto &it : entities) {
 		if (it.name == name) {
 			return &it;
 		}
 	}
 
 	return NULL;
+}
+
+bool parse_console (ALLEGRO_KEYBOARD_EVENT keyboard) {
+
+	const string PS1 = "\n\n$> ";
+
+	if (keyboard.keycode == ALLEGRO_KEY_ENTER) {
+		if (keyboard.modifiers && ALLEGRO_KEYMOD_SHIFT) {
+			console_input << '\n';
+			cout << "\n> ";
+			cout.flush();
+		}
+		else {
+			return true;
+		}
+	}
+
+	else if (keyboard.keycode == ALLEGRO_KEY_BACKSPACE) {
+//		if (
+		string erased = console_input.str();
+		erased.pop_back();
+
+		console_input.str("");
+		console_input << erased;
+
+		cout << "\b \b";
+		cout.flush();
+	}
+
+
+	else {
+		console_input << char(keyboard.unichar);
+		cout << char(keyboard.unichar);
+		cout.flush();
+	}
+
+	return false;
+}
+
+bool save(string filename) {
+
+	Json::Value root;
+
+	Json::Value json_entities(Json::arrayValue);
+	for (auto &it : entities) {
+		json_entities.append(it.json());
+	}
+
+	root["entities"] = json_entities;
+
+	Json::StyledStreamWriter writer;
+//	writer.write(cout, root);
+	ofstream file(filename);
+	writer.write(file, root);
+	file.close();
+	//TODO: check all is good
+	return true;
 }
 
 bool init_allegro() {
@@ -81,7 +137,7 @@ bool init_allegro() {
 
 	ALLEGRO_DISPLAY_MODE disp_data;
 	al_get_display_mode (0, &disp_data);
-	al_set_new_display_flags (ALLEGRO_FULLSCREEN_WINDOW);
+	al_set_new_display_flags (ALLEGRO_WINDOWED);
 
 	al_set_new_display_option (ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
 	al_set_new_display_option (ALLEGRO_SAMPLES, 4, ALLEGRO_SUGGEST);
@@ -97,7 +153,15 @@ bool init_allegro() {
 		cerr << "Failed to create display!" << endl;
 		return false;
 	}
+
 	al_acknowledge_resize (display);
+
+	stringstream title("");
+	title	<< "Corbit " << AutoVersion::STATUS
+			<< " v" << AutoVersion::MAJOR
+			<< '.' << AutoVersion::MINOR
+			<< '.' << AutoVersion::BUILD;
+	al_set_window_title (display, title.str().c_str());
 
 	if (!al_inhibit_screensaver (true) ) {
 		cerr << "Failed to inhibit screensaver!" << endl;
@@ -126,6 +190,20 @@ bool init_allegro() {
 
 bool init() {
 
+	WINDOW *console;
+
+	if ((console = initscr()) == NULL) {
+		cout << "\n\njohn is kill\n\n";
+	}
+
+	addstr("\n\nJohn is no kill\n\n");
+	refresh();
+	sleep(3);
+
+	delwin(console);
+	endwin();
+	refresh();
+
 	cout << "Corbit " << AutoVersion::STATUS
 		 << " v" << AutoVersion::MAJOR
 		 << '.' << AutoVersion::MINOR
@@ -134,16 +212,16 @@ bool init() {
 	if (!init_allegro() )
 		return false;
 
-	Value root;
-	Reader reader;
-	ifstream fin ("entities.json");
+	Json::Value root;
+	Json::Reader reader;
+	ifstream fin ("res/OCESS.json");
 
 	if (!reader.parse (fin, root) ) {
-		cout << "well sheit.\n" << reader.getFormatedErrorMessages();
+		cout << "failed to read JSON.\n" << reader.getFormatedErrorMessages();
 		return false;
 	}
 
-	const Value json_entities = root["entities"];
+	const Json::Value json_entities = root["entities"];
 
 	string	name="";
 	var		m   =0,	r   =0,
@@ -175,10 +253,10 @@ bool init() {
 	assert (&entities.front() == &json_input[0]);
 
 
-	nav::ship = find_entity ("mars");
+	nav::ship = find_entity ("flab");
 	nav::ref = find_entity ("earth");
-	nav::targ = find_entity ("earth");
-	graphics::camera->center = find_entity ("mars");
+	nav::targ = find_entity ("hab");
+	graphics::camera->center = find_entity ("flab");
 
 	graphics::hud.font = al_load_ttf_font ("res/DejaVuSansMono.ttf", 15, 0);
 
@@ -193,6 +271,7 @@ bool cleanup() {
 		al_destroy_event_queue (event_queue);
 	if (timer)
 		al_destroy_timer (timer);
+	endwin();
 	if (display)
 		al_destroy_display (display);
 
@@ -217,13 +296,13 @@ void input() {
 		graphics::camera->tracking = false;
 
 	if (key[ALLEGRO_KEY_RIGHT])
-		graphics::camera->pan (200, 0);
+		graphics::camera->pan (2000, 0);
 	if (key[ALLEGRO_KEY_LEFT])
-		graphics::camera->pan (-200, 0);
+		graphics::camera->pan (-2000, 0);
 	if (key[ALLEGRO_KEY_UP])
-		graphics::camera->pan (0, -200);
+		graphics::camera->pan (0, 2000);
 	if (key[ALLEGRO_KEY_DOWN])
-		graphics::camera->pan (0, 200);
+		graphics::camera->pan (0, -2000);
 
 	if (key[ALLEGRO_KEY_W])
 		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 0.5);
@@ -245,25 +324,29 @@ void input() {
 //	if(key[ALLEGRO_KEY_H])
 //		graphics::camera->center = find_entity("hab");
 	if (key[ALLEGRO_KEY_4])
-		graphics::camera->center = find_entity ("mars");
+		graphics::camera->center = find_entity ("flab");
+	if (key[ALLEGRO_KEY_2])
+		graphics::camera->center = find_entity ("hab");
 	if (key[ALLEGRO_KEY_1])
 		graphics::camera->center = find_entity ("earth");
+
+	if (key[ALLEGRO_KEY_F5])
+		save("res/quicksave.json");
 }
 
 void calculate() {
 
+	input();
+
 	unsigned short n;
-	for (n = 0; n != ALLEGRO_KEY_MAX; n++)
+	for (n = 0; n != ALLEGRO_KEY_MAX; n++) {
 		if (key[n]) {
 //			clog << al_keycode_to_name (n) << '\n';
 		}
+		key[n] = false;
+	}
 	cout << "-----------\n";
 
-
-
-	for (auto &it : entities) {
-		it.move();
-	}
 
 	auto itX = entities.begin();
 	while (itX != entities.end() ) {
@@ -274,15 +357,28 @@ void calculate() {
 				itX->accelerate ( calc::gravity (*itX, *itY), calc::theta (*itX, *itY) );
 				itY->accelerate (-calc::gravity (*itX, *itY), calc::theta (*itX, *itY) );
 			}
+			++itY;
+		}
+		++itX;
+	}
+
+	itX = entities.begin();
+	while (itX != entities.end() ) {
+		auto itY = itX;
+		++itY;
+		while (itY != entities.end() ) {
 			calc::detect_collision (*itX, *itY);
 			++itY;
 		}
 		++itX;
 	}
 
-	graphics::camera->update();
+	for (auto &it : entities) {
+		it.move();
+	}
 
-	input();
+
+	graphics::camera->update();
 }
 
 void draw() {
@@ -305,50 +401,56 @@ bool run() {
 	bool redraw	= true;
 	bool paused	= false;
 
+	const string PS1 = "\n\n$> ";
+
 	while (true) {
 
 		ALLEGRO_EVENT ev;
 		al_wait_for_event (event_queue, &ev);
 
 
-		if	(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) { 					///window close
-			return true;
-		}
 
-		else if (ev.type == ALLEGRO_EVENT_KEY_DOWN						///open console
-				&& ev.keyboard.keycode == ALLEGRO_KEY_TILDE) {
-			graphics::console.open = !graphics::console.open;
-			paused = graphics::console.open;
-		}
-
-		else if	(ev.type == ALLEGRO_EVENT_TIMER && !paused) {			///tick
+		if	(ev.type == ALLEGRO_EVENT_TIMER && !paused) {				///tick
 			calculate();
 			redraw = true;
 		}
 
-		else if (graphics::console.open									///console text entry
-				&& ev.type == ALLEGRO_EVENT_KEY_CHAR) {
-			ALLEGRO_USTR *buf = al_ustr_new("");
-			al_ustr_append_chr(buf, ev.keyboard.unichar);
-			graphics::console.input << char(ev.keyboard.unichar);
-			clog << char(ev.keyboard.unichar) << ev.keyboard.repeat;
-			redraw = true;
-		}
-
 		else if	(ev.type == ALLEGRO_EVENT_KEY_CHAR) {					///keypress
-			key[ev.keyboard.keycode] = true;
-			mods += ev.keyboard.modifiers;
+			if (ev.keyboard.keycode == ALLEGRO_KEY_TILDE) {
+				paused = !paused;
+				if (paused) {
+					cout << PS1;
+					cout.flush();
+				}
+			}
+			else if (paused) {
+
+				if (parse_console (ev.keyboard)) {
+					cout << endl << "INPUT:\n" << console_input.str() << "\nDONE";
+					console_input.str("");
+					cout << PS1;
+					cout.flush();
+				}
+			}
+			else {
+				key[ev.keyboard.keycode] = true;
+				mods = ev.keyboard.modifiers;
+			}
 		}
 
 		else if	(ev.type == ALLEGRO_EVENT_KEY_UP) {						///key release
 			key[ev.keyboard.keycode] = false;
-			mods -= ev.keyboard.modifiers;
+			mods = ev.keyboard.modifiers;
 		}
 
 		else if	(ev.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {				///display resize
 			if (!al_acknowledge_resize (display) ) {
-				cerr << "Could not acknowledge resize [ " << al_get_time() << "]" << endl;
+				cerr << "[" << al_get_time() << "] Could not acknowledge resize" << endl;
 			}
+		}
+
+		else if	(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) { 				///window close
+			return true;
 		}
 
 		if (redraw && al_is_event_queue_empty (event_queue) ) {			///redraw
@@ -365,7 +467,6 @@ bool run() {
 int main() {
 
 	int return_code = 0x00000;
-
 
 
 	if (!init() ) {

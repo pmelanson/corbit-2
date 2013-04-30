@@ -1,10 +1,14 @@
 #include <corbit/entity.hpp>
 
 #include <cmath>
+#include <iostream>
 
 #include <allegro5/allegro_color.h>
 
+#include <json/json.h>
+
 using std::string;
+using std::stringstream;
 using std::clog;
 using std::endl;
 using std::hex;
@@ -20,6 +24,24 @@ void	entity_c::accelerate(var force, var radians) {
 	acc[1] += sin(radians) * (force / mass);
 }
 
+Json::Value entity_c::json() {
+
+	Json::Value json_blob;
+
+	json_blob["name"] = name;
+	json_blob["mass"] = double(mass);
+	json_blob["radius"] = double(radius);
+	json_blob["pos"]["x"] = double(pos[0]);
+	json_blob["pos"]["y"] = double(pos[1]);
+	json_blob["v"]["x"] = double(v[0]);
+	json_blob["v"]["y"] = double(v[1]);
+	json_blob["acc"]["x"] = double(acc[0]);
+	json_blob["acc"]["y"] = double(acc[1]);
+	json_blob["color"] = al_color_rgb_to_name(color.r, color.g, color.b);
+
+	return json_blob;
+}
+
 void	entity_c::print() {
 	clog << "\n[" << name << "]";
 	clog << "\nmass=" << mass;
@@ -30,9 +52,7 @@ void	entity_c::print() {
 	clog << "\nVy=" << v[1];
 	clog << "\naccX=" << acc[0];
 	clog << "\naccY=" << acc[1];
-	unsigned char R, G, B, A;
-	al_unmap_rgba(color, &R, &G, &B, &A);
-	clog << "\ncolor=" << hex << uppercase << unsigned(R) << unsigned(G) << unsigned(B) << unsigned(A) << dec << nouppercase;
+	clog << "\ncolor=" << al_color_rgb_to_name(color.r, color.g, color.b);
 	clog << endl;
 }
 
