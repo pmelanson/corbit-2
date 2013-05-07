@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 
 #define ALLEGRO_STATICLINK
 #include <allegro5/allegro5.h>
@@ -8,6 +9,7 @@
 #include <allegro5/allegro_ttf.h>
 
 #include <boost/intrusive/list.hpp>
+#include <boost/algorithm/string.hpp>	//for trim(std::string)
 
 #include <fstream>
 #include <json/json.h>
@@ -20,9 +22,10 @@ using std::cout;
 using std::cin;
 using std::string;
 using std::endl;
+using std::flush;
 using std::ifstream;
 using std::ofstream;
-using std::malloc;
+using std::thread;
 typedef boost::intrusive::list <entity_c> entity_list_t;
 
 
@@ -31,9 +34,30 @@ ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
 bool				key[ALLEGRO_KEY_MAX] = {};
 unsigned			mods			=0;
-stringstream		console_input	("");
+string				console_input	("");
+bool				paused			=false;
 
 entity_list_t entities;
+
+void get_input() {
+
+	if (!paused) {
+		return;
+	}
+
+	const string PS1 = "\n$> ";
+
+	cout << PS1 << flush;
+
+	while (true) {
+		getline (cin, console_input);
+		boost::algorithm::trim (console_input);
+		if (console_input == "exit") {break;}
+		cout << PS1 << flush;
+	}
+
+	paused = false;
+}
 
 entity_c *find_entity (string name) {
 
@@ -44,43 +68,6 @@ entity_c *find_entity (string name) {
 	}
 
 	return NULL;
-}
-
-bool parse_console (ALLEGRO_KEYBOARD_EVENT keyboard) {
-
-	const string PS1 = "\n\n$> ";
-
-	if (keyboard.keycode == ALLEGRO_KEY_ENTER) {
-		if (keyboard.modifiers && ALLEGRO_KEYMOD_SHIFT) {
-			console_input << '\n';
-			cout << "\n> ";
-			cout.flush();
-		}
-		else {
-			return true;
-		}
-	}
-
-	else if (keyboard.keycode == ALLEGRO_KEY_BACKSPACE) {
-//		if (
-		string erased = console_input.str();
-		erased.pop_back();
-
-		console_input.str("");
-		console_input << erased;
-
-		cout << "\b \b";
-		cout.flush();
-	}
-
-
-	else {
-		console_input << char(keyboard.unichar);
-		cout << char(keyboard.unichar);
-		cout.flush();
-	}
-
-	return false;
 }
 
 bool save(string filename) {
@@ -255,7 +242,6 @@ bool cleanup() {
 		al_destroy_event_queue (event_queue);
 	if (timer)
 		al_destroy_timer (timer);
-	endwin();
 	if (display)
 		al_destroy_display (display);
 
@@ -383,7 +369,6 @@ void draw() {
 bool run() {
 
 	bool redraw	= true;
-	bool paused	= false;
 
 	const string PS1 = "\n\n$> ";
 
@@ -401,20 +386,9 @@ bool run() {
 
 		else if	(ev.type == ALLEGRO_EVENT_KEY_CHAR) {					///keypress
 			if (ev.keyboard.keycode == ALLEGRO_KEY_TILDE) {
-				paused = !paused;
-				if (paused) {
-					cout << PS1;
-					cout.flush();
-				}
-			}
-			else if (paused) {
-
-				if (parse_console (ev.keyboard)) {
-					cout << endl << "INPUT:\n" << console_input.str() << "\nDONE";
-					console_input.str("");
-					cout << PS1;
-					cout.flush();
-				}
+				paused = true;
+				thread input_thread (get_input);
+				input_thread.detach();
 			}
 			else {
 				key[ev.keyboard.keycode] = true;
@@ -452,7 +426,6 @@ int main() {
 
 	int return_code = 0x00000;
 
-
 	if (!init() ) {
 		cerr << "Init failed!" << endl;
 		return_code += 0x00001;
@@ -471,5 +444,3 @@ int main() {
 
 	return return_code;
 }
-
-
