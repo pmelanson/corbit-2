@@ -72,6 +72,28 @@
 			},
 			"color": "purple"
 		}
+	],
+	"habs": [
+		{
+			"name": "Hawking III",
+			"mass": 4.5e5,
+			"radius": 0.6,
+			"pos": {
+				"x": 6377005,
+				"y": -432
+			},
+			"v": {
+				"x": 0,
+				"y": 2.2005e2
+			},
+			"acc": {
+				"x": 0,
+				"y": 2
+			},
+			"color": "grey",
+			"Isp": 800,
+			"thrust": 600
+		}
 	]
 }
 

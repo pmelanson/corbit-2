@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <vector>
 
 #define ALLEGRO_STATICLINK
 #include <allegro5/allegro5.h>
@@ -26,6 +27,9 @@ using std::flush;
 using std::ifstream;
 using std::ofstream;
 using std::thread;
+using std::stringstream;
+using std::istringstream;
+using std::vector;
 typedef boost::intrusive::list <entity_c> entity_list_t;
 
 
@@ -34,10 +38,31 @@ ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
 bool				key[ALLEGRO_KEY_MAX] = {};
 unsigned			mods			=0;
-string				console_input	("");
 bool				paused			=false;
+bool				redraw			=true;
 
 entity_list_t entities;
+
+bool load (string filename);
+
+void parse_console (string console_input) {
+
+	string buf;
+	stringstream args(console_input); 	//insert all arguments into stringstream
+
+	vector<string> argv;	//vector of arguments
+
+	while (args >> buf) {
+		argv.push_back(buf);
+	}
+
+
+	if (argv[0] == "load") {
+		load (argv[1]);
+		redraw = true;
+	}
+
+}
 
 void get_input() {
 
@@ -45,14 +70,23 @@ void get_input() {
 		return;
 	}
 
+	string console_input ("");
+
 	const string PS1 = "\n$> ";
 
 	cout << PS1 << flush;
 
+
+
 	while (true) {
 		getline (cin, console_input);
 		boost::algorithm::trim (console_input);
-		if (console_input == "exit") {break;}
+
+		if (console_input == "exit") {
+			break;
+		}
+		parse_console (console_input);
+
 		cout << PS1 << flush;
 	}
 
@@ -143,9 +177,9 @@ bool init_allegro() {
 
 	stringstream title("");
 	title	<< "Corbit " << AutoVersion::STATUS
-			<< " v" << AutoVersion::MAJOR
-			<< '.' << AutoVersion::MINOR
-			<< '.' << AutoVersion::BUILD;
+	<< " v" << AutoVersion::MAJOR
+	<< '.' << AutoVersion::MINOR
+	<< '.' << AutoVersion::BUILD;
 	al_set_window_title (display, title.str().c_str());
 
 	if (!al_inhibit_screensaver (true) ) {
@@ -173,36 +207,32 @@ bool init_allegro() {
 	return true;
 }
 
-bool init() {
-
-	cout << "Corbit " << AutoVersion::STATUS
-		 << " v" << AutoVersion::MAJOR
-		 << '.' << AutoVersion::MINOR
-		 << '.' << AutoVersion::BUILD << endl;
-
-	if (!init_allegro() )
-		return false;
+bool init_from_file (string filename) {
 
 	Json::Value root;
 	Json::Reader reader;
-	ifstream fin ("res/OCESS.json");
+	ifstream fin (filename);
 
 	if (!reader.parse (fin, root) ) {
 		cout << "failed to read JSON.\n" << reader.getFormatedErrorMessages();
 		return false;
 	}
 
+	fin.close();
+
 	const Json::Value json_entities = root["entities"];
 
 	string	name="";
 	var		m   =0,	r   =0,
-			x   =0,	y   =0,
-			Vx  =0,	Vy  =0,
-			accX=0,	accY=0;
+						 x   =0,	y   =0,
+									  Vx  =0,	Vy  =0,
+											  accX=0,	accY=0;
 	ALLEGRO_COLOR color (al_color_name ("lawngreen") );
 
 
-	entity_c *json_input = (entity_c*) malloc (json_entities.size() * sizeof (entity_c) );
+//	entity_c *json_input = (entity_c*) malloc (json_entities.size() * sizeof (entity_c) );
+	static vector <entity_c> json_input;
+	json_input.resize (json_entities.size());
 
 	for (unsigned i=0; i != json_entities.size(); ++i) {
 		name	= json_entities[i].get ("name", "unnamed").asString();
@@ -216,22 +246,35 @@ bool init() {
 		accY	= json_entities[i]["acc"].get ("y", 100).asDouble();
 		color	= al_color_name (json_entities[i].get ("color", "lawngreen").asCString() );
 
-		new (&json_input[i]) entity_c (name, m, r, x,y, Vx,Vy, accX,accY, color);
-		entities.push_back (json_input[i]);
-		assert (&entities.back() == &json_input[i]);
+//		new (&json_input[i]) entity_c (name, m, r, x,y, Vx,Vy, accX,accY, color);
+		json_input.emplace_back (name, m, r, x,y, Vx,Vy, accX,accY, color);
+		entities.push_back (json_input.back());
+		assert (&entities.back() == &json_input.back());
 	}
 
-	assert (&entities.front() == &json_input[0]);
+	static hab_c habitat ("hawking", 5e7, 30, 6377000,-200, 0,2.2e2, 0,0, al_color_name("purple"), 500, 500, 500);
 
+	entities.push_back (habitat);
 
-	nav::ship = find_entity ("flab");
-	nav::ref = find_entity ("earth");
-	nav::targ = find_entity ("hab");
-	graphics::camera->center = find_entity ("flab");
+	return true;
+}
+
+bool init() {
+
+	cout << "Corbit " << AutoVersion::STATUS
+		 << " v" << AutoVersion::MAJOR
+		 << '.' << AutoVersion::MINOR
+		 << '.' << AutoVersion::BUILD << endl;
+
+	if (!init_allegro() ) {
+		return false;
+	}
+
+	if (!load("res/OCESS.json")) {
+		return false;
+	}
 
 	graphics::hud.font = al_load_ttf_font ("res/DejaVuSansMono.ttf", 15, 0);
-
-	graphics::console.font = al_load_ttf_font ("res/DejaVuSansMono.ttf", 15, 0);
 
 	return true;
 }
@@ -247,6 +290,23 @@ bool cleanup() {
 
 
 	entities.erase (entities.begin(), entities.end() );
+
+	return true;
+}
+
+bool load (string filename) {
+
+	entities.erase (entities.begin(), entities.end() );
+
+	if (!init_from_file (filename)) {
+		return false;
+	}
+
+
+	nav::ship = find_entity ("flab");
+	nav::ref = find_entity ("earth");
+	nav::targ = find_entity ("hab");
+	graphics::camera->center = find_entity ("flab");
 
 	return true;
 }
@@ -356,21 +416,16 @@ void draw() {
 	al_clear_to_color (al_map_rgb (0,0,0) );
 
 
-	for (auto &it : entities) {
+for (auto &it : entities) {
 		graphics::draw (it);
 	}
 
 	graphics::hud.draw();
-	graphics::console.draw();
 
 	al_flip_display();
 }
 
 bool run() {
-
-	bool redraw	= true;
-
-	const string PS1 = "\n\n$> ";
 
 	while (true) {
 
@@ -389,8 +444,7 @@ bool run() {
 				paused = true;
 				thread input_thread (get_input);
 				input_thread.detach();
-			}
-			else {
+			} else {
 				key[ev.keyboard.keycode] = true;
 				mods = ev.keyboard.modifiers;
 			}
@@ -405,6 +459,7 @@ bool run() {
 			if (!al_acknowledge_resize (display) ) {
 				cerr << "[" << al_get_time() << "] Could not acknowledge resize" << endl;
 			}
+			redraw = true;
 		}
 
 		else if	(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) { 				///window close
@@ -424,21 +479,29 @@ bool run() {
 
 int main() {
 
-	int return_code = 0x00000;
+	enum codes {
+		SUCCESS		= 0x00000,
+		INIT_FAIL	= 0x00001,
+		CLEANUP_FAIL= 0x00002,
+		RUN_FAIL	= 0x00004
+	};
+
+	int return_code = SUCCESS;
+
 
 	if (!init() ) {
 		cerr << "Init failed!" << endl;
-		return_code += 0x00001;
+		return_code += INIT_FAIL;
 	}
 
 	else if (!run() ) {
 		cerr << "Error in main loop!" << endl;
-		return_code += 0x00004;
+		return_code += RUN_FAIL;
 	}
 
 	if (!cleanup() ) {
 		cerr << "Cleanup failed!" << endl;
-		return_code += 0x00002;
+		return_code += CLEANUP_FAIL;
 		return return_code;
 	}
 

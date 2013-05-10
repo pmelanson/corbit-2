@@ -18,7 +18,6 @@ camera_c default_camera(0,0, 0,0, 0,0, NULL, 4);
 
 namespace	graphics {
 	camera_c	*camera = &default_camera;
-	console_c	console (al_color_name("grey"));
 	hud_c		hud (al_color_name("grey"));
 }
 
@@ -162,18 +161,4 @@ void	graphics::hud_c::draw () {
 	text << "Navigation: "
 		<< "Manual";
 	add_line(text);
-}
-
-
-
-
-void	graphics::console_c::draw() {
-
-	if (!open) {
-		return;
-	}
-
-	al_draw_text(font, text_col, 0, height - line_height, ALLEGRO_ALIGN_LEFT, input.str().c_str());
-
-
 }

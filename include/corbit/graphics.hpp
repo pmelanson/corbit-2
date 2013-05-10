@@ -44,32 +44,6 @@ namespace graphics {
 	};
 	extern		hud_c		hud;
 
-
-	class		console_c {
-	private:
-		const ALLEGRO_COLOR	text_col;
-
-		const unsigned		height;
-		const unsigned		line_height;
-		unsigned			n_output_lines;
-
-	public:
-		ALLEGRO_FONT		*font;
-		stringstream		input;
-		stringstream		contents;
-
-		bool				open;
-
-		void				draw		();
-
-		console_c			(ALLEGRO_COLOR text_col_)
-			: text_col(text_col_), height(500), line_height(12), n_output_lines(0),
-			font(0x0), input(""),
-			open(false) {
-			}
-	};
-	extern		console_c	console;
-
 	extern		camera_c	*camera;
 }
 

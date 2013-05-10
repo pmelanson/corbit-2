@@ -4,16 +4,15 @@
 #include <corbit/entity.hpp>
 
 class hab_c : public entity_c {
-private:
-
-	long long		_fuel;
-	const float		_burn_rate;
-	const long long	_thrust;
+public:
+	long long		fuel;
+	const int		Isp;
+	const int		thrust;
 
 public:
 	hab_c						(std::string name_, var m, var r,
 								var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-								ALLEGRO_COLOR color_, long long fuel_, float burn_rate_, long long thrust_);
+								ALLEGRO_COLOR color_, long long fuel_, int Isp_, int thrust_);
 };
 
 

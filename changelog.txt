@@ -1,0 +1,6 @@
+10 May 2013
+   released version 2.0.10 of Corbit
+
+     Change log:
+        -Updated: pulled all commits
+
