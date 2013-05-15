@@ -22,7 +22,6 @@ namespace graphics {
 
 	class		hud_c {
 	private:
-		const ALLEGRO_COLOR	text_col;
 		unsigned			line,
 							column;
 		const unsigned		columns;
@@ -34,6 +33,7 @@ namespace graphics {
 		void				new_column	();
 
 	public:
+		const ALLEGRO_COLOR	text_col;
 		ALLEGRO_FONT		*font;	//public because this can only be initialised once allegro has been initialised
 		void				draw		();
 

@@ -3,16 +3,24 @@
 
 #include <corbit/entity.hpp>
 
+enum ENTITY_TYPE;
+namespace Json {
+	class Value;
+}
+
+
 class hab_c : public entity_c {
 public:
-	long long		fuel;
+	var				fuel;
 	const int		Isp;
-	const int		thrust;
+	const var		thrust;
+	var				mass		();
 
-public:
-	hab_c						(std::string name_, var m, var r,
+	Json::Value		json		();
+
+	hab_c						(ENTITY_TYPE type_, std::string name_, var m, var r,
 								var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-								ALLEGRO_COLOR color_, long long fuel_, int Isp_, int thrust_);
+								ALLEGRO_COLOR color_, var fuel_, int Isp_, var thrust_);
 };
 
 

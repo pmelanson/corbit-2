@@ -24,11 +24,13 @@ namespace	graphics {
 void	graphics::draw_at	(const entity_c &obj, var zoom, var x, var y) {
 
 	if (display) {
-		al_draw_filled_circle(x, y, obj.radius * zoom, obj.color);
+		al_draw_filled_circle (x, y, obj.radius * zoom, obj.color);
+		al_draw_filled_circle (x, y, 2, obj.color);
+		al_draw_text (hud.font, hud.text_col, x, y, ALLEGRO_ALIGN_LEFT, obj.name.c_str());
 	}
 }
 void	graphics::draw		(const entity_c &obj) {
-	draw_at(obj,
+	draw_at (obj,
 		camera->zoom(),
 		( obj.pos[0] - camera->pos[0]) * camera->zoom() + camera->size[0]/2,
 		(-obj.pos[1] + camera->pos[1]) * camera->zoom() + camera->size[1]/2);

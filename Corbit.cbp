@@ -41,7 +41,6 @@
 			<Add option="`pkg-config --cflags --libs allegro-5 allegro_primitives-5 allegro_ttf-5 allegro_color-5`" />
 			<Add option="-lboost_system" />
 		</Linker>
-		<Unit filename="entities.json" />
 		<Unit filename="include/corbit/calc.hpp" />
 		<Unit filename="include/corbit/camera.hpp" />
 		<Unit filename="include/corbit/corbit.hpp" />
@@ -52,6 +51,8 @@
 		<Unit filename="include/corbit/nav.hpp" />
 		<Unit filename="include/corbit/physical.hpp" />
 		<Unit filename="include/corbit/version.hpp" />
+		<Unit filename="res/OCESS.json" />
+		<Unit filename="res/quicksave.json" />
 		<Unit filename="src/calc.cpp" />
 		<Unit filename="src/camera.cpp" />
 		<Unit filename="src/entity.cpp" />
@@ -65,7 +66,7 @@
 			<AutoVersioning>
 				<Scheme minor_max="2147483647" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="2147483647" />
 				<Settings autoincrement="0" date_declarations="1" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory=" " header_path="include\corbit\version.hpp" />
-				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
+				<Changes_Log show_changes_editor="0" app_title="%p %T %M.%m.%b" changeslog_path="ChangesLog.txt" />
 				<Code header_guard="VERSION_H" namespace="AutoVersion" prefix=" " />
 			</AutoVersioning>
 			<code_completion />

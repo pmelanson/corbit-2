@@ -17,11 +17,11 @@ void	camera_c::recenter	() {
 }
 
 void	camera_c::pan		(float X, float Y)	{
-	acc[0] += X;
-	acc[1] += Y;
+	acc[0] += X/zoom();
+	acc[1] += Y/zoom();
 }
 float	camera_c::zoom		() const			{
-	return 20 / std::pow(std::abs(zoom_level), 4);
+	return 10 / std::pow(std::abs(zoom_level), 8);
 }
 
 

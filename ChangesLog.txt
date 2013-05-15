@@ -1,0 +1,7 @@
+15 May 2013
+   Corbit Alpha 1.0.1
+
+     Change log:
+        -Added: Realistic positions for planets, courtesy of DM
+        -Added: Ability to change camera targets using tab, mod by shift
+

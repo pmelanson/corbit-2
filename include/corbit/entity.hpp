@@ -13,20 +13,27 @@ namespace Json {
 }
 
 class entity_c : public physical_c, public boost::intrusive::list_base_hook<> {
+protected:
+	var					I;	//moment of inertia
+	var					_mass;
+
+
 public:
 
+	const ENTITY_TYPE	type;
+
 	const std::string	name;
-	const var			mass,
-						radius;
+	virtual var			mass		() const;
+	const var			radius;
 
 	void				accelerate	(var force, var radians);
 
 	const ALLEGRO_COLOR	color;
 
-	Json::Value		json			();
-	void			print			();
+	virtual Json::Value	json		();
+	void				print		();
 
-	entity_c						(std::string name_, var m, var r,
+	entity_c						(ENTITY_TYPE type_, std::string name_, var m, var r,
 									var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 									ALLEGRO_COLOR color_);
 	entity_c						();

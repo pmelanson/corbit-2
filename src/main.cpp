@@ -1,6 +1,9 @@
 #include <iostream>
+#include <fstream>
 #include <thread>
 #include <vector>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 #define ALLEGRO_STATICLINK
 #include <allegro5/allegro5.h>
@@ -12,7 +15,6 @@
 #include <boost/intrusive/list.hpp>
 #include <boost/algorithm/string.hpp>	//for trim(std::string)
 
-#include <fstream>
 #include <json/json.h>
 
 #include <corbit/corbit.hpp>
@@ -44,6 +46,17 @@ bool				redraw			=true;
 entity_list_t entities;
 
 bool load (string filename);
+
+entity_c *find_entity (string name) {
+
+	for (auto &it : entities) {
+		if (it.name == name) {
+			return &it;
+		}
+	}
+
+	return NULL;
+}
 
 void parse_console (string console_input) {
 
@@ -93,30 +106,26 @@ void get_input() {
 	paused = false;
 }
 
-entity_c *find_entity (string name) {
-
-	for (auto &it : entities) {
-		if (it.name == name) {
-			return &it;
-		}
-	}
-
-	return NULL;
-}
-
-bool save(string filename) {
+bool save (string filename) {
 
 	Json::Value root;
 
-	Json::Value json_entities(Json::arrayValue);
+	Json::Value json_entities (Json::arrayValue);
+	Json::Value json_habs (Json::arrayValue);
+
 	for (auto &it : entities) {
-		json_entities.append(it.json());
+		if (it.type == ENTITY) {
+			json_entities.append (it.json());
+		}
+		else if (it.type == HAB) {
+			json_habs.append (it.json());
+		}
 	}
 
 	root["entities"] = json_entities;
+	root["habs"] = json_habs;
 
 	Json::StyledStreamWriter writer;
-//	writer.write(cout, root);
 	ofstream file(filename);
 	writer.write(file, root);
 	file.close();
@@ -213,26 +222,29 @@ bool init_from_file (string filename) {
 	Json::Reader reader;
 	ifstream fin (filename);
 
+	if (fin.fail()) {
+		cerr << "Error while reading from file!" << endl;
+		return false;
+	}
+
 	if (!reader.parse (fin, root) ) {
-		cout << "failed to read JSON.\n" << reader.getFormatedErrorMessages();
+		cerr << "Error while reading JSON:\n" << reader.getFormatedErrorMessages() << endl;
 		return false;
 	}
 
 	fin.close();
 
 	const Json::Value json_entities = root["entities"];
-
 	string	name="";
 	var		m   =0,	r   =0,
-						 x   =0,	y   =0,
-									  Vx  =0,	Vy  =0,
-											  accX=0,	accY=0;
+			x   =0,	y   =0,
+			Vx  =0,	Vy  =0,
+			accX=0,	accY=0;
 	ALLEGRO_COLOR color (al_color_name ("lawngreen") );
+	static vector <entity_c> json_entites_data;
+	json_entites_data.reserve (json_entities.size());
 
-
-//	entity_c *json_input = (entity_c*) malloc (json_entities.size() * sizeof (entity_c) );
-	static vector <entity_c> json_input;
-	json_input.resize (json_entities.size());
+	clog << "\n\ngetting entities\n\n";
 
 	for (unsigned i=0; i != json_entities.size(); ++i) {
 		name	= json_entities[i].get ("name", "unnamed").asString();
@@ -246,15 +258,38 @@ bool init_from_file (string filename) {
 		accY	= json_entities[i]["acc"].get ("y", 100).asDouble();
 		color	= al_color_name (json_entities[i].get ("color", "lawngreen").asCString() );
 
-//		new (&json_input[i]) entity_c (name, m, r, x,y, Vx,Vy, accX,accY, color);
-		json_input.emplace_back (name, m, r, x,y, Vx,Vy, accX,accY, color);
-		entities.push_back (json_input.back());
-		assert (&entities.back() == &json_input.back());
+		json_entites_data.emplace_back (ENTITY, name, m, r, x,y, Vx,Vy, accX,accY, color);
+		entities.push_back (json_entites_data.back());
+		assert (&entities.back() == &json_entites_data.back());
 	}
 
-	static hab_c habitat ("hawking", 5e7, 30, 6377000,-200, 0,2.2e2, 0,0, al_color_name("purple"), 500, 500, 500);
 
-	entities.push_back (habitat);
+	const Json::Value json_habs = root["habs"];
+	var fuel =0, Isp =0, thrust =0;
+	static vector <hab_c> json_habs_data;
+	json_habs_data.reserve (json_habs.size());
+
+	clog << "\n\ngetting habs\n\n";
+
+	for (unsigned i=0; i != json_habs.size(); ++i) {
+		name	= json_habs[i].get ("name", "unnamed").asString();
+		m		= json_habs[i].get ("mass", 100).asDouble();
+		r		= json_habs[i].get ("radius", 100).asDouble();
+		x		= json_habs[i]["pos"].get ("x", 100).asDouble();
+		y		= json_habs[i]["pos"].get ("y", 100).asDouble();
+		Vx		= json_habs[i]["v"].get ("x", 100).asDouble();
+		Vy		= json_habs[i]["v"].get ("y", 100).asDouble();
+		accX	= json_habs[i]["acc"].get ("x", 100).asDouble();
+		accY	= json_habs[i]["acc"].get ("y", 100).asDouble();
+		color	= al_color_name (json_habs[i].get ("color", "lawngreen").asCString() );
+		fuel	= json_habs[i].get ("fuel", 10000).asDouble();
+		Isp		= json_habs[i].get ("Isp", 1000).asDouble();
+		thrust	= json_habs[i].get ("thrust", 50000).asDouble();
+
+		json_habs_data.emplace_back (HAB, name, m, r, x,y, Vx,Vy, accX,accY, color, fuel, Isp, thrust);
+		entities.push_back (json_habs_data.back());
+		assert (&entities.back() == &json_habs_data.back());
+	}
 
 	return true;
 }
@@ -264,7 +299,8 @@ bool init() {
 	cout << "Corbit " << AutoVersion::STATUS
 		 << " v" << AutoVersion::MAJOR
 		 << '.' << AutoVersion::MINOR
-		 << '.' << AutoVersion::BUILD << endl;
+		 << '.' << AutoVersion::BUILD
+		 << endl;
 
 	if (!init_allegro() ) {
 		return false;
@@ -289,24 +325,23 @@ bool cleanup() {
 		al_destroy_display (display);
 
 
-	entities.erase (entities.begin(), entities.end() );
+	entities.erase (entities.begin(), entities.end());
 
 	return true;
 }
 
 bool load (string filename) {
 
-	entities.erase (entities.begin(), entities.end() );
+	entities.erase (entities.begin(), entities.end());
 
 	if (!init_from_file (filename)) {
 		return false;
 	}
 
-
-	nav::ship = find_entity ("flab");
-	nav::ref = find_entity ("earth");
-	nav::targ = find_entity ("hab");
-	graphics::camera->center = find_entity ("flab");
+	nav::ship = find_entity ("Habitat");
+	nav::ref = find_entity ("Earth");
+	nav::targ = find_entity ("Earth");
+	graphics::camera->center = find_entity ("Habitat");
 
 	return true;
 }
@@ -318,12 +353,31 @@ void input() {
 	if (key[ALLEGRO_KEY_PAD_PLUS])
 		graphics::camera->zoom_level -= 0.1;
 
-	if (key[ALLEGRO_KEY_TAB])
+	if (key[ALLEGRO_KEY_T])
 		graphics::camera->tracking = !graphics::camera->tracking;
-	if (key[ALLEGRO_KEY_Q])
-		graphics::camera->tracking = true;
-	if (key[ALLEGRO_KEY_E])
-		graphics::camera->tracking = false;
+	if (key[ALLEGRO_KEY_TAB]) {
+
+		if (mods & ALLEGRO_KEYMOD_SHIFT) {
+			auto it = entities.iterator_to (*graphics::camera->center);
+			if (it == entities.begin()) {
+				it = entities.end();
+			}
+			--it;
+
+			graphics::camera->center = &(*it);
+		}
+		else {
+			auto it = entities.iterator_to (*graphics::camera->center);
+			++it;
+			if (it == entities.end()) {
+				it = entities.begin();
+			}
+
+			graphics::camera->center = &(*it);
+		}
+
+	}
+
 
 	if (key[ALLEGRO_KEY_RIGHT])
 		graphics::camera->pan (2000, 0);
@@ -335,21 +389,21 @@ void input() {
 		graphics::camera->pan (0, -2000);
 
 	if (key[ALLEGRO_KEY_W])
-		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 0.5);
+		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 0.5);
 	if (key[ALLEGRO_KEY_A])
-		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 1.0);
+		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 1.0);
 	if (key[ALLEGRO_KEY_S])
-		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 1.5);
+		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 1.5);
 	if (key[ALLEGRO_KEY_D])
-		if (nav::ship) nav::ship->accelerate (1e6, 3.14159 * 0.0);
+		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 0.0);
 	if (key[ALLEGRO_KEY_H])
-		if (nav::ship) nav::ship->accelerate (1e8, 3.14159 * 1.0);
+		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 1.0);
 	if (key[ALLEGRO_KEY_J])
-		if (nav::ship) nav::ship->accelerate (1e8, 3.14159 * 1.5);
+		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 1.5);
 	if (key[ALLEGRO_KEY_K])
-		if (nav::ship) nav::ship->accelerate (1e8, 3.14159 * 0.5);
+		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 0.5);
 	if (key[ALLEGRO_KEY_L])
-		if (nav::ship) nav::ship->accelerate (1e8, 3.14159 * 0.0);
+		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 0.0);
 
 //	if(key[ALLEGRO_KEY_H])
 //		graphics::camera->center = find_entity("hab");
@@ -360,8 +414,13 @@ void input() {
 	if (key[ALLEGRO_KEY_1])
 		graphics::camera->center = find_entity ("earth");
 
+//	if (key[ALLEGRO_KEY_Q])
+//		if (nav::ship) nav::ship->spin (M_PI
+
 	if (key[ALLEGRO_KEY_F5])
 		save("res/quicksave.json");
+	if (key[ALLEGRO_KEY_F9])
+		load("res/quicksave.json");
 }
 
 void calculate() {
@@ -375,7 +434,6 @@ void calculate() {
 		}
 		key[n] = false;
 	}
-	cout << "-----------\n";
 
 
 	auto itX = entities.begin();
