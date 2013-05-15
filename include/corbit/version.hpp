@@ -1,33 +1,33 @@
-#ifndef VERSION_HPP
-#define VERSION_HPP
+#ifndef VERSION_H
+#define VERSION_H
 
 namespace AutoVersion{
 	
 	//Date Version Types
-	static const char DATE[] = "13";
+	static const char DATE[] = "15";
 	static const char MONTH[] = "05";
 	static const char YEAR[] = "2013";
 	static const char UBUNTU_VERSION_STYLE[] = "13.05";
 	
 	//Software Status
-	static const char STATUS[] = "Beta";
-	static const char STATUS_SHORT[] = "b";
+	static const char STATUS[] = "Alpha";
+	static const char STATUS_SHORT[] = "a";
 	
 	//Standard Version Type
-	static const long MAJOR = 2;
+	static const long MAJOR = 1;
 	static const long MINOR = 0;
 	static const long BUILD = 1;
-	static const long REVISION = 35849;
+	static const long REVISION = 1;
 	
 	//Miscellaneous Version Types
-	static const long BUILDS_COUNT = 2;
-	#define RC_FILEVERSION 2,0,1,35849
-	#define RC_FILEVERSION_STRING "2, 0, 1, 35849\0"
-	static const char FULLVERSION_STRING[] = "2.0.1.35849";
+	static const long BUILDS_COUNT = 55;
+	#define RC_FILEVERSION 1,0,1,1
+	#define RC_FILEVERSION_STRING "1, 0, 1, 1\0"
+	static const char FULLVERSION_STRING[] = "1.0.1.1";
 	
 	//These values are to keep track of your versioning state, don't modify them.
 	static const long BUILD_HISTORY = 0;
 	
 
 }
-#endif //VERSION_HPP
+#endif //VERSION_H
