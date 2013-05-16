@@ -21,6 +21,7 @@ namespace calc {
 					pitch			(const entity_c &A, const entity_c &B),
 					stopping_acc	(const entity_c &A, const entity_c &B),
 					ecc				(const entity_c &A, const entity_c &B),
+					semimajor_axis	(const entity_c &A, const entity_c &B),
 					periapsis		(const entity_c &A, const entity_c &B),
 					apoapsis		(const entity_c &A, const entity_c &B);
 	vect			position		(const entity_c &A, const entity_c &B),

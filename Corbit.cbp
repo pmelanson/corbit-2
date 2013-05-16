@@ -39,7 +39,6 @@
 		</Compiler>
 		<Linker>
 			<Add option="`pkg-config --cflags --libs allegro-5 allegro_primitives-5 allegro_ttf-5 allegro_color-5`" />
-			<Add option="-lboost_system" />
 		</Linker>
 		<Unit filename="include/corbit/calc.hpp" />
 		<Unit filename="include/corbit/camera.hpp" />

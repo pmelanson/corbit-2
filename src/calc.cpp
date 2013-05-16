@@ -61,6 +61,8 @@ var			calc::v_orbit		(const entity_c &A, const entity_c &B) {
 			   ((A.mass() + B.mass()) * distance(A,B)));
 }
 
+#include <iostream>
+using namespace std;
 var			calc::ecc			(const entity_c &A, const entity_c &B) {
 	const var
 	mu	= G * (A.mass() + B.mass()),	//G(m1+m2)
@@ -71,6 +73,11 @@ var			calc::ecc			(const entity_c &A, const entity_c &B) {
 
 	h	= (distance(A,B) * v_tan(A,B)) * (distance(A,B) * v_tan(A,B));	//(r * v_tan)^2
 
+	cout << "ecc^2 = " <<		1 +				//1 +
+		(2 * E * h)		//2Eh^2
+		/
+		(mu)	<< endl;
+
 	return std::sqrt(	//sqrt of
 		1 +				//1 +
 		(2 * E * h)		//2Eh^2
@@ -79,11 +86,26 @@ var			calc::ecc			(const entity_c &A, const entity_c &B) {
 	);
 }
 
+var			calc::semimajor_axis(const entity_c &A, const entity_c &B) {
+	var u = G * (A.mass() + B.mass());
+	var e = ((A.v - B.v).squaredNorm() / 2) -
+			u / distance (A,B);
+
+	cout << "u = " << u << endl;
+	cout << "e = " << e << endl;
+	cout << "a = " << -u/2*e << endl;
+
+	return -u / 2 * e;
+}
+
 var			calc::periapsis		(const entity_c &A, const entity_c &B) {
-	return 20;	//TODO
+	cout << "\nperi = " << (1 - ecc (A,B)) * semimajor_axis (A,B) << endl;
+	return (1 - ecc (A,B)) * semimajor_axis (A,B);
 }
 var			calc::apoapsis		(const entity_c &A, const entity_c &B) {
-	return 40;	//TODO
+	cout << "\napop = " << (1 + ecc (A,B)) * semimajor_axis (A,B) << endl;
+	cout << "ecc = " << ecc (A,B) << endl;
+	return (1 + ecc (A,B)) * semimajor_axis (A,B);
 }
 
 var			calc::stopping_acc	(const entity_c &A, const entity_c &B) {
