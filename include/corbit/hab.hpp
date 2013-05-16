@@ -18,7 +18,7 @@ public:
 
 	Json::Value		json		();
 
-	hab_c						(ENTITY_TYPE type_, std::string name_, var m, var r,
+	hab_c						(ENTITY_TYPE type_, std::string name_, var m, var r, var pitch_,
 								var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 								ALLEGRO_COLOR color_, var fuel_, int Isp_, var thrust_);
 };

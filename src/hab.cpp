@@ -22,8 +22,8 @@ Json::Value hab_c::json() {
 }
 
 
-hab_c::hab_c (ENTITY_TYPE type_, std::string name_, var m, var r,
+hab_c::hab_c (ENTITY_TYPE type_, std::string name_, var m, var r, var pitch_,
 			 var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 			 ALLEGRO_COLOR color_, var fuel_, int Isp_, var thrust_)
-	: entity_c (type_, name_, m, r, x_,y_, Vx_,Vy_, accX_,accY_, color_),
+	: entity_c (type_, name_, m, r, pitch_, x_,y_, Vx_,Vy_, accX_,accY_, color_),
 	fuel (fuel_), Isp (Isp_), thrust (thrust_) {}

@@ -23,17 +23,18 @@ public:
 	const ENTITY_TYPE	type;
 
 	const std::string	name;
-	virtual var			mass		() const;
+	virtual var		mass		() const;
 	const var			radius;
+	var					pitch;
 
 	void				accelerate	(var force, var radians);
 
 	const ALLEGRO_COLOR	color;
 
-	virtual Json::Value	json		();
+	virtual Json::Value json		();
 	void				print		();
 
-	entity_c						(ENTITY_TYPE type_, std::string name_, var m, var r,
+	entity_c						(ENTITY_TYPE type_, std::string name_, var m, var r, var pitch_,
 									var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 									ALLEGRO_COLOR color_);
 	entity_c						();
