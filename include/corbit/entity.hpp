@@ -17,6 +17,9 @@ protected:
 	var					I;	//moment of inertia
 	var					_mass;
 
+	var					_rot_speed;
+	var					_pitch;
+
 
 public:
 
@@ -25,7 +28,9 @@ public:
 	const std::string	name;
 	virtual var		mass		() const;
 	const var			radius;
-	var					pitch;
+	var					pitch		() const;
+	var					rot_speed	() const;
+	void				spin		();
 
 	void				accelerate	(var force, var radians);
 
@@ -34,8 +39,8 @@ public:
 	virtual Json::Value json		();
 	void				print		();
 
-	entity_c						(ENTITY_TYPE type_, std::string name_, var m, var r, var pitch_,
-									var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
+	entity_c						(ENTITY_TYPE type_, std::string name_, var m, var r, var rot_speed_,
+									var pitch_, var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 									ALLEGRO_COLOR color_);
 	entity_c						();
 

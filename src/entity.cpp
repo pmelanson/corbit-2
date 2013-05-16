@@ -61,11 +61,11 @@ void	entity_c::print() {
 	clog << endl;
 }
 
-entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r, var pitch_,
-				   var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
+entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r, var rot_speed_,
+				   var pitch_, var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 				   ALLEGRO_COLOR color_)
-	: type (type_), name (name_), _mass (m>0 ? m : 1), radius (r), pitch (pitch_),
-	I ((mass() * radius * radius) / 4),
+	: type (type_), name (name_), _mass (m>0 ? m : 1), radius (r),
+	_rot_speed (rot_speed_), _pitch (pitch_), I ((mass() * radius * radius) / 4),
 	physical_c (x_,y_, Vx_,Vy_, accX_,accY_),
 	color (color_) {
 
@@ -74,8 +74,8 @@ entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r, var pitch_,
 }
 
 entity_c::entity_c()
-	: type (ENTITY), name ("the nameless"), _mass (1e10), radius (1e2), pitch (0),
-	I ((mass() * radius * radius) / 4),
+	: type (ENTITY), name ("the nameless"), _mass (1e10), radius (1e2),
+	_rot_speed (0),	_pitch (0), I ((mass() * radius * radius) / 4),
 	physical_c (1337,1337, vect::Random()[0],vect::Random()[1], 0,0),
 	color (al_color_name("lightgoldenrodyellow")) {
 

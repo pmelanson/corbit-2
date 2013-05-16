@@ -52,7 +52,7 @@ var			calc::v_tan			(const entity_c &A, const entity_c &B) {
 }
 
 var			calc::pitch			(const entity_c &A, const entity_c &B) {
-	return 300;	//TODO
+	return A.pitch();
 }
 
 var			calc::v_orbit		(const entity_c &A, const entity_c &B) {

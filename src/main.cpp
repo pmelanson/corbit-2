@@ -237,6 +237,8 @@ bool init_from_file (string filename) {
 	const Json::Value json_entities = root["entities"];
 	string	name="";
 	var		m   =0,	r   =0,
+			rot_speed =0,
+			pitch =0,
 			x   =0,	y   =0,
 			Vx  =0,	Vy  =0,
 			accX=0,	accY=0;
@@ -250,6 +252,8 @@ bool init_from_file (string filename) {
 		name	= json_entities[i].get ("name", "unnamed").asString();
 		m		= json_entities[i].get ("mass", 100).asDouble();
 		r		= json_entities[i].get ("radius", 100).asDouble();
+		rot_speed= json_entities[i].get ("rot_speed", 100).asDouble();
+		pitch	= json_entities[i].get ("pitch", 100).asDouble();
 		x		= json_entities[i]["pos"].get ("x", 100).asDouble();
 		y		= json_entities[i]["pos"].get ("y", 100).asDouble();
 		Vx		= json_entities[i]["v"].get ("x", 100).asDouble();
@@ -258,7 +262,7 @@ bool init_from_file (string filename) {
 		accY	= json_entities[i]["acc"].get ("y", 100).asDouble();
 		color	= al_color_name (json_entities[i].get ("color", "lawngreen").asCString() );
 
-		json_entites_data.emplace_back (ENTITY, name, m, r, x,y, Vx,Vy, accX,accY, color);
+		json_entites_data.emplace_back (ENTITY, name, m, r, rot_speed, pitch, x,y, Vx,Vy, accX,accY, color);
 		entities.push_back (json_entites_data.back());
 		assert (&entities.back() == &json_entites_data.back());
 	}
@@ -275,6 +279,8 @@ bool init_from_file (string filename) {
 		name	= json_habs[i].get ("name", "unnamed").asString();
 		m		= json_habs[i].get ("mass", 100).asDouble();
 		r		= json_habs[i].get ("radius", 100).asDouble();
+		rot_speed= json_entities[i].get ("rot_speed", 100).asDouble();
+		pitch	= json_entities[i].get ("pitch", 100).asDouble();
 		x		= json_habs[i]["pos"].get ("x", 100).asDouble();
 		y		= json_habs[i]["pos"].get ("y", 100).asDouble();
 		Vx		= json_habs[i]["v"].get ("x", 100).asDouble();
@@ -286,7 +292,7 @@ bool init_from_file (string filename) {
 		Isp		= json_habs[i].get ("Isp", 1000).asDouble();
 		thrust	= json_habs[i].get ("thrust", 50000).asDouble();
 
-		json_habs_data.emplace_back (HAB, name, m, r, x,y, Vx,Vy, accX,accY, color, fuel, Isp, thrust);
+		json_habs_data.emplace_back (HAB, name, m, r, rot_speed, pitch, x,y, Vx,Vy, accX,accY, color, fuel, Isp, thrust);
 		entities.push_back (json_habs_data.back());
 		assert (&entities.back() == &json_habs_data.back());
 	}
@@ -414,8 +420,8 @@ void input() {
 	if (key[ALLEGRO_KEY_1])
 		graphics::camera->center = find_entity ("earth");
 
-//	if (key[ALLEGRO_KEY_Q])
-//		if (nav::ship) nav::ship->spin (M_PI
+	if (key[ALLEGRO_KEY_Q])
+		if (nav::ship) nav::ship->spin (M_PI
 
 	if (key[ALLEGRO_KEY_F5])
 		save("res/quicksave.json");
