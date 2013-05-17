@@ -26,7 +26,7 @@ public:
 	const ENTITY_TYPE	type;
 
 	const std::string	name;
-	virtual var		mass		() const;
+	virtual var			mass		() const;
 	const var			radius;
 	var					pitch		() const;
 	var					rot_speed	() const;
@@ -42,7 +42,6 @@ public:
 	entity_c						(ENTITY_TYPE type_, std::string name_, var m, var r, var rot_speed_,
 									var pitch_, var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 									ALLEGRO_COLOR color_);
-	entity_c						();
 
 	~entity_c						();
 };

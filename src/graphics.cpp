@@ -12,42 +12,63 @@
 
 #include <sstream>
 #include <iomanip>
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 extern ALLEGRO_DISPLAY *display;
 camera_c default_camera(0,0, 0,0, 0,0, NULL, 4);
 
 namespace	graphics {
 	camera_c	*camera = &default_camera;
-	hud_c		hud (al_color_name("grey"));
+	hud_c		hud (al_color_name ("grey"));
+}
+
+
+void	graphics::draw		(const entity_c &obj) {
+
+	draw_at (obj,
+			camera->zoom(),
+			( obj.pos[0] - camera->pos[0]) * camera->zoom() + camera->size[0]/2,
+			(-obj.pos[1] + camera->pos[1]) * camera->zoom() + camera->size[1]/2);
 }
 
 void	graphics::draw_at	(const entity_c &obj, var zoom, var x, var y) {
 
-	if (display) {
+	if (!display) {
+		return;
+	}
+
+	if (obj.type == ENTITY) {
 		al_draw_filled_circle (x, y, obj.radius * zoom, obj.color);
-		al_draw_filled_circle (x, y, 2, obj.color);
+		al_draw_pixel (x, y, obj.color);
 		al_draw_text (hud.font, hud.text_col, x, y, ALLEGRO_ALIGN_LEFT, obj.name.c_str());
 	}
-}
-void	graphics::draw		(const entity_c &obj) {
-	draw_at (obj,
-		camera->zoom(),
-		( obj.pos[0] - camera->pos[0]) * camera->zoom() + camera->size[0]/2,
-		(-obj.pos[1] + camera->pos[1]) * camera->zoom() + camera->size[1]/2);
-}
 
-void	graphics::draw_at	(const hab_c &hab, var zoom, var x, var y) {
+	else if (obj.type == HAB) {
+		hab_c &hab = (hab_c&)obj;
+		al_draw_filled_circle (x, y, hab.radius * zoom, hab.color);
 
-	if (display) {
-		al_draw_filled_circle(x, y, hab.radius * zoom, hab.color);
+		ALLEGRO_COLOR engine_color = al_color_name ("red");
+		var engine_radius = (hab.radius / 4);
+		var engine_angle = 0.7 * M_PI;
+
+
+		al_draw_filled_circle (	x + zoom * (hab.radius + engine_radius) * cos (hab.pitch() + engine_angle),
+								y + zoom * (hab.radius + engine_radius) * sin (hab.pitch() + engine_angle),
+								engine_radius * zoom,
+								engine_color);
+		al_draw_filled_circle (	x + zoom * (hab.radius + engine_radius) * cos (hab.pitch() - engine_angle),
+								y + zoom * (hab.radius + engine_radius) * sin (hab.pitch() - engine_angle),
+								engine_radius * zoom,
+								engine_color);
+		al_draw_filled_circle (	x + zoom * (hab.radius - engine_radius) * cos (hab.pitch() + M_PI),
+								y + zoom * (hab.radius - engine_radius) * sin (hab.pitch() + M_PI),
+								engine_radius * zoom,
+								engine_color);
+
+		al_draw_pixel (x, y, hab.color);
 	}
 }
-void	graphics::draw		(const hab_c &hab) {
-	draw_at(hab, graphics::camera->zoom(), hab.pos[0], hab.pos[1]);
-}
-
-
-
 
 void	graphics::hud_c::new_column() {
 	line = 0;
@@ -121,7 +142,6 @@ void	graphics::hud_c::draw () {
 	text << "Engine (" << nav::ship->name << "): "
 		<< "100%";
 	add_line(text);
-
 
 	graphics::draw_at(*nav::ship,
 					100/nav::ship->radius,

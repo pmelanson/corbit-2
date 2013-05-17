@@ -420,8 +420,8 @@ void input() {
 	if (key[ALLEGRO_KEY_1])
 		graphics::camera->center = find_entity ("earth");
 
-	if (key[ALLEGRO_KEY_Q])
-		if (nav::ship) nav::ship->spin (M_PI
+//	if (key[ALLEGRO_KEY_Q])
+//		if (nav::ship) nav::ship->spin (M_PI
 
 	if (key[ALLEGRO_KEY_F5])
 		save("res/quicksave.json");
@@ -479,8 +479,7 @@ void draw() {
 
 	al_clear_to_color (al_map_rgb (0,0,0) );
 
-
-for (auto &it : entities) {
+	for (auto &it : entities) {
 		graphics::draw (it);
 	}
 

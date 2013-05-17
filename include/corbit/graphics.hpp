@@ -17,9 +17,6 @@ namespace graphics {
 	void		draw_at		(const entity_c &obj, var zoom, var x, var y);
 	void		draw		(const entity_c &obj);
 
-	void		draw_at		(const hab_c &hab, var zoom, var x, var y);
-	void		draw		(const hab_c &hab);
-
 	class		hud_c {
 	private:
 		unsigned			line,
