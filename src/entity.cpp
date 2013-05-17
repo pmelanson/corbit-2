@@ -19,13 +19,35 @@ using std::cos;
 using std::sin;
 
 
-void	entity_c::accelerate (var force, var radians) {
-	acc[0] += cos(radians) * (force / mass());
-	acc[1] += sin(radians) * (force / mass());
+void	entity_c::accelerate (vect force, var radians) {
+//	acc[0] += cos(radians) * (force / mass());
+//	acc[1] += sin(radians) * (force / mass());
+	acc += (force * cos (radians)) / mass();
+
+	spin (force.norm() * sin (radians));
+//	clog << '\n';
+//	clog << "theta = " << radians << '\n';
+//	clog << "atan  = " << atan2 (force[1], force[0]) << '\n';
+//	clog << '\n';
+}
+
+void	entity_c::move() {
+	v	+=	acc/FPS;
+	acc.setZero();
+	pos	+=	v/FPS;
+	_pitch += _rot_speed;
 }
 
 var		entity_c::mass() const {
 	return _mass;
+}
+
+var		entity_c::pitch() const {
+	return _pitch;
+}
+
+void	entity_c::spin (var force) {
+	_rot_speed += (5 * force) / (2 * mass() * radius);
 }
 
 Json::Value entity_c::json() {
@@ -65,21 +87,12 @@ entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r, var rot_speed_
 				   var pitch_, var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 				   ALLEGRO_COLOR color_)
 	: type (type_), name (name_), _mass (m>0 ? m : 1), radius (r),
-	_rot_speed (rot_speed_), _pitch (pitch_), I ((mass() * radius * radius) / 4),
+	_rot_speed (rot_speed_), _pitch (pitch_),
 	physical_c (x_,y_, Vx_,Vy_, accX_,accY_),
 	color (color_) {
 
 	clog << endl << "CONSTRUCTING:";
 	print();
-}
-
-entity_c::entity_c()
-	: type (ENTITY), name ("the nameless"), _mass (1e10), radius (1e2),
-	_rot_speed (0),	_pitch (0), I ((mass() * radius * radius) / 4),
-	physical_c (1337,1337, vect::Random()[0],vect::Random()[1], 0,0),
-	color (al_color_name("lightgoldenrodyellow")) {
-
-	clog << "\nEmpty entity created, placing default entity at (" << pos[0] << ", " << pos[1] << ")" << endl;
 }
 
 entity_c::~entity_c() {

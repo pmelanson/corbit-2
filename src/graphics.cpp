@@ -23,12 +23,27 @@ namespace	graphics {
 
 void	graphics::draw_at	(const entity_c &obj, var zoom, var x, var y) {
 
-	if (display) {
+	if (!display) {
+		return;
+	}
+
+	if (obj.type == ENTITY) {
 		al_draw_filled_circle (x, y, obj.radius * zoom, obj.color);
-		al_draw_filled_circle (x, y, 2, obj.color);
+		al_draw_pixel (x, y, obj.color);
 		al_draw_text (hud.font, hud.text_col, x, y, ALLEGRO_ALIGN_LEFT, obj.name.c_str());
 	}
+
+	else if (obj.type == HAB) {
+		hab_c &hab = (hab_c&)obj;
+		al_draw_filled_circle (x, y, obj.radius * zoom, hab.color);
+		al_draw_pixel (x, y, hab.color);
+		al_draw_line (x, y,
+						zoom * hab.radius * cos (obj.pitch()),
+						zoom * hab.radius * sin (obj.pitch()),
+						hab.color, 0);
+	}
 }
+
 void	graphics::draw		(const entity_c &obj) {
 	draw_at (obj,
 		camera->zoom(),
@@ -63,6 +78,8 @@ void	graphics::hud_c::add_line (std::stringstream &text) {
 }
 
 void	graphics::hud_c::draw () {
+
+	if (!nav::ship || !nav::ref || !nav::targ) return;
 
 	column_w	= graphics::camera->size[0] / columns;
 	text_start_x= padding;

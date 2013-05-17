@@ -395,21 +395,13 @@ void input() {
 		graphics::camera->pan (0, -2000);
 
 	if (key[ALLEGRO_KEY_W])
-		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 0.5);
+		if (nav::ship) nav::ship->accelerate (vect (0, 1e8), M_PI/2);
 	if (key[ALLEGRO_KEY_A])
-		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 1.0);
+		if (nav::ship) nav::ship->accelerate (vect (-1e8, 0), M_PI);
 	if (key[ALLEGRO_KEY_S])
-		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 1.5);
+		if (nav::ship) nav::ship->accelerate (vect (0, -1e8), 3*M_PI/2);
 	if (key[ALLEGRO_KEY_D])
-		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 0.0);
-	if (key[ALLEGRO_KEY_H])
-		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 1.0);
-	if (key[ALLEGRO_KEY_J])
-		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 1.5);
-	if (key[ALLEGRO_KEY_K])
-		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 0.5);
-	if (key[ALLEGRO_KEY_L])
-		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 0.0);
+		if (nav::ship) nav::ship->accelerate (vect (1e8, 0), 0);
 
 //	if(key[ALLEGRO_KEY_H])
 //		graphics::camera->center = find_entity("hab");
@@ -421,12 +413,15 @@ void input() {
 		graphics::camera->center = find_entity ("earth");
 
 	if (key[ALLEGRO_KEY_Q])
-		if (nav::ship) nav::ship->spin (M_PI
+		if (nav::ship) nav::ship->spin (1);
 
 	if (key[ALLEGRO_KEY_F5])
 		save("res/quicksave.json");
-	if (key[ALLEGRO_KEY_F9])
+	if (key[ALLEGRO_KEY_F9]) {
 		load("res/quicksave.json");
+		graphics::camera->center = nav::ship = find_entity ("Hawking III");
+		cout << "\n\n\n\n\n" << nav::ship->name << "\n\n\n\n\n";
+	}
 }
 
 void calculate() {
@@ -448,8 +443,10 @@ void calculate() {
 		++itY;
 		while (itY != entities.end() ) {
 			if (calc::distance2 (*itX, *itY) > (itX->radius + itY->radius) * (itX->radius + itY->radius) ) {
-				itX->accelerate ( calc::gravity (*itX, *itY), calc::theta (*itX, *itY) );
-				itY->accelerate (-calc::gravity (*itX, *itY), calc::theta (*itX, *itY) );
+				vect grav (cos (calc::theta (*itX, *itY)), sin (calc::theta (*itX, *itY)));
+				grav *= calc::gravity (*itX, *itY);
+				itX->accelerate ( grav, calc::theta (*itX, *itY));
+				itY->accelerate (-grav, calc::theta (*itX, *itY));
 			}
 			++itY;
 		}

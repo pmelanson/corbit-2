@@ -14,7 +14,6 @@ namespace Json {
 
 class entity_c : public physical_c, public boost::intrusive::list_base_hook<> {
 protected:
-	var					I;	//moment of inertia
 	var					_mass;
 
 	var					_rot_speed;
@@ -30,9 +29,10 @@ public:
 	const var			radius;
 	var					pitch		() const;
 	var					rot_speed	() const;
-	void				spin		();
+	void				spin		(var force);
 
-	void				accelerate	(var force, var radians);
+	void				accelerate	(vect force, var radians);
+	void				move		();
 
 	const ALLEGRO_COLOR	color;
 

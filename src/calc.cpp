@@ -142,19 +142,18 @@ void		calc::detect_collision(entity_c &A, entity_c &B) {
 		return;
 	}
 
-	var t_to_impact = (-b - sqrt(b*b -4*a*c))/(2*a);
+	var t_to_impact = (-b - sqrt(b*b - 4*a*c)) / (2*a);
 
 	if (!std::isnormal(t_to_impact) ||
 		t_to_impact > 1./FPS ||
 		t_to_impact < 0) {
-//		std::clog << 1/0;
 		return;
 	}
 
+	std::clog << "\n\n\n\n\n\n\n";
 	std::clog << "\nCOLLISION DETECTED\n";
 	std::clog << "t - " << t_to_impact << "s\n";
-
-//	system("import -window \"Corbit Beta v2.0.9\" /home/cvt/collision.jpg");
+	std::clog << "\n\n\n\n\n\n\n";
 
 	A.pos += A.v * t_to_impact;
 	B.pos += B.v * t_to_impact;
