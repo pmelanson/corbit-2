@@ -1,5 +1,6 @@
 #include <corbit/entity.hpp>
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
 
@@ -19,21 +20,30 @@ using std::cos;
 using std::sin;
 
 
-void	entity_c::accelerate (var force, var radians) {
-	acc[0] += cos(radians) * (force / mass());
-	acc[1] += sin(radians) * (force / mass());
+void	entity_c::accelerate (vect force, var radians) {
+//	acc[0] += cos(radians) * (force / mass());
+//	acc[1] += sin(radians) * (force / mass());
+	acc += (force * cos (radians)) / mass();
+
+	ang_acc += (5 * force.norm() * sin(radians)) / (2 * mass() * radius);
+//	clog << '\n';
+//	clog << "theta = " << radians << '\n';
+//	clog << "atan  = " << atan2 (force[1], force[0]) << '\n';
+//	clog << '\n';
+}
+
+void	entity_c::move() {
+	v	+=	acc/FPS;
+	acc.setZero();
+	pos	+=	v/FPS;
+
+	ang_v += ang_acc/FPS;
+	ang_acc = 0;
+	ang_pos += ang_v/FPS;
 }
 
 var		entity_c::mass() const {
 	return _mass;
-}
-
-var		entity_c::pitch() const {
-	return _pitch;
-}
-
-var		entity_c::rot_speed() const {
-	return _rot_speed;
 }
 
 Json::Value entity_c::json() {
@@ -43,8 +53,9 @@ Json::Value entity_c::json() {
 	json_blob["name"] = name;
 	json_blob["mass"] = double(_mass);
 	json_blob["radius"] = double(radius);
-	json_blob["rot_speed"] = double(_rot_speed);
-	json_blob["pitch"] = double(_pitch);
+	json_blob["ang_pos"] = double(ang_pos);
+	json_blob["ang_v"] = double(ang_v);
+	json_blob["ang_acc"] = double(ang_acc);
 	json_blob["pos"]["x"] = double(pos[0]);
 	json_blob["pos"]["y"] = double(pos[1]);
 	json_blob["v"]["x"] = double(v[0]);
@@ -71,11 +82,12 @@ void	entity_c::print() {
 	clog << endl;
 }
 
-entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r, var rot_speed_,
-				   var pitch_, var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
+entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r,
+				   var ang_pos_, var ang_v_, var ang_acc_,
+				   var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 				   ALLEGRO_COLOR color_)
 	: type (type_), name (name_), _mass (m>0 ? m : 1), radius (r),
-	_rot_speed (rot_speed_), _pitch (pitch_), I ((mass() * radius * radius) / 4),
+	ang_pos (ang_pos_), ang_v (ang_v_), ang_acc (ang_acc_),
 	physical_c (x_,y_, Vx_,Vy_, accX_,accY_),
 	color (color_) {
 

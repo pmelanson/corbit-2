@@ -17,8 +17,9 @@
 				"y": 0
 			},
 			"color": "darkorange",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Mercury",
@@ -37,8 +38,9 @@
 				"y": 4.069049172706571E-02
 			},
 			"color": "dimgray",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Venus",
@@ -57,8 +59,9 @@
 				"y": 1.148708903955742E-02
 			},
 			"color": "brown",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Earth",
@@ -77,8 +80,9 @@
 				"y": 5.585839797291429E-03
 			},
 			"color": "darkgreen",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Mars",
@@ -97,8 +101,9 @@
 				"y": 6.439848813334939E-04
 			},
 			"color": "brown",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Jupiter",
@@ -117,8 +122,9 @@
 				"y": 1.965715792411807E-04
 			},
 			"color": "orangered",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Saturn",
@@ -137,8 +143,9 @@
 				"y": 1.681137809307842E-05
 			},
 			"color": "peru",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Uranus",
@@ -157,8 +164,9 @@
 				"y": -1.320358811582477E-05
 			},
 			"color": "cyan",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Neptune",
@@ -177,8 +185,9 @@
 				"y": -4.502997735266399E-06
 			},
 			"color": "dodgerblue",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Pluto",
@@ -197,8 +206,9 @@
 				"y": -5.06025331499927E-07
 			},
 			"color": "sandybrown",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Moon",
@@ -217,8 +227,9 @@
 				"y": 4.960330145573113E-03
 			},
 			"color": "dimgray",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Phobos",
@@ -237,8 +248,9 @@
 				"y": -1.503828907776151E-02
 			},
 			"color": "burlywood",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Deimos",
@@ -257,8 +269,9 @@
 				"y": -2.543668911331626E-02
 			},
 			"color": "blanchedalmond",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Io",
@@ -277,8 +290,9 @@
 				"y": -2.515088529592792E-03
 			},
 			"color": "darkgoldenrod",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Europa",
@@ -297,8 +311,9 @@
 				"y": 0.2814270738571981
 			},
 			"color": "burlywood",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Ganymede",
@@ -317,8 +332,9 @@
 				"y": -7.602914160846631E-02
 			},
 			"color": "tan",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Callisto",
@@ -337,8 +353,9 @@
 				"y": -3.494804410618806E-02
 			},
 			"color": "darkslategray",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Enceldus",
@@ -357,8 +374,9 @@
 				"y": -7.732622216573852E-02
 			},
 			"color": "ghostwhite",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Dione",
@@ -377,8 +395,9 @@
 				"y": 4.858629835264849E-02
 			},
 			"color": "lightgray",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Rhea",
@@ -397,8 +416,9 @@
 				"y": -.124083493344816
 			},
 			"color": "gainsboro",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Titan",
@@ -417,8 +437,9 @@
 				"y": 1.838997449834441E-02
 			},
 			"color": "goldenrod",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Iapetus",
@@ -437,8 +458,9 @@
 				"y": -1.62294735872919E-03
 			},
 			"color": "saddlebrown",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Ariel",
@@ -457,8 +479,9 @@
 				"y": 7.905364455309262E-02
 			},
 			"color": "sienna",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Umbriel",
@@ -477,8 +500,9 @@
 				"y": 1.421936817305784E-02
 			},
 			"color": "darkgray",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Titania",
@@ -497,8 +521,9 @@
 				"y": -1.328050799166438E-02
 			},
 			"color": "lightsalmon",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Oberon",
@@ -517,8 +542,9 @@
 				"y": -8.142273213855545E-03
 			},
 			"color": "tan",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Triton",
@@ -537,8 +563,9 @@
 				"y": -.1264562661542762
 			},
 			"color": "darksalmon",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Charon",
@@ -557,8 +584,9 @@
 				"y": 1.499908002995975E-05
 			},
 			"color": "antiquewhite",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Ceres",
@@ -577,8 +605,9 @@
 				"y": -1.242706842471708E-04
 			},
 			"color": "blanchedalmond",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Borrelly",
@@ -597,8 +626,9 @@
 				"y": 9.196497914109076E-05
 			},
 			"color": "darkgrey",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Vesta",
@@ -617,8 +647,9 @@
 				"y": -7.535801991333865E-04
 			},
 			"color": "silver",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Sedna",
@@ -637,8 +668,9 @@
 				"y": 0
 			},
 			"color": "dimgray",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "Quaoar",
@@ -662,7 +694,7 @@
 	"habs": [
 		{
 			"name": "Habitat",
-			"mass": 0,
+			"mass": 500,
 			"radius": 80,
 			"pos": {
 				"x": -60806523031.3544,
@@ -677,13 +709,14 @@
 				"y": 3.317955759579462
 			},
 			"color": "darkgrey",
-			"rot_speed": 0,
-			"pitch": 0
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		},
 		{
 			"name": "AYSE",
-			"mass": 0,
-			"radius": 500,
+			"mass": 5000,
+			"radius": 800,
 			"pos": {
 				"x": -60806724461.25755,
 				"y": -133932463063.6329
@@ -696,7 +729,10 @@
 				"x": -3.432020480684894,
 				"y": 3.747650066250596
 			},
-			"color": "darkred"
+			"color": "darkred",
+			"ang_pos": 0,
+			"ang_v": 0,
+			"ang_acc": 0
 		}
 	]
 }

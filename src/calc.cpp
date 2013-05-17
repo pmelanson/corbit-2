@@ -22,7 +22,7 @@ var			calc::step_distance		(const entity_c &A, const entity_c &B) {
 
 
 var			calc::theta			(const entity_c &A, const entity_c &B) {
-	return atan2f(B.pos[1]-A.pos[1], B.pos[0]-A.pos[0]);
+	return atan2 (B.pos[1]-A.pos[1], B.pos[0]-A.pos[0]);
 }
 var			calc::theta			(const entity_c &A, const entity_c &B, const entity_c &C) {
 	return 100;	//TODO
@@ -51,8 +51,8 @@ var			calc::v_tan			(const entity_c &A, const entity_c &B) {
 	return unt.dot(A.v - B.v);
 }
 
-var			calc::pitch			(const entity_c &A, const entity_c &B) {
-	return A.pitch();
+var			calc::ang_pos			(const entity_c &A, const entity_c &B) {
+	return A.ang_pos;
 }
 
 var			calc::v_orbit		(const entity_c &A, const entity_c &B) {
@@ -142,19 +142,18 @@ void		calc::detect_collision(entity_c &A, entity_c &B) {
 		return;
 	}
 
-	var t_to_impact = (-b - sqrt(b*b -4*a*c))/(2*a);
+	var t_to_impact = (-b - sqrt(b*b - 4*a*c)) / (2*a);
 
 	if (!std::isnormal(t_to_impact) ||
 		t_to_impact > 1./FPS ||
 		t_to_impact < 0) {
-//		std::clog << 1/0;
 		return;
 	}
 
+	std::clog << "\n\n\n\n\n\n\n";
 	std::clog << "\nCOLLISION DETECTED\n";
 	std::clog << "t - " << t_to_impact << "s\n";
-
-//	system("import -window \"Corbit Beta v2.0.9\" /home/cvt/collision.jpg");
+	std::clog << "\n\n\n\n\n\n\n";
 
 	A.pos += A.v * t_to_impact;
 	B.pos += B.v * t_to_impact;

@@ -18,7 +18,7 @@ namespace calc {
 					v_orbit			(const entity_c &A, const entity_c &B),
 					v_cen			(const entity_c &A, const entity_c &B),
 					v_tan			(const entity_c &A, const entity_c &B),
-					pitch			(const entity_c &A, const entity_c &B),
+					ang_pos			(const entity_c &A, const entity_c &B),
 					stopping_acc	(const entity_c &A, const entity_c &B),
 					ecc				(const entity_c &A, const entity_c &B),
 					semimajor_axis	(const entity_c &A, const entity_c &B),

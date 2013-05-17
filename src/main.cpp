@@ -72,9 +72,16 @@ void parse_console (string console_input) {
 
 	if (argv[0] == "load") {
 		load (argv[1]);
-		redraw = true;
 	}
-
+	else if (argv[0] == "target") {
+		nav::targ = find_entity (argv[1]);
+	}
+	else if (argv[0] == "reference") {
+		nav::ref = find_entity (argv[1]);
+	}
+	else if (argv[0] == "center") {
+		graphics::camera->center = find_entity (argv[1]);
+	}
 }
 
 void get_input() {
@@ -237,8 +244,9 @@ bool init_from_file (string filename) {
 	const Json::Value json_entities = root["entities"];
 	string	name="";
 	var		m   =0,	r   =0,
-			rot_speed =0,
-			pitch =0,
+			ang_pos		=0,
+			ang_v		=0,
+			ang_acc		=0,
 			x   =0,	y   =0,
 			Vx  =0,	Vy  =0,
 			accX=0,	accY=0;
@@ -252,8 +260,9 @@ bool init_from_file (string filename) {
 		name	= json_entities[i].get ("name", "unnamed").asString();
 		m		= json_entities[i].get ("mass", 100).asDouble();
 		r		= json_entities[i].get ("radius", 100).asDouble();
-		rot_speed= json_entities[i].get ("rot_speed", 100).asDouble();
-		pitch	= json_entities[i].get ("pitch", 100).asDouble();
+		ang_pos	= json_entities[i].get ("ang_pos", 0).asDouble();
+		ang_v	= json_entities[i].get ("ang_v", 0).asDouble();
+		ang_acc	= json_entities[i].get ("ang_acc", 0).asDouble();
 		x		= json_entities[i]["pos"].get ("x", 100).asDouble();
 		y		= json_entities[i]["pos"].get ("y", 100).asDouble();
 		Vx		= json_entities[i]["v"].get ("x", 100).asDouble();
@@ -262,7 +271,7 @@ bool init_from_file (string filename) {
 		accY	= json_entities[i]["acc"].get ("y", 100).asDouble();
 		color	= al_color_name (json_entities[i].get ("color", "lawngreen").asCString() );
 
-		json_entites_data.emplace_back (ENTITY, name, m, r, rot_speed, pitch, x,y, Vx,Vy, accX,accY, color);
+		json_entites_data.emplace_back (ENTITY, name, m, r, ang_pos, ang_v, ang_acc, x,y, Vx,Vy, accX,accY, color);
 		entities.push_back (json_entites_data.back());
 		assert (&entities.back() == &json_entites_data.back());
 	}
@@ -279,8 +288,9 @@ bool init_from_file (string filename) {
 		name	= json_habs[i].get ("name", "unnamed").asString();
 		m		= json_habs[i].get ("mass", 100).asDouble();
 		r		= json_habs[i].get ("radius", 100).asDouble();
-		rot_speed= json_entities[i].get ("rot_speed", 100).asDouble();
-		pitch	= json_entities[i].get ("pitch", 100).asDouble();
+		ang_pos	= json_entities[i].get ("ang_pos", 0).asDouble();
+		ang_v	= json_entities[i].get ("ang_v", 0).asDouble();
+		ang_acc	= json_entities[i].get ("ang_acc", 0).asDouble();
 		x		= json_habs[i]["pos"].get ("x", 100).asDouble();
 		y		= json_habs[i]["pos"].get ("y", 100).asDouble();
 		Vx		= json_habs[i]["v"].get ("x", 100).asDouble();
@@ -292,7 +302,7 @@ bool init_from_file (string filename) {
 		Isp		= json_habs[i].get ("Isp", 1000).asDouble();
 		thrust	= json_habs[i].get ("thrust", 50000).asDouble();
 
-		json_habs_data.emplace_back (HAB, name, m, r, rot_speed, pitch, x,y, Vx,Vy, accX,accY, color, fuel, Isp, thrust);
+		json_habs_data.emplace_back (HAB, name, m, r, ang_pos, ang_v, ang_acc, x,y, Vx,Vy, accX,accY, color, fuel, Isp, thrust);
 		entities.push_back (json_habs_data.back());
 		assert (&entities.back() == &json_habs_data.back());
 	}
@@ -345,8 +355,8 @@ bool load (string filename) {
 	}
 
 	nav::ship = find_entity ("Habitat");
-	nav::ref = find_entity ("Earth");
-	nav::targ = find_entity ("Earth");
+	nav::ref = find_entity ("AYSE");
+	nav::targ = find_entity ("AYSE");
 	graphics::camera->center = find_entity ("Habitat");
 
 	return true;
@@ -395,21 +405,13 @@ void input() {
 		graphics::camera->pan (0, -2000);
 
 	if (key[ALLEGRO_KEY_W])
-		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 0.5);
+		if (nav::ship) nav::ship->accelerate (vect (0, 1e8), M_PI);
 	if (key[ALLEGRO_KEY_A])
-		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 1.0);
+		if (nav::ship) nav::ship->accelerate (vect (-1e8, 0), 0);
 	if (key[ALLEGRO_KEY_S])
-		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 1.5);
+		if (nav::ship) nav::ship->accelerate (vect (0, -1e8), 0);
 	if (key[ALLEGRO_KEY_D])
-		if (nav::ship) nav::ship->accelerate (1e6, M_PI * 0.0);
-	if (key[ALLEGRO_KEY_H])
-		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 1.0);
-	if (key[ALLEGRO_KEY_J])
-		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 1.5);
-	if (key[ALLEGRO_KEY_K])
-		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 0.5);
-	if (key[ALLEGRO_KEY_L])
-		if (nav::ship) nav::ship->accelerate (1e8, M_PI * 0.0);
+		if (nav::ship) nav::ship->accelerate (vect (1e8, 0), 0);
 
 //	if(key[ALLEGRO_KEY_H])
 //		graphics::camera->center = find_entity("hab");
@@ -420,13 +422,18 @@ void input() {
 	if (key[ALLEGRO_KEY_1])
 		graphics::camera->center = find_entity ("earth");
 
-//	if (key[ALLEGRO_KEY_Q])
-//		if (nav::ship) nav::ship->spin (M_PI
+	if (key[ALLEGRO_KEY_Q])
+		if (nav::ship) nav::ship->accelerate (vect (0, -100000), -M_PI/2);
+	if (key[ALLEGRO_KEY_E])
+		if (nav::ship) nav::ship->accelerate (vect (0, 100000), M_PI/2);
 
 	if (key[ALLEGRO_KEY_F5])
 		save("res/quicksave.json");
-	if (key[ALLEGRO_KEY_F9])
+	if (key[ALLEGRO_KEY_F9]) {
 		load("res/quicksave.json");
+		graphics::camera->center = nav::ship = find_entity ("Hawking III");
+		cout << "\n\n\n\n\n" << nav::ship->name << "\n\n\n\n\n";
+	}
 }
 
 void calculate() {
@@ -447,10 +454,12 @@ void calculate() {
 		auto itY = itX;
 		++itY;
 		while (itY != entities.end() ) {
-			if (calc::distance2 (*itX, *itY) > (itX->radius + itY->radius) * (itX->radius + itY->radius) ) {
-				itX->accelerate ( calc::gravity (*itX, *itY), calc::theta (*itX, *itY) );
-				itY->accelerate (-calc::gravity (*itX, *itY), calc::theta (*itX, *itY) );
-			}
+//			if (calc::distance2 (*itX, *itY) > (itX->radius + itY->radius) * (itX->radius + itY->radius) ) {
+				vect grav (cos (calc::theta (*itX, *itY)), sin (calc::theta (*itX, *itY)));
+				grav *= calc::gravity (*itX, *itY);
+				itX->accelerate ( grav, 0);
+				itY->accelerate (-grav, 0);
+//			}
 			++itY;
 		}
 		++itX;

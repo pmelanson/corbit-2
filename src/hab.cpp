@@ -3,12 +3,17 @@
 #include <json/json.h>
 
 
-var	hab_c::mass() {
+var			hab_c::mass() {
 	return _mass + fuel;
 }
 
+void		hab_c::burn() {
+	accelerate (vect (engine_usage * thrust * cos (ang_pos),
+				vect (engine_usage * thrust * sin (ang_pos),
+				0);
+}
 
-Json::Value hab_c::json() {
+Json::Value	hab_c::json() {
 
 	Json::Value json_blob;
 
@@ -22,8 +27,9 @@ Json::Value hab_c::json() {
 }
 
 
-hab_c::hab_c (ENTITY_TYPE type_, std::string name_, var m, var r, var rot_speed_,
-			 var pitch_, var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
+hab_c::hab_c (ENTITY_TYPE type_, std::string name_, var m, var r,
+			 var ang_pos_, var ang_v_, var ang_acc_,
+			 var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 			 ALLEGRO_COLOR color_, var fuel_, int Isp_, var thrust_)
-	: entity_c (type_, name_, m, r, rot_speed_, pitch_, x_,y_, Vx_,Vy_, accX_,accY_, color_),
-	fuel (fuel_), Isp (Isp_), thrust (thrust_) {}
+	: entity_c (type_, name_, m, r, ang_pos_, ang_v_, ang_acc_, x_,y_, Vx_,Vy_, accX_,accY_, color_),
+	fuel (fuel_), engine_usage (0), Isp (Isp_), thrust (thrust_) {}

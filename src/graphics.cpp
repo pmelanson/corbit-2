@@ -28,7 +28,7 @@ void	graphics::draw		(const entity_c &obj) {
 
 	draw_at (obj,
 			camera->zoom(),
-			( obj.pos[0] - camera->pos[0]) * camera->zoom() + camera->size[0]/2,
+			(obj.pos[0] - camera->pos[0]) * camera->zoom() + camera->size[0]/2,
 			(-obj.pos[1] + camera->pos[1]) * camera->zoom() + camera->size[1]/2);
 }
 
@@ -53,16 +53,16 @@ void	graphics::draw_at	(const entity_c &obj, var zoom, var x, var y) {
 		var engine_angle = 0.7 * M_PI;
 
 
-		al_draw_filled_circle (	x + zoom * (hab.radius + engine_radius) * cos (hab.pitch() + engine_angle),
-								y + zoom * (hab.radius + engine_radius) * sin (hab.pitch() + engine_angle),
+		al_draw_filled_circle (	x + zoom * (hab.radius + engine_radius) * cos (hab.ang_pos + engine_angle),
+								y + zoom * (hab.radius + engine_radius) * sin (hab.ang_pos + engine_angle),
 								engine_radius * zoom,
 								engine_color);
-		al_draw_filled_circle (	x + zoom * (hab.radius + engine_radius) * cos (hab.pitch() - engine_angle),
-								y + zoom * (hab.radius + engine_radius) * sin (hab.pitch() - engine_angle),
+		al_draw_filled_circle (	x + zoom * (hab.radius + engine_radius) * cos (hab.ang_pos - engine_angle),
+								y + zoom * (hab.radius + engine_radius) * sin (hab.ang_pos - engine_angle),
 								engine_radius * zoom,
 								engine_color);
-		al_draw_filled_circle (	x + zoom * (hab.radius - engine_radius) * cos (hab.pitch() + M_PI),
-								y + zoom * (hab.radius - engine_radius) * sin (hab.pitch() + M_PI),
+		al_draw_filled_circle (	x + zoom * (hab.radius - engine_radius) * cos (hab.ang_pos + M_PI),
+								y + zoom * (hab.radius - engine_radius) * sin (hab.ang_pos + M_PI),
 								engine_radius * zoom,
 								engine_color);
 
@@ -84,6 +84,8 @@ void	graphics::hud_c::add_line (std::stringstream &text) {
 }
 
 void	graphics::hud_c::draw () {
+
+	if (!nav::ship || !nav::ref || !nav::targ) return;
 
 	column_w	= graphics::camera->size[0] / columns;
 	text_start_x= padding;
@@ -144,9 +146,9 @@ void	graphics::hud_c::draw () {
 	add_line(text);
 
 	graphics::draw_at(*nav::ship,
-					100/nav::ship->radius,
+					70/nav::ship->radius,
 					  graphics::camera->size[0]/2,
-					  graphics::camera->size[1] - graphics::camera->size[1]/10);
+					  graphics::camera->size[1] * (1 - 0.115));
 
 	text << "Fuel (" << nav::ship->name << "): "
 		<< "a billion";
@@ -166,7 +168,7 @@ void	graphics::hud_c::draw () {
 		<< calc::theta(*nav::ship, *nav::ref, *nav::targ);
 	add_line(text);
 	text << "Pitch (" << nav::ref->name << "): "
-		<< calc::pitch(*nav::ship, *nav::ref);
+		<< calc::ang_pos(*nav::ship, *nav::ref);
 	add_line(text);
 	text << "Center: "
 		<< graphics::camera->center->name;
