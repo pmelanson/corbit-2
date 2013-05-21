@@ -58,7 +58,7 @@
 				"x": 6.273603016240423E-05,
 				"y": 1.148708903955742E-02
 			},
-			"color": "brown",
+			"color": "peru",
 			"ang_pos": 0,
 			"ang_v": 0,
 			"ang_acc": 0
@@ -100,7 +100,7 @@
 				"x": -2.17871825651253E-03,
 				"y": 6.439848813334939E-04
 			},
-			"color": "brown",
+			"color": "coral",
 			"ang_pos": 0,
 			"ang_v": 0,
 			"ang_acc": 0
@@ -694,7 +694,7 @@
 	"habs": [
 		{
 			"name": "Habitat",
-			"mass": 500,
+			"mass": 275000,
 			"radius": 80,
 			"pos": {
 				"x": -60806523031.3544,
@@ -711,7 +711,10 @@
 			"color": "darkgrey",
 			"ang_pos": 0,
 			"ang_v": 0,
-			"ang_acc": 0
+			"ang_acc": 0,
+			"fuel": 30000,
+			"I_sp": 5000000,
+			"thrust": 50005000
 		},
 		{
 			"name": "AYSE",
@@ -732,7 +735,10 @@
 			"color": "darkred",
 			"ang_pos": 0,
 			"ang_v": 0,
-			"ang_acc": 0
+			"ang_acc": 0,
+			"fuel": 11000,
+			"I_sp": 800,
+			"thrust": 600000
 		}
 	]
 }

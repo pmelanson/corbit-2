@@ -7,7 +7,7 @@ class entity_c;
 
 namespace nav {
 
-	extern entity_c	*ship,
+	extern entity_c*ship,
 					*targ,
 					*ref;
 

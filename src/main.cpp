@@ -38,7 +38,8 @@ typedef boost::intrusive::list <entity_c> entity_list_t;
 ALLEGRO_DISPLAY		*display		=NULL;
 ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
-bool				key[ALLEGRO_KEY_MAX] = {};
+short				FPS				=30;
+bool				key[ALLEGRO_KEY_MAX] ={};
 unsigned			mods			=0;
 bool				paused			=false;
 bool				redraw			=true;
@@ -179,8 +180,10 @@ bool init_allegro() {
 	al_set_new_display_option (ALLEGRO_VSYNC, 1, ALLEGRO_SUGGEST);
 
 	display = al_create_display (disp_data.width, disp_data.height);
-	graphics::camera->size[0] = disp_data.width;
-	graphics::camera->size[1] = disp_data.height;
+	al_acknowledge_resize (display);
+	graphics::camera->size[0] = al_get_display_width (display);
+	graphics::camera->size[1] = al_get_display_height (display);
+
 	cout << "[DISPLAY]\n" << "Pixel format: " << disp_data.format << '\n'
 		 << disp_data.width << 'x' << disp_data.height << '\n'
 		 << disp_data.refresh_rate << "Hz" << endl;
@@ -188,8 +191,6 @@ bool init_allegro() {
 		cerr << "Failed to create display!" << endl;
 		return false;
 	}
-
-	al_acknowledge_resize (display);
 
 	stringstream title("");
 	title	<< "Corbit " << AutoVersion::STATUS
@@ -234,7 +235,7 @@ bool init_from_file (string filename) {
 		return false;
 	}
 
-	if (!reader.parse (fin, root) ) {
+	if (!reader.parse (fin, root)) {
 		cerr << "Error while reading JSON:\n" << reader.getFormatedErrorMessages() << endl;
 		return false;
 	}
@@ -253,8 +254,6 @@ bool init_from_file (string filename) {
 	ALLEGRO_COLOR color (al_color_name ("lawngreen") );
 	static vector <entity_c> json_entites_data;
 	json_entites_data.reserve (json_entities.size());
-
-	clog << "\n\ngetting entities\n\n";
 
 	for (unsigned i=0; i != json_entities.size(); ++i) {
 		name	= json_entities[i].get ("name", "unnamed").asString();
@@ -282,8 +281,6 @@ bool init_from_file (string filename) {
 	static vector <hab_c> json_habs_data;
 	json_habs_data.reserve (json_habs.size());
 
-	clog << "\n\ngetting habs\n\n";
-
 	for (unsigned i=0; i != json_habs.size(); ++i) {
 		name	= json_habs[i].get ("name", "unnamed").asString();
 		m		= json_habs[i].get ("mass", 100).asDouble();
@@ -299,7 +296,7 @@ bool init_from_file (string filename) {
 		accY	= json_habs[i]["acc"].get ("y", 100).asDouble();
 		color	= al_color_name (json_habs[i].get ("color", "lawngreen").asCString() );
 		fuel	= json_habs[i].get ("fuel", 10000).asDouble();
-		Isp		= json_habs[i].get ("Isp", 1000).asDouble();
+		Isp		= json_habs[i].get ("I_sp", 1000).asDouble();
 		thrust	= json_habs[i].get ("thrust", 50000).asDouble();
 
 		json_habs_data.emplace_back (HAB, name, m, r, ang_pos, ang_v, ang_acc, x,y, Vx,Vy, accX,accY, color, fuel, Isp, thrust);
@@ -405,7 +402,7 @@ void input() {
 		graphics::camera->pan (0, -2000);
 
 	if (key[ALLEGRO_KEY_W])
-		if (nav::ship) nav::ship->accelerate (vect (0, 1e8), M_PI);
+		if (nav::ship) nav::ship->accelerate (vect (0, 1e8), 0);
 	if (key[ALLEGRO_KEY_A])
 		if (nav::ship) nav::ship->accelerate (vect (-1e8, 0), 0);
 	if (key[ALLEGRO_KEY_S])
@@ -423,9 +420,40 @@ void input() {
 		graphics::camera->center = find_entity ("earth");
 
 	if (key[ALLEGRO_KEY_Q])
-		if (nav::ship) nav::ship->accelerate (vect (0, -100000), -M_PI/2);
+		if (nav::ship) nav::ship->accelerate (vect (0, (M_PI/12) * nav::ship->moment_inertia()), -M_PI/2);
 	if (key[ALLEGRO_KEY_E])
-		if (nav::ship) nav::ship->accelerate (vect (0, 100000), M_PI/2);
+		if (nav::ship) nav::ship->accelerate (vect (0, (M_PI/12) * nav::ship->moment_inertia()), M_PI/2);
+
+	if (key[ALLEGRO_KEY_Z]) {
+		if (nav::ship->type == HAB) {
+			hab_c *hab = (hab_c*) nav::ship;
+			hab->throttle += 0.1;
+		}
+	}
+	if (key[ALLEGRO_KEY_X]) {
+		if (nav::ship->type == HAB) {
+			hab_c *hab = (hab_c*) nav::ship;
+			hab->throttle -= 0.1;
+		}
+	}
+
+	if (key[ALLEGRO_KEY_BACKSPACE]) {
+		if (nav::ship->type == HAB) {
+			hab_c *hab = (hab_c*) nav::ship;
+			hab->throttle = 0;
+		}
+	}
+
+	if (key[ALLEGRO_KEY_PAD_ASTERISK]) {
+		FPS *= 1.1;
+		cout << "\ntimer: " << timer << endl;
+		timer = al_create_timer (1./FPS);
+		cout << "\ntimer: " << timer << endl;
+	}
+	if (key[ALLEGRO_KEY_PAD_SLASH]) {
+		FPS /= 1.1;
+		timer = al_create_timer (1./FPS);
+	}
 
 	if (key[ALLEGRO_KEY_F5])
 		save("res/quicksave.json");
@@ -531,6 +559,8 @@ bool run() {
 			if (!al_acknowledge_resize (display) ) {
 				cerr << "[" << al_get_time() << "] Could not acknowledge resize" << endl;
 			}
+			graphics::camera->size[0] = al_get_display_width(display);
+			graphics::camera->size[1] = al_get_display_height(display);
 			redraw = true;
 		}
 

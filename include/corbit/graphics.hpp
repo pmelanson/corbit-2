@@ -4,7 +4,7 @@
 
 #include <corbit/globals.hpp>
 #include <sstream>
-//#include <allegro5/allegro_font.h>
+
 class entity_c;
 class hab_c;
 class camera_c;

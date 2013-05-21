@@ -20,16 +20,31 @@ using std::cos;
 using std::sin;
 
 
+var		entity_c::moment_inertia() const {
+	return (2 * mass() * radius*radius) / 5;
+}
+
 void	entity_c::accelerate (vect force, var radians) {
-//	acc[0] += cos(radians) * (force / mass());
-//	acc[1] += sin(radians) * (force / mass());
+	/*
+	a = Fcos(theta) / m
+
+	where
+	a: linear acceleration
+	F: net force applied
+	cos(theta): centripetal force only
+	m: mass
+	*/
 	acc += (force * cos (radians)) / mass();
 
-	ang_acc += (5 * force.norm() * sin(radians)) / (2 * mass() * radius);
-//	clog << '\n';
-//	clog << "theta = " << radians << '\n';
-//	clog << "atan  = " << atan2 (force[1], force[0]) << '\n';
-//	clog << '\n';
+	/*
+	w = T / I
+
+	where
+	w: angular acceleration
+	T: torque
+	I: moment of inertia
+	*/
+	ang_acc += (force.norm() * sin(radians)) / moment_inertia();
 }
 
 void	entity_c::move() {
@@ -46,7 +61,7 @@ var		entity_c::mass() const {
 	return _mass;
 }
 
-Json::Value entity_c::json() {
+Json::Value entity_c::json() const {
 
 	Json::Value json_blob;
 
@@ -67,7 +82,7 @@ Json::Value entity_c::json() {
 	return json_blob;
 }
 
-void	entity_c::print() {
+void	entity_c::print() const {
 	clog << "\n[" << name << "]";
 	clog << "\ntype=" << type;
 	clog << "\nmass=" << _mass;
@@ -91,12 +106,12 @@ entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r,
 	physical_c (x_,y_, Vx_,Vy_, accX_,accY_),
 	color (color_) {
 
-	clog << endl << "CONSTRUCTING:";
-	print();
+//	clog << endl << "CONSTRUCTING: " << name;
+//	print();
 }
 
 entity_c::~entity_c() {
 
-	clog << endl << "DESTRUCTING:";
-	print();
+//	clog << endl << "DESTRUCTING: " << name;
+//	print();
 }
