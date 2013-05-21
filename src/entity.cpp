@@ -20,12 +20,17 @@ using std::cos;
 using std::sin;
 
 
+var		entity_c::moment_inertia() {
+	return (2 * mass() * radius * radius) / 5;
+}
+
 void	entity_c::accelerate (vect force, var radians) {
 //	acc[0] += cos(radians) * (force / mass());
 //	acc[1] += sin(radians) * (force / mass());
 	acc += (force * cos (radians)) / mass();
 
-	ang_acc += (5 * force.norm() * sin(radians)) / (2 * mass() * radius);
+	var torque = force.norm() * sin (radians);
+	ang_acc += torque / moment_inertia();
 //	clog << '\n';
 //	clog << "theta = " << radians << '\n';
 //	clog << "atan  = " << atan2 (force[1], force[0]) << '\n';
@@ -91,12 +96,12 @@ entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r,
 	physical_c (x_,y_, Vx_,Vy_, accX_,accY_),
 	color (color_) {
 
-	clog << endl << "CONSTRUCTING:";
-	print();
+//	clog << endl << "CONSTRUCTING:";
+//	print();
 }
 
 entity_c::~entity_c() {
 
-	clog << endl << "DESTRUCTING:";
-	print();
+//	clog << endl << "DESTRUCTING:";
+//	print();
 }

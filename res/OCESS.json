@@ -694,7 +694,7 @@
 	"habs": [
 		{
 			"name": "Habitat",
-			"mass": 500,
+			"mass": 50000,
 			"radius": 80,
 			"pos": {
 				"x": -60806523031.3544,
@@ -711,7 +711,10 @@
 			"color": "darkgrey",
 			"ang_pos": 0,
 			"ang_v": 0,
-			"ang_acc": 0
+			"ang_acc": 0,
+			"fuel": 5000000000,
+			"I_sp": 50000000,
+			"thrust": 50000
 		},
 		{
 			"name": "AYSE",

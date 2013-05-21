@@ -38,6 +38,7 @@ typedef boost::intrusive::list <entity_c> entity_list_t;
 ALLEGRO_DISPLAY		*display		=NULL;
 ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
+int					FPS				=30;
 bool				key[ALLEGRO_KEY_MAX] = {};
 unsigned			mods			=0;
 bool				paused			=false;
@@ -179,8 +180,6 @@ bool init_allegro() {
 	al_set_new_display_option (ALLEGRO_VSYNC, 1, ALLEGRO_SUGGEST);
 
 	display = al_create_display (disp_data.width, disp_data.height);
-	graphics::camera->size[0] = disp_data.width;
-	graphics::camera->size[1] = disp_data.height;
 	cout << "[DISPLAY]\n" << "Pixel format: " << disp_data.format << '\n'
 		 << disp_data.width << 'x' << disp_data.height << '\n'
 		 << disp_data.refresh_rate << "Hz" << endl;
@@ -190,6 +189,9 @@ bool init_allegro() {
 	}
 
 	al_acknowledge_resize (display);
+
+	graphics::camera->size[0] = al_get_display_width (display);
+	graphics::camera->size[1] = al_get_display_height (display);
 
 	stringstream title("");
 	title	<< "Corbit " << AutoVersion::STATUS
@@ -254,7 +256,7 @@ bool init_from_file (string filename) {
 	static vector <entity_c> json_entites_data;
 	json_entites_data.reserve (json_entities.size());
 
-	clog << "\n\ngetting entities\n\n";
+//	clog << "\n\ngetting entities\n\n";
 
 	for (unsigned i=0; i != json_entities.size(); ++i) {
 		name	= json_entities[i].get ("name", "unnamed").asString();
@@ -282,7 +284,6 @@ bool init_from_file (string filename) {
 	static vector <hab_c> json_habs_data;
 	json_habs_data.reserve (json_habs.size());
 
-	clog << "\n\ngetting habs\n\n";
 
 	for (unsigned i=0; i != json_habs.size(); ++i) {
 		name	= json_habs[i].get ("name", "unnamed").asString();
@@ -423,16 +424,34 @@ void input() {
 		graphics::camera->center = find_entity ("earth");
 
 	if (key[ALLEGRO_KEY_Q])
-		if (nav::ship) nav::ship->accelerate (vect (0, -100000), -M_PI/2);
+		if (nav::ship) nav::ship->accelerate (vect (0, (M_PI/6) * nav::ship->moment_inertia()), -M_PI/2);
 	if (key[ALLEGRO_KEY_E])
-		if (nav::ship) nav::ship->accelerate (vect (0, 100000), M_PI/2);
+		if (nav::ship) nav::ship->accelerate (vect (0, (M_PI/6) * nav::ship->moment_inertia()), M_PI/2);
+
+	if (key[ALLEGRO_KEY_Z]) {
+		if (nav::ship->type == HAB) {
+			hab_c *hab = (hab_c*)nav::ship;
+			hab->throttle += 0.05;
+		}
+	}
+	if (key[ALLEGRO_KEY_C]) {
+		if (nav::ship->type == HAB) {
+			hab_c *hab = (hab_c*)nav::ship;
+			hab->throttle -= 0.05;
+		}
+	}
+
+	if (key[ALLEGRO_KEY_PAD_ASTERISK])
+		FPS *= 1.2;
+	if (key[ALLEGRO_KEY_PAD_SLASH])
+		FPS /= 1.2;
 
 	if (key[ALLEGRO_KEY_F5])
 		save("res/quicksave.json");
 	if (key[ALLEGRO_KEY_F9]) {
 		load("res/quicksave.json");
-		graphics::camera->center = nav::ship = find_entity ("Hawking III");
-		cout << "\n\n\n\n\n" << nav::ship->name << "\n\n\n\n\n";
+//		graphics::camera->center = nav::ship = find_entity ("Habiti");
+//		cout << "\n\n\n\n\n" << nav::ship->name << "\n\n\n\n\n";
 	}
 }
 
@@ -478,6 +497,10 @@ void calculate() {
 
 	for (auto &it : entities) {
 		it.move();
+		if (it.type == HAB) {
+			hab_c &hab = (hab_c&)it;
+			hab.burn();
+		}
 	}
 
 
@@ -531,6 +554,8 @@ bool run() {
 			if (!al_acknowledge_resize (display) ) {
 				cerr << "[" << al_get_time() << "] Could not acknowledge resize" << endl;
 			}
+			graphics::camera->size[0] = al_get_display_width (display);
+			graphics::camera->size[1] = al_get_display_height (display);
 			redraw = true;
 		}
 

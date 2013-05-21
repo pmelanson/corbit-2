@@ -8,8 +8,13 @@ var			hab_c::mass() {
 }
 
 void		hab_c::burn() {
-	accelerate (vect (engine_usage * thrust * cos (ang_pos),
-				vect (engine_usage * thrust * sin (ang_pos),
+
+	fuel -= 1;
+
+	fuel -= throttle * Isp;
+
+	accelerate (vect (throttle * thrust * cos (ang_pos),
+				throttle * thrust * sin (ang_pos)),
 				0);
 }
 
@@ -32,4 +37,4 @@ hab_c::hab_c (ENTITY_TYPE type_, std::string name_, var m, var r,
 			 var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
 			 ALLEGRO_COLOR color_, var fuel_, int Isp_, var thrust_)
 	: entity_c (type_, name_, m, r, ang_pos_, ang_v_, ang_acc_, x_,y_, Vx_,Vy_, accX_,accY_, color_),
-	fuel (fuel_), engine_usage (0), Isp (Isp_), thrust (thrust_) {}
+	fuel (fuel_), throttle (0), Isp (Isp_), thrust (thrust_) {}

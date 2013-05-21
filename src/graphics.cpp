@@ -140,20 +140,37 @@ void	graphics::hud_c::draw () {
 
 	new_column();
 
-
-	text << "Engine (" << nav::ship->name << "): "
-		<< "100%";
+	if (nav::ship->type == HAB) {
+		hab_c *hab = (hab_c*)nav::ship;
+		text << "Engine (" << hab->name << "): "
+			<< hab->throttle * 100 << '%';
+	}
 	add_line(text);
+
+
+	if (nav::ship->type == HAB) {
+		hab_c *hab = (hab_c*)nav::ship;
+		text << "Fuel (" << hab->name << "): "
+			<< hab->fuel << " kg";
+	}
+	add_line(text);
+	add_line(text);
+	add_line(text);
+	add_line(text);
+	add_line(text);
+	add_line(text);
+	add_line(text);
+	add_line(text);
+	add_line(text);
+	text << "Turn rate (" << nav::ship->name << "): "
+		<< -nav::ship->ang_v/M_PI*180 << " \u00B0/s";
+	add_line(text);
+
 
 	graphics::draw_at(*nav::ship,
-					70/nav::ship->radius,
+					40/nav::ship->radius,
 					  graphics::camera->size[0]/2,
 					  graphics::camera->size[1] * (1 - 0.115));
-
-	text << "Fuel (" << nav::ship->name << "): "
-		<< "a billion";
-	add_line(text);
-
 
 	new_column();
 
@@ -162,7 +179,7 @@ void	graphics::hud_c::draw () {
 		<< calc::distance(*nav::ship, *nav::ref) - (nav::ship->radius + nav::ref->radius);
 	add_line(text);
 	text << "Time Dilation: "
-		<< "1" << "x";
+		<< 30./FPS << "x";
 	add_line(text);
 	text << "\u03B8 (\u2220" << nav::ship->name<<'/'<<nav::ref->name<<'/'<<nav::targ->name<< "): "
 		<< calc::theta(*nav::ship, *nav::ref, *nav::targ);

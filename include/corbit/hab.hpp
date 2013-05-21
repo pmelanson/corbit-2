@@ -12,7 +12,7 @@ namespace Json {
 class hab_c : public entity_c {
 public:
 	var				fuel;
-	var				engine_usage;
+	var				throttle;
 	const int		Isp;
 	const var		thrust;
 	void			burn		();

@@ -29,7 +29,8 @@ public:
 	var					ang_v;
 	var					ang_acc;
 
-	void				accelerate	(vect force, var radians);
+	virtual var			moment_inertia();
+	virtual void		accelerate	(vect force, var radians);
 	void				move		();
 
 	const ALLEGRO_COLOR	color;

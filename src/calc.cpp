@@ -73,10 +73,10 @@ var			calc::ecc			(const entity_c &A, const entity_c &B) {
 
 	h	= (distance(A,B) * v_tan(A,B)) * (distance(A,B) * v_tan(A,B));	//(r * v_tan)^2
 
-	cout << "ecc^2 = " <<		1 +				//1 +
-		(2 * E * h)		//2Eh^2
-		/
-		(mu)	<< endl;
+//	cout << "ecc^2 = " <<		1 +				//1 +
+//		(2 * E * h)		//2Eh^2
+//		/
+//		(mu)	<< endl;
 
 	return std::sqrt(	//sqrt of
 		1 +				//1 +
@@ -91,20 +91,20 @@ var			calc::semimajor_axis(const entity_c &A, const entity_c &B) {
 	var e = ((A.v - B.v).squaredNorm() / 2) -
 			u / distance (A,B);
 
-	cout << "u = " << u << endl;
-	cout << "e = " << e << endl;
-	cout << "a = " << -u/2*e << endl;
+//	cout << "u = " << u << endl;
+//	cout << "e = " << e << endl;
+//	cout << "a = " << -u/2*e << endl;
 
 	return -u / 2 * e;
 }
 
 var			calc::periapsis		(const entity_c &A, const entity_c &B) {
-	cout << "\nperi = " << (1 - ecc (A,B)) * semimajor_axis (A,B) << endl;
+//	cout << "\nperi = " << (1 - ecc (A,B)) * semimajor_axis (A,B) << endl;
 	return (1 - ecc (A,B)) * semimajor_axis (A,B);
 }
 var			calc::apoapsis		(const entity_c &A, const entity_c &B) {
-	cout << "\napop = " << (1 + ecc (A,B)) * semimajor_axis (A,B) << endl;
-	cout << "ecc = " << ecc (A,B) << endl;
+//	cout << "\napop = " << (1 + ecc (A,B)) * semimajor_axis (A,B) << endl;
+//	cout << "ecc = " << ecc (A,B) << endl;
 	return (1 + ecc (A,B)) * semimajor_axis (A,B);
 }
 
