@@ -38,8 +38,8 @@ typedef boost::intrusive::list <entity_c> entity_list_t;
 ALLEGRO_DISPLAY		*display		=NULL;
 ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
-short				FPS				=30;
-bool				key[ALLEGRO_KEY_MAX] ={};
+int					FPS				=30;
+bool				key[ALLEGRO_KEY_MAX] = {};
 unsigned			mods			=0;
 bool				paused			=false;
 bool				redraw			=true;
@@ -180,6 +180,7 @@ bool init_allegro() {
 	al_set_new_display_option (ALLEGRO_VSYNC, 1, ALLEGRO_SUGGEST);
 
 	display = al_create_display (disp_data.width, disp_data.height);
+
 	al_acknowledge_resize (display);
 	graphics::camera->size[0] = al_get_display_width (display);
 	graphics::camera->size[1] = al_get_display_height (display);
@@ -459,8 +460,8 @@ void input() {
 		save("res/quicksave.json");
 	if (key[ALLEGRO_KEY_F9]) {
 		load("res/quicksave.json");
-		graphics::camera->center = nav::ship = find_entity ("Hawking III");
-		cout << "\n\n\n\n\n" << nav::ship->name << "\n\n\n\n\n";
+//		graphics::camera->center = nav::ship = find_entity ("Habiti");
+//		cout << "\n\n\n\n\n" << nav::ship->name << "\n\n\n\n\n";
 	}
 }
 
@@ -506,6 +507,10 @@ void calculate() {
 
 	for (auto &it : entities) {
 		it.move();
+		if (it.type == HAB) {
+			hab_c &hab = (hab_c&)it;
+			hab.burn();
+		}
 	}
 
 
@@ -559,8 +564,8 @@ bool run() {
 			if (!al_acknowledge_resize (display) ) {
 				cerr << "[" << al_get_time() << "] Could not acknowledge resize" << endl;
 			}
-			graphics::camera->size[0] = al_get_display_width(display);
-			graphics::camera->size[1] = al_get_display_height(display);
+			graphics::camera->size[0] = al_get_display_width (display);
+			graphics::camera->size[1] = al_get_display_height (display);
 			redraw = true;
 		}
 

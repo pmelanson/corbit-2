@@ -5,9 +5,9 @@
 #include <eigen3/Eigen/Dense>
 #include <allegro5/color.h>
 
-typedef				long double				var;
+typedef				long double					var;
 typedef				Eigen::Matrix<var, 1, 2>	vect;
-extern short			FPS;
+extern int				FPS;
 enum					ENTITY_TYPE					{ENTITY, HAB, PLANET, ENTITY_TYPE_MAX};
 
 

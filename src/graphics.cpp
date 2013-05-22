@@ -137,26 +137,6 @@ void	graphics::hud_c::draw () {
 
 	new_column();
 
-
-	text << "Turning (" << nav::ship->name << "): "
-		<< nav::ship->ang_v / M_PI * 180 << "\u00B0";
-	add_line(text);
-
-	text << "Drag: "
-		<< "(not implemented yet)";
-	add_line(text);
-
-	add_line(text);
-	add_line(text);
-	add_line(text);
-	add_line(text);
-	add_line(text);
-
-	graphics::draw_at(*nav::ship,
-					25/nav::ship->radius,
-					  graphics::camera->size[0]/2,
-					  text_start_y + padding + 56);
-
 	if (nav::ship->type == HAB) {
 		hab_c *hab = (hab_c*) nav::ship;
 		text << "Fuel (" << hab->name << "): "
@@ -168,6 +148,21 @@ void	graphics::hud_c::draw () {
 		add_line(text);
 	}
 
+	add_line(text);
+
+	add_line(text);
+	add_line(text);
+	add_line(text);
+	add_line(text);
+	add_line(text);
+
+
+	graphics::draw_at(*nav::ship,
+					25/nav::ship->radius,
+					graphics::camera->size[0]/2,
+					text_start_y + padding + 56);
+
+
 	new_column();
 
 
@@ -175,8 +170,9 @@ void	graphics::hud_c::draw () {
 		<< calc::distance(*nav::ship, *nav::ref) - (nav::ship->radius + nav::ref->radius);
 	add_line(text);
 	text << "Time Dilation: "
-		<< FPS/30. << "x";
+		<< 30./FPS << "x";
 	add_line(text);
+
 	text << "\u03B8 (\u2220" << nav::ship->name<<'/'<<nav::ref->name<<'/'<<nav::targ->name<< "): "
 		<< calc::theta(*nav::ship, *nav::ref, *nav::targ);
 	add_line(text);
