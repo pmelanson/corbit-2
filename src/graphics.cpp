@@ -163,6 +163,11 @@ void	graphics::hud_c::draw () {
 					text_start_y + padding + 56);
 
 
+	text << "Turn rate (" << nav::ship->name << "): "
+		<< nav::ship->ang_v/M_PI*180 << " \u00B0/s";
+	add_line(text);
+
+
 	new_column();
 
 

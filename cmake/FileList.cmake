@@ -1,0 +1,24 @@
+set(CORBIT_SRC_FILES
+	src/calc.cpp
+	src/camera.cpp
+	src/entity.cpp
+	src/graphics.cpp
+	src/hab.cpp
+	src/jsoncpp.cpp
+	src/main.cpp
+	src/nav.cpp
+	src/physical.cpp
+)
+
+set(ALLEGRO_INCLUDE_ALLEGRO_FILES
+	include/corbit/calc.hpp
+	include/corbit/camera.hpp
+	include/corbit/corbit.hpp
+	include/corbit/entity.hpp
+	include/corbit/globals.hpp
+	include/corbit/graphics.hpp
+	include/corbit/hab.hpp
+	include/corbit/nav.hpp
+	include/corbit/physical.hpp
+	include/corbit/version.hpp
+)
