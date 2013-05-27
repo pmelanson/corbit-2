@@ -22,11 +22,11 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 
 #find JsonCpp
 find_package(JsonCpp REQUIRED)
-include_directories(${JSONCPP_INCLUDE_DIRS})
+include_directories(${JSONCPP_INCLUDE_DIR})
 set(LIBS ${LIBS} ${JSONCPP_LIBRARIES})
 
 #find boost
-find_package(Boost 1.36.0 REQUIRED)
+find_package(Boost 1.53.0 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 #add Corbit stuff
@@ -36,7 +36,6 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 set(Corbit_SRCS
 	${CMAKE_SOURCE_DIR}/src/camera.cpp
 	${CMAKE_SOURCE_DIR}/src/graphics.cpp
-	${CMAKE_SOURCE_DIR}/src/jsoncpp.cpp
 	${CMAKE_SOURCE_DIR}/src/physical.cpp
 	${CMAKE_SOURCE_DIR}/src/calc.cpp
 	${CMAKE_SOURCE_DIR}/src/entity.cpp
