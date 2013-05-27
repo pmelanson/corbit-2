@@ -12,8 +12,7 @@
 *.la
 *.a
 
-
-#bin and obj directories
+#generated subdirectories
 /bin
 /obj
 /build
@@ -22,10 +21,6 @@
 *.layout
 *.depend
 
-#anything cmake related
-*CMake*
-
 #except hand-maintained ones
 !CMakeLists.txt
-!/cmake
-!/cmake*
+!/cmake/*

@@ -1262,7 +1262,6 @@ CMakeFiles/Corbit.dir/src/main.cpp.o
  ../include/corbit/nav.hpp
  ../include/corbit/physical.hpp
  ../include/corbit/version.hpp
- ../include/json/json.h
  /home/cvt/Code/corbit/src/main.cpp
  /usr/local/include/allegro5/alcompat.h
  /usr/local/include/allegro5/allegro.h

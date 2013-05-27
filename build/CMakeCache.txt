@@ -173,6 +173,18 @@ Corbit_BINARY_DIR:STATIC=/home/cvt/Code/corbit/build
 //Value Computed by CMake
 Corbit_SOURCE_DIR:STATIC=/home/cvt/Code/corbit
 
+//Path to a file.
+EIGEN3_INCLUDE_DIR:PATH=/usr/include/eigen3
+
+//Path to a file.
+JSONCPP_INCLUDE_DIR:PATH=JSONCPP_INCLUDE_DIR-NOTFOUND
+
+//Path to a library.
+JSONCPP_LIBRARY:FILEPATH=/usr/lib/libjson_linux-gcc-4.7_libmt.so
+
+//Directory to search for JSONCPP
+JSONCPP_ROOT_DIR:PATH=
+
 
 ########################
 # INTERNAL cache entries
@@ -309,4 +321,12 @@ CMAKE_UNAME:INTERNAL=/bin/uname
 CMAKE_USE_RELATIVE_PATHS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: EIGEN3_INCLUDE_DIR
+EIGEN3_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//Details about finding Eigen3
+FIND_PACKAGE_MESSAGE_DETAILS_Eigen3:INTERNAL=[/usr/include/eigen3][TRUE][v(2.91.0)]
+//ADVANCED property for variable: JSONCPP_INCLUDE_DIR
+JSONCPP_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: JSONCPP_LIBRARY
+JSONCPP_LIBRARY-ADVANCED:INTERNAL=1
 

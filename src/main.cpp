@@ -15,7 +15,7 @@
 #include <boost/intrusive/list.hpp>
 #include <boost/algorithm/string.hpp>	//for trim(std::string)
 
-#include <json/json.h>
+#include <jsoncpp/json.h>
 
 #include <corbit/corbit.hpp>
 
