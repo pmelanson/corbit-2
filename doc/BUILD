@@ -1,10 +1,17 @@
-So this is how you build this thing:
+Deps:
 
-first you get allegro 5.1
-then you build it
-second you get boost
-then you build it
-third you get Box2D
-then you build it
-fourth you get this
-then you build it
+Allegro 5.1
+Boost 1.36.0
+Eigen3
+JsonCpp
+
+
+Run cmake:
+
+$ mkdir build
+$ cd build
+$ cmake ..
+
+Build Corbit
+
+$ make
