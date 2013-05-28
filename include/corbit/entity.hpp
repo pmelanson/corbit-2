@@ -31,12 +31,11 @@ public:
 
 	virtual var		moment_inertia() const;
 	virtual void		accelerate	(vect force, var radians);
-	virtual void		move		();
+	virtual void		move		(var time);
 
 	const ALLEGRO_COLOR	color;
 
 	virtual Json::Value json		() const;
-	void				print		() const;
 
 	entity_c						(ENTITY_TYPE type_, std::string name_, var m, var r,
 									var ang_pos_, var ang_speed_, var ang_acc_,

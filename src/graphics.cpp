@@ -16,6 +16,7 @@
 #include <cmath>
 
 extern ALLEGRO_DISPLAY *display;
+extern float tidi;
 camera_c default_camera(0,0, 0,0, 0,0, NULL, 4);
 
 namespace	graphics {
@@ -170,14 +171,14 @@ void	graphics::hud_c::draw () {
 		<< calc::distance(*nav::ship, *nav::ref) - (nav::ship->radius + nav::ref->radius);
 	add_line(text);
 	text << "Time Dilation: "
-		<< 30./FPS << "x";
+		<< tidi << "x";
 	add_line(text);
 
 	text << "\u03B8 (\u2220" << nav::ship->name<<'/'<<nav::ref->name<<'/'<<nav::targ->name<< "): "
 		<< calc::theta(*nav::ship, *nav::ref, *nav::targ);
 	add_line(text);
 	text << "Pitch (" << nav::ref->name << "): "
-		<< calc::ang_pos(*nav::ship, *nav::ref);
+		<< calc::pitch(*nav::ship, *nav::ref);
 	add_line(text);
 	text << "Center: "
 		<< graphics::camera->center->name;

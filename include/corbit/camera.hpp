@@ -9,29 +9,29 @@ class entity_c;
 class camera_c : public physical_c {
 private:
 
-	void			recenter		();
+	void		recenter		();
 
 public:
 
-	float			zoom			() const;
+	float		zoom			() const;
 
-	int				size[2];
+	int			size[2];
 
-	entity_c		*center;
+	entity_c	*center;
 
-	bool			tracking;
+	bool		tracking;
 
-	float			zoom_level;
+	float		zoom_level;
 
 
-	void 			pan				(float X, float Y);
+	void 		pan				(float X, float Y);
 
-	void			update			();
+	void		update			();
 
-	camera_c						(var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
-									entity_c *center_, float zoomlevel_);
+	camera_c					(var x_, var y_, var Vx_, var Vy_, var accX_, var accY_,
+								entity_c *center_, float zoomlevel_);
 
-	~camera_c		();
+	~camera_c	();
 };
 
 

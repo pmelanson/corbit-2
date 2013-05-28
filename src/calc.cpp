@@ -4,45 +4,50 @@
 
 #include <eigen3/Eigen/Dense>
 #define _USE_MATH_DEFINES
-#include <cmath>
-const float	G	=	6.674e-11;
 
-var			calc::distance2		(const entity_c &A, const entity_c &B) {
+#define _USE_MATH_DEFINES
+#include <cmath>
+
+#include <iostream>
+
+const float	G = 6.674e-11;
+
+var		calc::distance2		(const entity_c &A, const entity_c &B) {
 	return (A.pos - B.pos).squaredNorm();
 }
-var			calc::step_distance2	(const entity_c &A, const entity_c &B) {
+var		calc::step_distance2(const entity_c &A, const entity_c &B) {
 	return ((A.pos+ A.v*1/FPS) - (B.pos+ B.v*1/FPS)).squaredNorm();
 }
-var			calc::distance		(const entity_c &A, const entity_c &B) {
+var		calc::distance		(const entity_c &A, const entity_c &B) {
 	return (A.pos - B.pos).norm();
 }
-var			calc::step_distance		(const entity_c &A, const entity_c &B) {
+var		calc::step_distance	(const entity_c &A, const entity_c &B) {
 	return ((A.pos + (A.v + A.acc)/FPS) - (B.pos + (B.v + B.acc)/FPS)).norm();
 }
 
 
-var			calc::theta			(const entity_c &A, const entity_c &B) {
+var		calc::theta			(const entity_c &A, const entity_c &B) {
 	return atan2 (B.pos[1]-A.pos[1], B.pos[0]-A.pos[0]);
 }
-var			calc::theta			(const entity_c &A, const entity_c &B, const entity_c &C) {
+var		calc::theta			(const entity_c &A, const entity_c &B, const entity_c &C) {
 	return 100;	//TODO
 }
 
-var			calc::gravity		(const entity_c &A, const entity_c &B) {
+var		calc::gravity		(const entity_c &A, const entity_c &B) {
 	if(!std::isnormal(distance2(A,B)) || !distance2(A,B))	//if the distance is inf, NAN, or 0
 		return 1;
 
 	return G * (A.mass() * B.mass()) / distance2(A,B);
 }
 
-var			calc::v_cen			(const entity_c &A, const entity_c &B) {
+var		calc::v_cen			(const entity_c &A, const entity_c &B) {
 	vect n (A.pos - B.pos);				//normal vector
 
 	vect un (n / n.norm());				//unit vector of n
 
 	return un.dot(A.v - B.v);
 }
-var			calc::v_tan			(const entity_c &A, const entity_c &B) {
+var		calc::v_tan			(const entity_c &A, const entity_c &B) {
 	vect n (A.pos - B.pos);	//normal vector
 
 	vect un (n / n.norm());				//unit vector of n
@@ -51,19 +56,18 @@ var			calc::v_tan			(const entity_c &A, const entity_c &B) {
 	return unt.dot(A.v - B.v);
 }
 
-var			calc::ang_pos			(const entity_c &A, const entity_c &B) {
-	return A.ang_pos;
+var		calc::pitch			(const entity_c &A, const entity_c &B) {
+//	return A.;
+	return M_PI;	//TODO
 }
 
-var			calc::v_orbit		(const entity_c &A, const entity_c &B) {
+var		calc::v_orbit		(const entity_c &A, const entity_c &B) {
 	return sqrt(
-			   (B.mass()*B.mass() * G) /
-			   ((A.mass() + B.mass()) * distance(A,B)));
+		(B.mass()*B.mass() * G) /
+		((A.mass() + B.mass()) * distance(A,B)));
 }
 
-#include <iostream>
-using namespace std;
-var			calc::ecc			(const entity_c &A, const entity_c &B) {
+var		calc::ecc			(const entity_c &A, const entity_c &B) {
 	const var
 	mu	= G * (A.mass() + B.mass()),	//G(m1+m2)
 	E	=
@@ -73,11 +77,6 @@ var			calc::ecc			(const entity_c &A, const entity_c &B) {
 
 	h	= (distance(A,B) * v_tan(A,B)) * (distance(A,B) * v_tan(A,B));	//(r * v_tan)^2
 
-//	cout << "ecc^2 = " <<		1 +				//1 +
-//		(2 * E * h)		//2Eh^2
-//		/
-//		(mu)	<< endl;
-
 	return std::sqrt(	//sqrt of
 		1 +				//1 +
 		(2 * E * h)		//2Eh^2
@@ -86,48 +85,34 @@ var			calc::ecc			(const entity_c &A, const entity_c &B) {
 	);
 }
 
-var			calc::semimajor_axis(const entity_c &A, const entity_c &B) {
+var		calc::semimajor_axis(const entity_c &A, const entity_c &B) {
 	var u = G * (A.mass() + B.mass());
 	var e = ((A.v - B.v).squaredNorm() / 2) -
 			u / distance (A,B);
 
-//	cout << "u = " << u << endl;
-//	cout << "e = " << e << endl;
-//	cout << "a = " << -u/2*e << endl;
-
 	return -u / 2 * e;
 }
 
-var			calc::periapsis		(const entity_c &A, const entity_c &B) {
-//	cout << "\nperi = " << (1 - ecc (A,B)) * semimajor_axis (A,B) << endl;
+var		calc::periapsis		(const entity_c &A, const entity_c &B) {
 	return (1 - ecc (A,B)) * semimajor_axis (A,B);
 }
-var			calc::apoapsis		(const entity_c &A, const entity_c &B) {
-//	cout << "\napop = " << (1 + ecc (A,B)) * semimajor_axis (A,B) << endl;
-//	cout << "ecc = " << ecc (A,B) << endl;
+var		calc::apoapsis		(const entity_c &A, const entity_c &B) {
 	return (1 + ecc (A,B)) * semimajor_axis (A,B);
 }
 
-var			calc::stopping_acc	(const entity_c &A, const entity_c &B) {
+var		calc::stopping_acc	(const entity_c &A, const entity_c &B) {
 	return 200;	//TODO
 }
 
-vect		calc::position		(const entity_c &A, const entity_c &B) {
+vect	calc::position		(const entity_c &A, const entity_c &B) {
 	return A.pos - B.pos;
 }
 
-vect		calc::velocity		(const entity_c &A, const entity_c &B) {
+vect	calc::velocity		(const entity_c &A, const entity_c &B) {
 	return A.v - B.v;
 }
 
-//bool		calc::approaching	(const entity_c &A, const entity_c &B) {
-//	return (B.pos[0] - A.pos[0]) * (A.v[0] - B.v[0]) + (B.pos[1] - A.pos[1]) * (A.v[1] - B.v[1]) > 0;
-////	if (abs(A.pos
-//}
-
-using std::cout;
-
-void		calc::detect_collision(entity_c &A, entity_c &B) {
+void	calc::detect_collision(entity_c &A, entity_c &B) {
 
 	if (step_distance(A,B) > A.radius + B.radius) {
 		return;
@@ -150,10 +135,6 @@ void		calc::detect_collision(entity_c &A, entity_c &B) {
 		return;
 	}
 
-	std::clog << "\n\n\n\n\n\n\n";
-	std::clog << "\nCOLLISION DETECTED\n";
-	std::clog << "t - " << t_to_impact << "s\n";
-	std::clog << "\n\n\n\n\n\n\n";
 
 	A.pos += A.v * t_to_impact;
 	B.pos += B.v * t_to_impact;

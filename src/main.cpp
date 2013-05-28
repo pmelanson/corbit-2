@@ -37,7 +37,7 @@ typedef boost::intrusive::list <entity_c> entity_list_t;
 ALLEGRO_DISPLAY		*display		=NULL;
 ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
-int					FPS				=30;
+float				tidi			=1;
 bool				key[ALLEGRO_KEY_MAX] = {};
 unsigned			mods			=0;			//bitmask of modkeys
 bool				paused			=false;		//triggered on console open
@@ -468,14 +468,10 @@ void parse_input() {
 	}
 
 	if (key[ALLEGRO_KEY_PAD_ASTERISK]) {
-		FPS *= 1.1;
-		cout << "\ntimer: " << timer << endl;
-		timer = al_create_timer (1./FPS);
-		cout << "\ntimer: " << timer << endl;
+		tidi *= 1.1;
 	}
 	if (key[ALLEGRO_KEY_PAD_SLASH]) {
-		FPS /= 1.1;
-		timer = al_create_timer (1./FPS);
+		tidi /= 1.1;
 	}
 
 	if (key[ALLEGRO_KEY_F5])
@@ -527,11 +523,7 @@ void calculate() {
 	}
 
 	for (auto &it : entities) {
-		it.move();
-		if (it.type == HAB) {
-			hab_c &hab = (hab_c&)it;
-			hab.burn();
-		}
+		it.move (tidi/FPS);
 	}
 
 

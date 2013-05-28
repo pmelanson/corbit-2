@@ -47,14 +47,14 @@ void	entity_c::accelerate (vect force, var radians) {
 	ang_acc += (force.norm() * sin(radians)) / moment_inertia();
 }
 
-void	entity_c::move() {
-	v	+=	acc/FPS;
+void	entity_c::move		(var time) {
+	v	+=	acc * time;
 	acc.setZero();
-	pos	+=	v/FPS;
+	pos	+=	v * time;
 
-	ang_v += ang_acc/FPS;
+	ang_v += ang_acc * time;
 	ang_acc = 0;
-	ang_pos += ang_v/FPS;
+	ang_pos += ang_v * time;
 }
 
 var		entity_c::mass() const {
@@ -82,20 +82,6 @@ Json::Value entity_c::json() const {
 	return json_blob;
 }
 
-void	entity_c::print() const {
-	clog << "\n[" << name << "]";
-	clog << "\ntype=" << type;
-	clog << "\nmass=" << _mass;
-	clog << "\nradius=" << radius;
-	clog << "\nx=" << pos[0];
-	clog << "\ny=" << pos[1];
-	clog << "\nVx=" << v[0];
-	clog << "\nVy=" << v[1];
-	clog << "\naccX=" << acc[0];
-	clog << "\naccY=" << acc[1];
-	clog << "\ncolor=" << al_color_rgb_to_name(color.r, color.g, color.b);
-	clog << endl;
-}
 
 entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r,
 				   var ang_pos_, var ang_v_, var ang_acc_,
@@ -107,11 +93,9 @@ entity_c::entity_c(ENTITY_TYPE type_, string name_, var m, var r,
 	color (color_) {
 
 //	clog << endl << "CONSTRUCTING: " << name;
-//	print();
 }
 
 entity_c::~entity_c() {
 
 //	clog << endl << "DESTRUCTING: " << name;
-//	print();
 }

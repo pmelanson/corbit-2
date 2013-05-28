@@ -33,10 +33,10 @@ void		hab_c::burn() {
 	fuel -= fuel_use * fuel_rate;
 }
 
-void		hab_c::move() {
+void		hab_c::move	(var time) {
 	burn();
 
-	entity_c::move();
+	entity_c::move (time);
 }
 
 Json::Value	hab_c::json() const {

@@ -16,7 +16,7 @@ public:
 	const int		I_sp;
 	const var		thrust;
 	void			burn		();
-	void			move		();
+	void			move		(var time);
 	var				mass		() const;
 
 	Json::Value		json		() const;
