@@ -37,7 +37,7 @@ typedef boost::intrusive::list <entity_c> entity_list_t;
 ALLEGRO_DISPLAY		*display		=NULL;
 ALLEGRO_EVENT_QUEUE	*event_queue	=NULL;
 ALLEGRO_TIMER		*timer			=NULL;
-float				tidi			=1;
+float				tidi			=1;			//"time dilation", greater values mean greater extrapolations!
 bool				key[ALLEGRO_KEY_MAX] = {};
 unsigned			mods			=0;			//bitmask of modkeys
 bool				paused			=false;		//triggered on console open
@@ -49,13 +49,16 @@ entity_list_t entities;							//this is the important one, everything goes in he
 
 entity_c *find_entity (string name);
 
-bool init();
-bool init_allegro();
-bool init_from_file (string filename);
-bool load (string filename);
-bool save (string filename);
+bool init();	//! Initializes all values needed to run the program
+				//! \returns true when everything goes swimmingly, false otherwise
+bool init_allegro();	//! Handles initialization of anything allegro-related
+						//! \returns true when everything is initialized properly, false otherwise
+bool init_from_file (string filename);	//! Handles initialization from the default file
+										//!
+bool load (string filename);	//! Reads data from a file
+bool save (string filename);	//! Saves data to a file
 
-bool run();
+bool run();	//! The main loop, will return
 void parse_input();
 void calculate();
 void get_input();
@@ -516,7 +519,7 @@ void calculate() {
 		auto itY = itX;
 		++itY;
 		while (itY != entities.end() ) {
-			calc::detect_collision (*itX, *itY);
+			calc::detect_collision (*itX, *itY, tidi/FPS);
 			++itY;
 		}
 		++itX;

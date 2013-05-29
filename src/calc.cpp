@@ -112,11 +112,11 @@ vect	calc::velocity		(const entity_c &A, const entity_c &B) {
 	return A.v - B.v;
 }
 
-void	calc::detect_collision(entity_c &A, entity_c &B) {
+void	calc::detect_collision(entity_c &A, entity_c &B, var time) {
 
-	if (step_distance(A,B) > A.radius + B.radius) {
-		return;
-	}
+//	if (step_distance(A,B) > A.radius + B.radius) {
+//		return;
+//	}
 
 	var	a = velocity(A,B).squaredNorm(),
 		b = 2 * position(A,B).dot(velocity(A,B)),
@@ -130,17 +130,16 @@ void	calc::detect_collision(entity_c &A, entity_c &B) {
 	var t_to_impact = (-b - sqrt(b*b - 4*a*c)) / (2*a);
 
 	if (!std::isnormal(t_to_impact) ||
-		t_to_impact > 1./FPS ||
+		t_to_impact > time ||
 		t_to_impact < 0) {
 		return;
 	}
 
+	std::clog << "Collision between " << A.name << " and " << B.name << std::endl;
 
-	A.pos += A.v * t_to_impact;
-	B.pos += B.v * t_to_impact;
 
-	A.acc.setZero();
-	B.acc.setZero();
+	A.move (t_to_impact);
+	B.move (t_to_impact);
 
 	vect n (A.pos - B.pos);		//normal vector
 
@@ -180,6 +179,6 @@ void	calc::detect_collision(entity_c &A, entity_c &B) {
 	B.v = (VBn + VBt);
 
 	//move for the rest of the frame
-	A.pos += A.v * (1./FPS - t_to_impact);
-	B.pos += A.v * (1./FPS - t_to_impact);
+	A.move (time - t_to_impact);
+	B.move (time - t_to_impact);
 }
