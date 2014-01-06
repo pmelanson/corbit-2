@@ -114,21 +114,30 @@ vect	calc::velocity		(const entity_c &A, const entity_c &B) {
 
 void	calc::detect_collision(entity_c &A, entity_c &B, var time) {
 
-//	if (step_distance(A,B) > A.radius + B.radius) {
-//		return;
-//	}
+	//general overview of this function:
+	//1. find if the objects will collide in the given time
+	//2. if yes, calculate collision:
+	//2.1 represent velocities as normal velocity and tangential velocity
+	//2.2 do a 1D collision using the normal veloctiy
+	//2.3 add the normal and tangential velocities to get the new velocity
 
-	var	a = velocity(A,B).squaredNorm(),
-		b = 2 * position(A,B).dot(velocity(A,B)),
+	//for this function I make one of the objects the frame of reference
+	//which means my calculations are much simplified
+	
+	//for this, I just set up a quadratic equation, then solve for time. It all works out.
+	var	a = velocity(A,B).squaredNorm(),	//a = |v|^2
+		b = 2 * position(A,B).dot(velocity(A,B)),	//b = 2 * position . velocity
 		c = position(A,B).squaredNorm() - (A.radius + B.radius)*(A.radius + B.radius);
-
+		//c = |pos|^2 - sum of radii^2
+		
 	if (a == 0) {
 		std::cerr << "Divide by 0 caught in collision detection routine (A.v = B.v)\n";
 		return;
 	}
 
-	var t_to_impact = (-b - sqrt(b*b - 4*a*c)) / (2*a);
+	var t_to_impact = (-b - sqrt(b*b - 4*a*c)) / (2*a);	//finds when an impact will take place
 
+	//return if the collision isn't this frame
 	if (!std::isnormal(t_to_impact) ||
 		t_to_impact > time ||
 		t_to_impact < 0) {
@@ -137,9 +146,13 @@ void	calc::detect_collision(entity_c &A, entity_c &B, var time) {
 
 	std::clog << "Collision between " << A.name << " and " << B.name << std::endl;
 
-
+	//move until the point of impact
 	A.move (t_to_impact);
 	B.move (t_to_impact);
+
+	//for this section, basically turn the vectors into normal velocity and tangential velocity,
+	//then do a 1D collision calculation, using the normal velocities
+	//since a ' (prime symbol) wouldn't work, I've replaced it with a _ in variable names
 
 	vect n (A.pos - B.pos);		//normal vector
 
@@ -167,14 +180,14 @@ void	calc::detect_collision(entity_c &A, entity_c &B, var time) {
 
 	//convert scalar normal and tangent velocities to vectors
 	//also, apply coefficient of restitution
-	const var R = 1;
+	const var R = 1;	//still working on this
 	vect VAn = vAn_ * un * R;
 	vect VAt = vAt_ * unt * R;
 
 	vect VBn = vBn_ * un * R;
 	vect VBt = vBt_ * unt * R;
 
-	//add em up
+	//add em up to get v'
 	A.v = (VAn + VAt);
 	B.v = (VBn + VBt);
 
